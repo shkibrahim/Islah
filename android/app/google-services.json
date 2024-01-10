@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "831034152559",
+    "project_id": "islah-8f61c",
+    "storage_bucket": "islah-8f61c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831034152559:android:b741ffc04d677418ca5f9a",
+        "android_client_info": {
+          "package_name": "com.islah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZC_tWdebBI9DMgUeHaEF_UwJPvC4xCY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
