@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
   user_name: {
     fontSize: 16,
+    color:'black',
     fontWeight: 'bold',
   },
   user_category: {

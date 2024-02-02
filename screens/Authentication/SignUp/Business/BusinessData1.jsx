@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Button, Paragraph, Text, Title } from 'react-native-paper';
 import CustomDropDown from '../../../../Components/CustomDropDown';
@@ -7,8 +7,38 @@ import CustomTextInput from '../../../../Components/CustomTextInput';
 
 
 const BusinessData1=  React.memo(({route ,props,navigation}) => {
+  // const {
+  //   Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+  // }=route.params
 
-  const [error, setError] = React.useState(false)
+
+
+
+
+  const Image = 'sfs'
+  const surname = 'fasf'
+
+const name = 'sfs'
+ const fatherName = 'sfs'
+  const motherName = 'sfs'
+   const grandFatherName = 'sfs' 
+   const grandFatherNameNana = 'sfs' 
+   const gender = 'sfs'
+   const dob = 'sfs'
+   const maritalStatus = 'sfs'
+    const country = 'sfs'
+    const state = 'sfs'
+     const city = 'sfs'
+     const district = 'sfs'
+     const postalCode = 'sfs'
+     const Address = 'sfs'
+   const Street = 'sfs'
+   const email = 'sfs'
+   const password = 'sfs'
+   const nationality = 'sfs'
+   const phoneNumber = 'sfs'
+   const partnerName= 'sfs'
+  const [error, setError] = React.useState()
   const [isBusinessNameEmpty, setIsBusinessNameEmpty] = useState(false)
   const [businessName, setBusinessName] = useState('')
   const [isdescriptionEmpty, setIsdescriptionEmpty] = useState(false)
@@ -42,10 +72,129 @@ const BusinessData1=  React.memo(({route ,props,navigation}) => {
   const [from, setFrom] = useState(weekdayFrom[0])
   const [to, setTo] = useState(weekdayTo[0])
   // Onpress handler
-  const onpressHandler = () => {
-    setError(false)
-      navigation.navigate('businessData2')
+  // const onpressHandler = () => {
+  //   setError(false)
+  //     navigation.navigate('businessData2')
+  // }
+
+
+  useEffect(() => {
+
+    console.log('svsv');
+  console.log(maritalStatus)
+    // Check for non-empty fields and update error state
+    if (businessName !== '' && businessCatergory !== '' && description !== '' && businesContact !== '' &&  education !== ''  && from !== 'from' && to !=='to') {
+      setError(false);
+    }
+
+    else {
+      setError(true);
+    }
+  }, [error, businessName, businessCatergory, description, businesContact,education, weekdayFrom,weekdayTo]); // Include all relevant dependencies
+  
+
+  const onpressHandler = async() => {
+
+    // if (password != confirmPassword ){
+    //   setwrongpassword(true)
+    //   setError(true)
+    // }
+
+    if (businessName === '') {
+      setIsBusinessNameEmpty(true)
+        setError(true)
+    } if (businessCatergory === '') {
+      setIsBusinessCatergory(true)
+        setError(true)
+    } if (description === '') {
+      setIsdescriptionEmpty(true)
+        setError(true)
+    } if (businesContact === '') {
+        setIsbusinesContactEmpty(true)
+        setError(true)
+    }
+
+    if (education === '') {
+      setIsEducationEmpty(true)
+      setError(true)
   }
+
+  if (from === 'from') {
+  
+    setError(true)
+}
+
+if (to === 'to') {
+  setError(true)
+}
+
+
+
+
+    if (error == false ) {
+
+      // await AsyncStorage.setItem('userName', userName);
+console.log('agf')
+      navigation.navigate('imagePcikerForBusiness', {
+        surname:surname,
+        name:name,
+        fatherName:fatherName,
+        motherName:motherName,
+        grandFatherName:grandFatherName,
+        grandFatherNameNana:grandFatherNameNana,
+        gender:gender,
+        dob:dob,
+        partnerName:partnerName,
+        maritalStatus:maritalStatus,
+        country:country,
+        state:state,
+        city:city,
+      district:district,
+      postalCode:postalCode,
+      Address:Address,
+      Street:Street,
+  PImage:Image,
+      email:email,
+      password:password,
+      nationality:nationality,
+      partnerName:partnerName,
+      phoneNumber:phoneNumber,
+
+
+      BusinessName:businessName,
+  BusinessCatergory:businessCatergory,
+  BusinessDescription:description,
+  BusinesContact:businesContact,
+  BusinessEducation:education,
+  WorkingFrom:from,
+  WorkingTo:to,
+      
+      })
+    }
+    
+  
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
 
   return (
     <TouchableWithoutFeedback

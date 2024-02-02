@@ -21,6 +21,7 @@ const CustomTextInput = props => {
           paddingHorizontal: 16,
           paddingVertical: 10,
           color: '#111',
+            width: '100%',
           marginVertical: 4,
         }}
         placeholder={props.label}

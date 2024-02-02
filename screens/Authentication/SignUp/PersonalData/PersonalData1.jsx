@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   Dimensions,
   Keyboard,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {Button, Paragraph, Text, Title} from 'react-native-paper';
 import CustomTextInput from '../../../../Components/CustomTextInput';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-date-picker';
 import CustomDropDown from '../../../../Components/CustomDropDown';
 
@@ -21,7 +21,7 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
   const [surname, setSurname] = useState('');
   const [fatherName, setFatherName] = useState('');
   const [motherName, setMotherName] = useState('');
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState('Gender');
   const [grandFatherName, setGrandFatherName] = useState('');
   const [grandFatherNameNana, setGrandFatherNameNana] = useState('');
   const [isGrandFatherNameEmpty, setIsGrandFatherNameEmpty] = useState(false);
@@ -36,39 +36,107 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
   // set the date 1 jan and current year
   const [date, setDate] = useState(new Date(new Date().getFullYear(), 0, 1));
   const [genderError, setGenderError] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState();
   const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-  const signupHandler = () => {
-    // setError(false)
-    // if (name === '') {
-    //     setIsnameEmpty(true)
-    //     setError(true)
-    // } if (fatherName === '') {
-    //     setIsFatherNameEmpty(true)
-    //     setError(true)
-    // } if (grandFatherName === '') {
-    //     setIsGrandFatherNameEmpty(true)
-    //     setError(true)
-    // } if (gender === '') {
-    //     setGenderError(true)
-    // }
-    // else{
-    // }
 
-    navigation.navigate('personalData2', {
-      surname:surname,
-      name:name,
-      fatherName:fatherName,
-      motherName:motherName,
-      grandFatherName:grandFatherName,
-      grandFatherNameNana:grandFatherNameNana,
-      gender:gender,
-      dob:formattedDate
-    
-    })
+
+
+
+  useEffect(() => {
+    console.log('svsv');
+
+    // Check for non-empty fields and update error state
+    if (
+      name !== '' &&
+      fatherName !== '' &&
+      grandFatherName !== '' &&
+      gender !== 'gender' 
       
+    ) {
+      setError(false);
+    }
+
+    else {
+      setError(true);
+    }
+  }, [error, name, fatherName, grandFatherName, gender]); // Include all relevant dependencies
+
+
+  const signupHandler = async () => {
+  
+
+   
+    if (name === '') {
+      setIsnameEmpty(true);
+      setError(true);
+    }
+    if (fatherName === '') {
+      setIsFatherNameEmpty(true);
+      setError(true);
+    }
+    if (grandFatherName === '') {
+      setIsGrandFatherNameEmpty(true);
+      setError(true);
+    }
+    if (gender == 'gender') {
+      setError(true);
+    }
+
+
+
+    
+ 
+    if (error == false) {
+
+   await   AsyncStorage.setItem('Name', name);
+      navigation.navigate('personalData2', {
+        surname: surname,
+        name: name,
+        fatherName: fatherName,
+        motherName: motherName,
+        grandFatherName: grandFatherName,
+        grandFatherNameNana: grandFatherNameNana,
+        gender: gender,
+        dob: formattedDate,
+
+        
+      });
+    }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+  // const signupHandler = () => {
+  
+
+
+
+
+    
+
+  //   navigation.navigate('personalData2', {
+  //     surname:surname,
+  //     name:name,
+  //     fatherName:fatherName,
+  //     motherName:motherName,
+  //     grandFatherName:grandFatherName,
+  //     grandFatherNameNana:grandFatherNameNana,
+  //     gender:gender,
+  //     dob:formattedDate
+    
+  //   })
+      
+  // };
 
   return (
     <TouchableWithoutFeedback

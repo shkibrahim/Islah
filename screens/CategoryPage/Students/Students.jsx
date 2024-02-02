@@ -35,7 +35,7 @@ const Students = () => {
     },
     {
       id: 12,
-      name: 'John Doe',
+      name: 'John Doj',
       degree: 'B.Sc',
       year: '2023',
       board: 'CBSE',

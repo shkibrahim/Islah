@@ -1,9 +1,139 @@
-import React from 'react';
-import {StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ScrollView,
+  Image,
+} from 'react-native';
 import MatrimonialCard from '../../../Components/MatrimonialCard/MatrimonialCard';
 import BackButton from '../../../Components/BackButton/BackButton';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 const LookingForBride = () => {
+  const [Loading, setLoading] = useState();
+
+  const [MatrimonialData, setMatrimonialData] = useState([]);
+
+  const [BrideData, setBrideData] = useState();
+  const fetchData = async () => {
+    setLoading(true);
+
+    console.log('fsf');
+    try {
+      const querySnapshot = await firestore()
+        .collectionGroup('Matrimonial')
+        .get();
+
+      const data = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      // Check if data.docs is defined before mapping
+      if (data && Array.isArray(data)) {
+        setLoading(false);
+        setMatrimonialData(data);
+        console.log(data);
+
+        // You can set other states here if needed
+        // setData2(data);
+        // setoriginalData(data);
+
+        // console.log('Data1:', data); // Log the fetched data
+      } else {
+        console.log('No documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (MatrimonialData) {
+      getBrideData();
+    }
+  }, [MatrimonialData]);
+
+  const [gender, setgender] = useState('female');
+  const getBrideData = async () => {
+    const mydata = await MatrimonialData.find(data => data.Gender === gender);
+    setBrideData(mydata);
+  };
+
+  console.log('The bride data is', BrideData);
+
+  const renderItem1 = ({item}) => (
+    <View
+      style={{
+        borderWidth: 0.5,
+        borderColor: '#ddd',
+        borderRadius: 10,
+        elevation: 2,
+        marginHorizontal: 16,
+        marginVertical: 6,
+        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+      }}>
+      <View>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 12,
+          }}>
+          {item.Name}
+        </Text>
+
+        <Image
+          source={{uri: item.Profile}}
+          style={{
+            width: 150,
+            height: 150,
+            borderRadius: 75,
+            alignSelf: 'center',
+            marginBottom: 16,
+          }}
+        />
+
+        <Text style={styles.overhead}>Marital Status:</Text>
+        <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
+          {item.maritalStatus}
+        </Text>
+
+        <Text style={styles.overhead}>Grandfather Name(Nana):</Text>
+        <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
+          {item.grandFatherNanaName}
+        </Text>
+
+        <Text style={styles.overhead}>Contact:</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+          }}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={styles.heading}>Father</Text>
+            <Text style={styles.text}>{item.parentContactNumberFather}</Text>
+          </View>
+
+          <View style={{alignItems: 'center'}}>
+            <Text style={styles.heading}>Brother</Text>
+            <Text style={styles.text}>{item.parentContactNumberBrother}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+
   const matrimonialData = [
     {
       address: 'Address 1',
@@ -38,7 +168,7 @@ const LookingForBride = () => {
     // Add more data as needed
   ];
 
-  const renderMatrimonialCard = ({item}) => <MatrimonialCard {...item} />;
+  // const renderMatrimonialCard = ({item}) => <MatrimonialCard {...item} />;
 
   return (
     <View
@@ -47,16 +177,32 @@ const LookingForBride = () => {
         backgroundColor: '#fff',
       }}>
       <BackButton label={'Brides'} />
-      <FlatList
-        data={matrimonialData}
-        renderItem={renderMatrimonialCard}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-      />
+      {BrideData && (
+        <FlatList
+          data={[BrideData]}
+          renderItem={renderItem1}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };
 
 export default LookingForBride;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  heading: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: 'normal',
+  },
+  text: {
+    color: 'black',
+  },
+  overhead: {
+    color: 'black',
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+});

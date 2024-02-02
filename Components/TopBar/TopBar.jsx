@@ -37,7 +37,9 @@ const TopBar= (props) => {
                     anchor={<IconButton icon="bell" iconColor='#fff' size={22} onPress={openMenu} />}>
                     <Menu.Item style={{
                         backgroundColor: "#f0f0f0",
-                    }} onPress={() => { }} title="No Notication" />
+                    }} onPress={() => { }} 
+                    title="No Notication" 
+                  />
                 </Menu>
                 <IconButton icon="android-messages" iconColor='#fff' size={22} onPress={() => props.navigation.navigate('chat')} />
             </View>

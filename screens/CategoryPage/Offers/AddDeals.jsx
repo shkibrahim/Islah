@@ -1,18 +1,53 @@
 import {
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
   Text,
+  Pressable,
+  Keyboard,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { format } from 'date-fns';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackButton from '../../../Components/BackButton/BackButton';
 import CustomTextInput from '../../../Components/CustomTextInput';
 import {Button, Paragraph} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 
 const AddDeals = () => {
+  const [user, setuser] = useState();
 
+  useEffect(() => {
+    getEmailFromStorage();
+  }, []);
+  const getEmailFromStorage = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => setIsKeyboardActive(true),
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => setIsKeyboardActive(false),
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   const [category, setCategory] = useState('');
   const [isCategoryEmpty, setIsCategoryEmpty] = useState(false);
   const [title, setTitle] = useState('');
@@ -36,7 +71,113 @@ const AddDeals = () => {
   const [toDatePickerOpen, setToDatePickerOpen] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
+  const [Loading, setLoading] = useState();
 
+
+
+  const formattedStartDate = format(fromDate, "EEE dd, MMM yyyy");
+  const formattedEndDate = format(toDate, "EEE dd, MMM yyyy");
+
+  const formattedStartTime = format(fromtime, "hh:mm a");
+  const formattedEndTime = format(totime, "hh:mm a");
+
+
+
+
+  const Register = async () => {
+    if (category == '') {
+      setIsCategoryEmpty(true);
+      setError(true);
+    }
+
+    if (title == '') {
+      setIsTitleEmpty(true);
+      setError(true);
+    }
+
+    if (offersDetails == '') {
+      setIsOffersDetailsEmpty(true);
+      setError(true);
+    }
+
+    if (city == '') {
+      setIsCityEmpty(true);
+      setError(true);
+    }
+
+    if (areaName == '') {
+      setIsAreaNameEmpty(true);
+      setError(true);
+    }
+
+    if (postalCode == '') {
+      setIsPostalCodeEmpty(true);
+      setError(true);
+    }
+
+    if (contactDetails == '') {
+      setIsContactDetailsEmpty(true);
+      setError(true);
+    }
+
+    if (error == false) {
+      setLoading(true);
+      console.log('agf');
+      try {
+        await firestore()
+          .collection('Offers')
+          .doc(user).collection('OffersIndividual')
+.doc()
+          .set({
+            Category: category,
+            Title: title,
+            OffersDetails: offersDetails,
+            StartDate: formattedStartDate,
+            EndDate: formattedEndDate,
+            StartTime: formattedStartTime,
+            EndTime: formattedEndTime,
+            City: city,
+            Area: areaName,
+            PostalCode: postalCode,
+            ContactDetails: contactDetails,
+            myid:user
+            // ... (rest of the data)
+          });
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log('Error addinfsf product:', error);
+        // Handle any error that might occur during the process
+      }
+
+      // navigation.navigate('imagepickerpage', {
+      //   surname:surname,
+      //   name:name,
+      //   fatherName:fatherName,
+      //   motherName:motherName,
+      //   grandFatherName:grandFatherName,
+      //   grandFatherNameNana:grandFatherNameNana,
+      //   gender:gender,
+      //   dob:dob,
+
+      //   maritalStatus:maritalStatus,
+      //   country:country,
+      //   state:state,
+      //   city:city,
+      // district:district,
+      // postalCode:postalCode,
+      // Address:Address,
+      // Street:Street,
+
+      // email:email,
+      // password:password,
+      // nationality:indian,
+      // phoneNumber:phoneNumber
+
+      // })
+    }
+  };
   return (
     <View
       style={{
@@ -76,9 +217,9 @@ const AddDeals = () => {
           label="Offers Details"
         />
 
-         {/* Date Pickers */}
-         <View style={{ flexDirection: 'row', justifyContent: 'space-between',  }}>
-          <View style={{ width: '48%' }}>
+        {/* Date Pickers */}
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{width: '48%'}}>
             <Paragraph style={styles.label}>Start Date</Paragraph>
             <TouchableOpacity
               onPress={() => setFromDatePickerOpen(true)}
@@ -89,13 +230,13 @@ const AddDeals = () => {
                 borderRadius: 8,
                 marginBottom: 10,
               }}>
-              <Text style={{ color: '#555', fontSize: 14, textAlign: 'center' }}>
+              <Text style={{color: '#555', fontSize: 14, textAlign: 'center'}}>
                 {fromDate.toDateString()}
               </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{ width: '48%' }}>
+          <View style={{width: '48%'}}>
             <Paragraph style={styles.label}>End Date</Paragraph>
             <TouchableOpacity
               onPress={() => setToDatePickerOpen(true)}
@@ -106,12 +247,12 @@ const AddDeals = () => {
                 borderRadius: 8,
                 marginBottom: 10,
               }}>
-              <Text style={{ color: '#555', fontSize: 14, textAlign: 'center' }}>
+              <Text style={{color: '#555', fontSize: 14, textAlign: 'center'}}>
                 {toDate.toDateString()}
               </Text>
             </TouchableOpacity>
           </View>
-          </View>
+        </View>
 
         {/* Time Picker  */}
 
@@ -207,12 +348,12 @@ const AddDeals = () => {
           }}
           onCancel={() => setToTimePickerOpen(false)}
         />
-          <DatePicker
+        <DatePicker
           modal
           mode="date"
           open={fromDatePickerOpen}
           date={fromDate}
-          onConfirm={(date) => {
+          onConfirm={date => {
             setFromDatePickerOpen(false);
             setFromDate(date);
           }}
@@ -224,7 +365,7 @@ const AddDeals = () => {
           mode="date"
           open={toDatePickerOpen}
           date={toDate}
-          onConfirm={(date) => {
+          onConfirm={date => {
             setToDatePickerOpen(false);
             setToDate(date);
           }}
@@ -268,11 +409,33 @@ const AddDeals = () => {
             All fields with * are mandatory
           </Text>
         ) : null}
-
-        <Button mode="contained" style={styles.button}>
-          Add Deal
-        </Button>
+        {isKeyboardActive ? <Text style={{height: 100}}></Text> : null}
       </ScrollView>
+
+      <Pressable
+        style={{
+          borderRadius: 32,
+          padding: 10,
+          bottom: 30,
+          alignItems: 'center',
+          width: '90%',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#197739',
+        }}
+        onPress={Register}
+        // Disable the button while loading
+      >
+        {Loading ? (
+          <ActivityIndicator
+            size="small"
+            color="white"
+            style={{alignSelf: 'center'}}
+          />
+        ) : (
+          <Text style={{color: 'white', fontSize: 16}}>Add Deal</Text>
+        )}
+      </Pressable>
     </View>
   );
 };

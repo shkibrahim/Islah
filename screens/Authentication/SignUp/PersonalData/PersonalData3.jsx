@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Keyboard,
-  StyleSheet,
-  TouchableWithoutFeedback,
+  StyleSheet,ActivityIndicator,
+  TouchableWithoutFeedback,TouchableOpacity,
   View,
 } from 'react-native';
 import {Button, Paragraph, RadioButton, Text, Title} from 'react-native-paper';
 import CustomTextInput from '../../../../Components/CustomTextInput';
-
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const PersonalData3 = React.memo(({ route ,props,navigation}) => {
+const [Loading,setLoading] = useState(false)
+
+
   const {
-    surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street
+    surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street,partnerName
   }=route.params
 
   const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -25,49 +29,125 @@ const PersonalData3 = React.memo(({ route ,props,navigation}) => {
   const [isPasswordEmpty, setIsPasswordEmpty] = React.useState(false);
   const [indian, setIndian] = React.useState(true);
   const [isEmailEmpty, setIsEmailEmpty] = React.useState(false);
-  const [error, setError] = React.useState(false);
+  const [error, setError] = React.useState();
+const[wrongpassword,setwrongpassword] = useState(false);
+  useEffect(() => {
+    console.log('svsv');
+  console.log(maritalStatus)
+    // Check for non-empty fields and update error state
+    if (userName !== '' && phoneNumber !== '' && password !== '' && confirmPassword !== '' && password.length > 6   ) {
+      setError(false);
+      setIsUsernameEmpty(false)
+    }
+    else {
+      setError(true);
+    }
+  }, [error, userName, phoneNumber, password, confirmPassword,wrongpassword]); // Include all relevant dependencies
+  
 
-  const signupHandler = () => {
-    setError(false);
-    // if (name === '') {
-    //     setIsnameEmpty(true)
-    //     setError(true)
-    // } if (fatherName === '') {
-    //     setIsFatherNameEmpty(true)
-    //     setError(true)
-    // } if (grandFatherName === '') {
-    //     setIsGrandFatherNameEmpty(true)
-    //     setError(true)
-    // } if (gender === '') {
-    //     setGenderError(true)
-    // }
+  
 
-    navigation.navigate('imagepickerpage', {
-      surname:surname,
-      name:name,
-      fatherName:fatherName,
-      motherName:motherName,
-      grandFatherName:grandFatherName,
-      grandFatherNameNana:grandFatherNameNana,
-      gender:gender,
-      dob:dob,
-      
-      maritalStatus:maritalStatus,
-      country:country,
-      state:state,
-      city:city,
-    district:district,
-    postalCode:postalCode,
-    Address:Address,
-    Street:Street,
 
-    email:email,
-    password:password,
-    nationality:indian,
-    phoneNumber:phoneNumber
+  // useEffect(() => {
+  //   console.log('svsv');
+  // console.log('2',maritalStatus)
+  //   // Check for non-empty fields and update error state
+  //   if (wrongpassword == true) {
+  //     setError(true);
+  //   }
+  // }, [error, userName, phoneNumber, password, confirmPassword,wrongpassword]); // Include all relevant dependencies
+  
 
+  
+  const main = '#197739';
+  
+  const signupHandler = async() => {
+ 
+    if (password != confirmPassword ){
+      setwrongpassword(true)
+      setError(true)
+    }
+
+    if (userName === '' || userName) {
+      setIsUsernameEmpty(true)
+        setError(true)
+    } if (phoneNumber === '') {
+      setisphoneNumberempty(true)
+        setError(true)
+    }if (password === '' || password.length < 6) {
+      setIsPasswordEmpty(true);
+      setError(true);
+  }
+  if (confirmPassword === '') {
+        setIsConfirmPasswordEmpty(true)
+        setError(true)
+    }
+
+    if (error == false && (password === confirmPassword)) {
+      setLoading(true)
+setwrongpassword(false)
+      await AsyncStorage.setItem('userName', userName);
+console.log('agf')
+
+ await auth()
+.createUserWithEmailAndPassword(userName, password)
+.then(() => {
+  console.log('account registered')
+  setLoading(false)
+  navigation.navigate('imagepickerpage', {
+    surname:surname,
+    name:name,
+    fatherName:fatherName,
+    motherName:motherName,
+    grandFatherName:grandFatherName,
+    grandFatherNameNana:grandFatherNameNana,
+    gender:gender,
+    dob:dob,
+    partnerName:partnerName,
+    maritalStatus:maritalStatus,
+    country:country,
+    state:state,
+    city:city,
+  district:district,
+  postalCode:postalCode,
+  Address:Address,
+  Street:Street,
+
+  email:email,
+  password:password,
+  nationality:indian,
+  partnerName:partnerName,
+  phoneNumber:phoneNumber
+
+  
+  })
+
+})
+.catch(error => {
+  if (error.code === 'auth/email-already-in-use') {
     
-    })
+    setLoading(false)
+   alert('That email address is already in use!');
+  }
+  if (error.code === 'auth/invalid-email') {
+   alert('That email address is invalid!');
+   setLoading(false)
+  } 
+
+  if (error.code === 'auth/weak-password')
+  {
+    setLoading(false)
+    alert('Weak Password');
+  }
+  setLoading(false)
+  console.error(error);
+});
+
+
+
+
+    }
+    
   
   };
 
@@ -91,7 +171,7 @@ const PersonalData3 = React.memo(({ route ,props,navigation}) => {
           error={isUsernameEmpty}
           value={userName}
           onChange={setUsername}
-          label="User Name"
+          label="User Name (must be an email address)"
         />
         <CustomTextInput
           setError={setIsPasswordEmpty}
@@ -154,14 +234,49 @@ const PersonalData3 = React.memo(({ route ,props,navigation}) => {
             />
           </>
         )}
-        {error ? (
-          <Text style={{color: 'red', marginTop: 4}}>
-            Please fill * mandatory fields
-          </Text>
-        ) : null}
-        <Button mode="contained" style={styles.button} onPress={signupHandler}>
-          Next
-        </Button>
+
+
+{/* {wrongpassword && ( */}
+  <Text style={{ color: wrongpassword ? 'red' : 'white', marginTop: 4 }}>
+ Something wrong in password
+  </Text>
+{/* )} */}
+
+       {error  ? (
+  <Text style={{ color: 'red', marginTop: 4 }}>
+    Please fill * mandatory fields
+  </Text>
+) : null}
+
+<TouchableOpacity
+  activeOpacity={0.6}
+      style={{
+        width: '90%',
+        padding: 15,margin:30,
+        alignItems: 'center',
+        justifyContent: 'center',height:60,
+        // position:'absolute',bottom:20,
+        backgroundColor: main,
+        borderRadius: 25,
+        alignSelf: 'center',
+      }}
+      onPress={signupHandler}
+    >
+         {Loading ? (
+              <ActivityIndicator
+                size="small"
+                color="white"
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
+            ) : (
+      <Text style={styles.Login}>Next</Text>
+      )}
+    </TouchableOpacity>
+  
       </View>
     </TouchableWithoutFeedback>
   );
@@ -170,6 +285,17 @@ const PersonalData3 = React.memo(({ route ,props,navigation}) => {
 export default PersonalData3;
 
 const styles = StyleSheet.create({
+  text: {
+    color: 'black',
+    fontWeight:'bold',
+    fontFamily: 'PT Serif Regular',
+  fontSize:20
+  },
+  Login: {
+    fontSize: 18,
+    fontFamily: 'PT Serif Regular',
+    color: 'white',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -199,6 +325,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     marginVertical: 16,
+    position:"absolute",bottom:20,
     backgroundColor: '#197739',
   },
   radio_btn: {

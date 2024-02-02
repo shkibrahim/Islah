@@ -60,7 +60,12 @@ import SingleBusinessDetailPage from './screens/CategoryPage/Businesses/SingleBu
 import EditBusinessProposalForm from './screens/CategoryPage/BusinessProposal/EditBusinessProposalForm';
 import LookingForBride from './screens/CategoryPage/Matrimonial/LookingForBride';
 import LookingForGroom from './screens/CategoryPage/Matrimonial/LookingForGroom';
+import messaging from '@react-native-firebase/messaging';
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+  // You can handle the background message here
+});
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -167,7 +172,10 @@ const TabNavigator = () => (
 );
 
 const StackNavigator = ({isAuthenticated}) => (
-  <Stack.Navigator initialRouteName={isAuthenticated ? 'home' :  'signin'}>
+  <Stack.Navigator 
+  // initialRouteName='home'
+  initialRouteName={isAuthenticated ? 'home' :  'signin'}
+  >
     <Stack.Screen
       name="home"
       component={TabNavigator}

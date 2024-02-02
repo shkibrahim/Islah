@@ -1,6 +1,6 @@
 // CategoryPage.tsx
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {myTheme} from '../../theme';
 import subCategories from '../../utils/subCategories';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CategoryPage = ({navigation}) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -19,6 +20,17 @@ const CategoryPage = ({navigation}) => {
     setSelectedCategory(category);
     // Handle logic for displaying content based on the selected category
   };
+
+  const [category, setCategory] = useState('');
+  useEffect(() => {
+    const getCategory = async () => {
+      const category = await AsyncStorage.getItem('category');
+      setCategory(category);
+    };
+    getCategory();
+    a();
+    console.log('my category is',category);
+  }, []);
 
   const categories = [
     'Offers',
@@ -30,6 +42,313 @@ const CategoryPage = ({navigation}) => {
     'Business Proposal',
     'Business Opportunity',
   ];
+
+  const a = async () => {
+    // Assuming you have a category variable
+
+    if (category == 'business') {
+      setSubCategories([
+        [
+          {
+            name: 'View All',
+            path: 'viewAllOffers',
+          },
+          {
+            name: 'Add Deals',
+            path: 'addDeals',
+          },
+          {
+            name: 'Edit Deals',
+            path: 'editDeals',
+          },
+        ],
+        [
+          {
+            name: 'View All Students',
+            path: 'viewAllStudents',
+          },
+        ],
+        [
+          {
+            name: 'I am a job Seeker',
+            path: 'jobSeekers',
+          },
+          {
+            name: 'I am a job Provider',
+            path: 'viewAllStudents',
+          },
+          {
+            name: 'Post New Job',
+            path: 'postJob',
+          },
+          {
+            name: 'Edit Job',
+            path: 'editJob',
+          },
+        ],
+        [
+          {
+            name: 'View All ',
+            path: 'businessListed',
+          },
+          {
+            name: 'Add New Business',
+            path: 'businessData1',
+          },
+          {
+            name: 'Edit Businses Details',
+            path: 'editBusinessDetails',
+          },
+        ],
+        [
+          {
+            name: 'Matrimonial',
+            path: 'matrimonial',
+          },
+          {
+            name: 'Looking For Bride',
+            path: 'lookingForBride',
+          },
+          {
+            name: 'Looking For Groom',
+            path: 'lookingForGroom',
+          },
+          {
+            name: 'Add My Details',
+            path: 'addMyDetails',
+          },
+          {
+            name: 'Edit My Details',
+            path: 'editMyDetails',
+          },
+        ],
+        [
+          {
+            name: 'Download NOC',
+            path: 'downloadNOC',
+          },
+        ],
+        [
+          {
+            name: 'View All',
+            path: 'viewAllBusinessProposal',
+          },
+          {
+            name: 'Add Proposal',
+            path: 'addProposal',
+          },
+          {
+            name: 'Edit Proposal',
+            path: 'editProposal',
+          },
+        ],
+        [
+          {
+            name: 'Business \n Opportunities',
+            path: 'businessOpportunities',
+          },
+        ],
+      ]);
+    }
+
+    if (category != 'business') {
+      setSubCategories([
+        [
+          {
+            name: 'View All',
+            path: 'viewAllOffers',
+          },
+          {
+            name: 'Add Deals',
+            path: 'addDeals',
+          },
+          {
+            name: 'Edit Deals',
+            path: 'editDeals',
+          },
+        ],
+        [
+          {
+            name: 'View All Students',
+            path: 'viewAllStudents',
+          },
+        ],
+        [
+          {
+            name: 'I am a job Seeker',
+            path: 'jobSeekers',
+          },
+          {
+            name: 'I am a job Provider',
+            path: 'viewAllStudents',
+          },
+          {
+            name: 'Post New Job',
+            path: 'postJob',
+          },
+          {
+            name: 'Edit Job',
+            path: 'editJob',
+          },
+        ],
+        [
+          {
+            name: 'View All ',
+            path: 'businessListed',
+          },
+        ],
+        [
+          {
+            name: 'Matrimonial',
+            path: 'matrimonial',
+          },
+          {
+            name: 'Looking For Bride',
+            path: 'lookingForBride',
+          },
+          {
+            name: 'Looking For Groom',
+            path: 'lookingForGroom',
+          },
+          {
+            name: 'Add My Details',
+            path: 'addMyDetails',
+          },
+          {
+            name: 'Edit My Details',
+            path: 'editMyDetails',
+          },
+        ],
+        [
+          {
+            name: 'Download NOC',
+            path: 'downloadNOC',
+          },
+        ],
+        [
+          {
+            name: 'View All',
+            path: 'viewAllBusinessProposal',
+          },
+          {
+            name: 'Add Proposal',
+            path: 'addProposal',
+          },
+          {
+            name: 'Edit Proposal',
+            path: 'editProposal',
+          },
+        ],
+        [
+          {
+            name: 'Business \n Opportunities',
+            path: 'businessOpportunities',
+          },
+        ],
+      ]);
+    }
+  };
+
+  // const subCategories = [
+  //   [{
+  //     name: 'View All',
+  //     path: 'viewAllOffers'
+  //   },
+  //   {
+  //     name: "Add Deals",
+  //     path: "addDeals"
+  //   },
+  //   {
+  //     name: "Edit Deals",
+  //     path: "editDeals"
+  //   },
+  //   ],
+  //   [{
+  //     name: 'View All Students',
+  //     path: 'viewAllStudents'
+  //   },
+  //   ],
+  //   [{
+  //     name: 'I am a job Seeker',
+  //     path: 'jobSeekers'
+  //   },
+  //   {
+  //     name: 'I am a job Provider',
+  //     path: 'viewAllStudents'
+  //   },
+  //   {
+  //     name: 'Post New Job',
+  //     path: 'postJob'
+  //   },
+  //   {
+  //     name: 'Edit Job',
+  //     path: 'editJob'
+  //   },
+  //   ],
+  //   [{
+  //     name: 'Viw All ',
+  //     path: 'businessListed'
+  //   }, {
+  //     name: 'Add New Business',
+  //     path: 'businessData1'
+  //   },
+  //   {
+  //     name: 'Edit Businses Details',
+  //     path: 'editBusinessDetails'
+  //   },
+  //   ],
+  //   [{
+  //     name: 'Matrimonial',
+  //     path: 'matrimonial'
+  //   },
+  //   {
+  //     name: 'Looking For Bride',
+  //     path: 'lookingForBride'
+  //   },
+  //   {
+  //     name: 'Looking For Groom',
+  //     path: 'lookingForGroom'
+  //   },
+  //   {
+  //     name: 'Add My Details',
+  //     path: 'addMyDetails'
+  //   },
+  //   {
+  //     name: 'Edit My Details',
+  //     path: 'editMyDetails'
+  //   }
+  //   ],
+  //   [
+  //     {
+  //       name: 'Download NOC',
+  //       path: 'downloadNOC'
+  //     }
+  //   ],
+  //   [
+  //     {
+  //       name: 'View All',
+  //       path: 'viewAllBusinessProposal'
+  //     },
+  //     {
+  //       name: 'Add Proposal',
+  //       path: 'addProposal'
+  //     },
+  //     {
+  //       name: 'Edit Proposal',
+  //       path: 'editProposal'
+  //     },
+  //   ],
+  //   [
+  //     {
+  //       name: 'Business \n Opportunities',
+  //       path: 'businessOpportunities'
+  //     },
+  //   ]
+  //   ,
+
+  // ]
+
+  const [subCategories, setSubCategories] = useState([]);
 
   return (
     <ScrollView>
@@ -105,26 +424,35 @@ const CategoryPage = ({navigation}) => {
             style={{flex: 2, paddingHorizontal: 8, justifyContent: 'center'}}>
             {selectedCategory ? (
               <>
-                {subCategories[categories.indexOf(selectedCategory)].map(
-                  subCategory => (
-                    <TouchableOpacity
-                      key={subCategory.name}
-                      onPress={() => navigation.navigate(subCategory.path)}
-                      style={styles.subcategoryButton}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          color: '#333',
-                        }}>
-                        {subCategory.name}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  ),
+                {subCategories[categories.indexOf(selectedCategory)] ? (
+                  subCategories[categories.indexOf(selectedCategory)].map(
+                    subCategory => (
+                      <TouchableOpacity
+                        key={subCategory.name}
+                        onPress={() => navigation.navigate(subCategory.path)}
+                        style={styles.subcategoryButton}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: '#333',
+                          }}>
+                          {subCategory.name}{' '}
+                        </Text>
+                      </TouchableOpacity>
+                    ),
+                  )
+                ) : (
+                  <Text
+                    style={{fontSize: 16, textAlign: 'center', color: '#333'}}>
+                    No subcategories found for the selected category
+                  </Text>
                 )}
               </>
             ) : (
-              <Text style={{fontSize: 16 ,  textAlign : 'center'}}>select a category</Text>
+              <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>
+                Select a category
+              </Text>
             )}
           </View>
         </View>

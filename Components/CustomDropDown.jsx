@@ -12,7 +12,7 @@ const CustomDropDown = ({
   return (
     <View
       style={{
-        borderColor: myTheme.colors.primary,
+        borderColor:  myTheme.colors.primary,
         borderWidth: 1,
         borderRadius: 8,
         marginVertical: 6,
@@ -26,7 +26,8 @@ const CustomDropDown = ({
           <Picker.Item
             style={{
               color: '#555',
-              fontSize: 15,
+              fontSize: 15,borderRadius:8,
+             
             }}
             key={index}
             label={option}

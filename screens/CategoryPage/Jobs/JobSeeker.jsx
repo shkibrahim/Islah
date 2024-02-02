@@ -14,7 +14,7 @@ import {Icon, Modal, Portal, Searchbar, Text} from 'react-native-paper';
 import {myTheme} from '../../../theme';
 import CustomTextInput from '../../../Components/CustomTextInput';
 import CustomDropDown from '../../../Components/CustomDropDown';
-
+import firestore from '@react-native-firebase/firestore';
 const JobSeeker = () => {
   const [postalCode, setPostalCode] = useState('');
   const [isPostalCodeEmpty, setIsPostalCodeEmpty] = useState(false);
@@ -26,6 +26,8 @@ const JobSeeker = () => {
   const [isExperienceEmpty, setIsExperienceEmpty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [visible, setVisible] = useState(false);
+
+
 
   const data = [
     {

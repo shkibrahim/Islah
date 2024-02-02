@@ -55,21 +55,22 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 18,color:'black'
   },
   heading: {
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 10,color:'black'
   },
   detailText: {
+    color:'black',
     marginBottom: 5,
   },
   guarantorTitle: {
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 10,color:'black',
     marginBottom: 5,
   },
   guarantorText: {
-    marginLeft: 10,
+    marginLeft: 10,color:'black',
   },
 });

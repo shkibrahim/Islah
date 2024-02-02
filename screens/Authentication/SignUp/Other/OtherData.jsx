@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   Keyboard,
   StyleSheet,
@@ -7,8 +7,31 @@ import {
 } from 'react-native';
 import {Button, Paragraph, Text, Title} from 'react-native-paper';
 import CustomTextInput from '../../../../Components/CustomTextInput';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 const OtherData = React.memo(({ route ,props,navigation}) => {
+
+
+  const [token,settoken] = useState()
+useEffect(() => {
+  getdevicetoken()
+}, []);
+
+
+const getdevicetoken = async()=>{
+
+  try {
+    const Token = await AsyncStorage.getItem('Token');
+    settoken(Token);
+    console.log('my category is', Token )
+  } catch (error) {
+    console.error('Error getting category from AsyncStorage:', error);
+  }
+}
+  const {
+    Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+  }=route.params
   const [error, setError] = React.useState(false);
   const [isSchoolEmpty, setIsSchoolEmpty] = useState(false);
   const [schoolName, setSchoolName] = useState('');
@@ -21,9 +44,138 @@ const OtherData = React.memo(({ route ,props,navigation}) => {
   const [aboutMe, setAboutMe] = useState('');
   const [isProfessionEmpty, setIsProfessionEmpty] = useState(false);
   const [profession, setProfession] = useState('');
+  const tokenlist = async()=>{
+    try {
+      // await uploadimage1();
+      // await uploadimage2();
 
-  const signupHandler = () => {
-    setError(false);
+      // await uploadimage3();
+      console.log('data transfering');
+      await firestore()
+          .collection('Tokens')
+          .doc()
+        
+        .set({
+         
+          Token:token,
+      
+    
+
+        
+        });
+
+      
+     
+    } catch (error) {
+      // setIsLoading(false);
+      console.log('Error addinfsf product:', error);
+      // Handle any error that might occur during the process
+    }
+  }
+
+  const [user,setuser] = useState()
+  useEffect(() => {
+    getEmailFromStorage();
+  }, []);
+
+  const getEmailFromStorage = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+  const [category, setCategory] = useState('');
+  useEffect(() => {
+    const getCategory = async () => {
+      const category = await AsyncStorage.getItem('category');
+      setCategory(category);
+    };
+    getCategory();
+  }, []);
+
+
+
+
+
+
+
+
+
+  const signupHandler =async() => {
+    if (aboutMe === '') {
+      setIsAboutMeEmpty(true);
+      setError(true);
+    }
+
+
+   if (error == false){
+    try {
+        
+   
+ 
+      await firestore()
+        .collection('OtherData')
+        .doc(user)
+        // .collection('EventData')
+        // .doc()
+        .set({
+          Profile: Image,
+          Name: name,
+          FatherName: fatherName,
+          GrandFatherName: grandFatherName,
+          MotherName: motherName,
+          Nana:grandFatherNameNana,
+          Surname:surname,
+          Gender :gender,
+          Dob: dob,
+          MaritalStatus: maritalStatus,
+          Country: country,
+          State: state,
+          City: city,
+          Token:token,
+          District: district,
+          PostalCode: postalCode,
+          Address: Address,
+          Street: Street,
+          Email: email,
+          Nationality: nationality,
+          PhoneNumber: phoneNumber,
+          PartnerName: partnerName,
+  AboutMe:aboutMe,
+  Education:education,
+  SchoolName:schoolName,
+  CollegeName:collegeName,Bio:'',
+  Profession:profession,
+  Category:category,
+  
+  
+  // Degree:degree,
+  // Degreeyear:year,
+  // Board:board,
+  // Medium:medium,
+  // SchoolName:schoolName,
+  // Ambition:ambition,
+ 
+          // ... (rest of the data)
+        });
+  await tokenlist();
+      // setIsLoading(false);
+      // alert('Product Added Successfully');
+      navigation.replace('home');
+    } catch (error) {
+      // setIsLoading(false);
+      console.log('Error addinfsf product:', error);
+      // Handle any error that might occur during the process
+    }
+
+
+
+
+
+
+   }
   };
 
   return (
@@ -86,7 +238,7 @@ const OtherData = React.memo(({ route ,props,navigation}) => {
         ) : null}
 
         <Button mode="contained" style={styles.button} onPress={signupHandler}>
-          Next
+          Sign up
         </Button>
       </View>
     </TouchableWithoutFeedback>

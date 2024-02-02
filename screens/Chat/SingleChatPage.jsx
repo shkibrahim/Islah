@@ -9,59 +9,381 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {myTheme} from '../../theme';
+import {Bubble, GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
 import {Icon} from 'react-native-paper';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+const SingleChatPage = ({props, navigation, route}) => {
+  const [isLoading, setIsLoading] = useState();
+  const [StudentData, setStudentData] = useState([]);
+  const [BusinessData, setBusinessData] = useState([]);
+  const [IndividualData, setIndividualData] = useState([]);
+  const [JobSeekerData, setJobSeekerData] = useState([]);
+  const [AllData, setAllData] = useState([]);
+  const [SenderName,setSenderName] = useState();
+  const [SenderMsg,setSendermsg]= useState()
+  useEffect(() => {
 
-const SingleChatPage = () => {
-  const [messages, setMessages] = useState([
-    {id: '1', text: 'Hello!', sender: 'user'},
-    {id: '2', text: 'Hi there!', sender: 'other'},
-    {id: '3', text: 'How are you?', sender: 'user'},
-    // Add more messages as needed
-  ]);
 
-  const [inputText, setInputText] = useState('');
-
-  const sendMessage = () => {
-    if (inputText.trim() === '') {
-      return;
+    getEmailFromStorage();
+    // getProfile();
+    // getName();
+  }, []);
+  const getEmailFromStorage = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
     }
+  };
+  const [user, setuser] = useState();
+  const {id, Name,Profile,UserProfile} = route.params;
+  console.log(UserProfile)
+  
+  // useEffect(() => {
+  //   setMessages([
+  //     {
+  //       _id: 1,
+  //       text: 'Hello developer',
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: 2,
+  //         name: 'React Native',
+  //         avatar: 'https://placeimg.com/140/140/any',
+  //       },
+  //     },
+  //   ])
+  // }, [])
+  useEffect(() => {
 
-    const newMessage = {
-      id: (messages.length + 1).toString(),
-      text: inputText,
-      sender: 'user',
+    // Create a reference to the Firestore collection using concatenated user IDs
+    const chatId = [user,id].sort().join('_'); // Create a unique chat ID
+    const messagesRef = firestore()
+      .collection('Chats')
+      .doc(chatId)
+      .collection('Messages')
+      .orderBy('createdAt', 'desc');
+
+    // Subscribe to the snapshot changes
+    const unsubscribe = messagesRef.onSnapshot(snapshot => {
+      const allMessages = snapshot.docs.map(doc => {
+        return {...doc.data(), createdAt: new Date()};
+      });
+
+      // Update the state with the new messages
+      setMessages(allMessages);
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      unsubscribe();
+    };
+  }, [user,id]);
+  const [messages, setMessages] = useState([]);
+
+  const onSend =  async (messageArray) => {
+    const msg = messageArray[0];
+    setSendermsg(msg)
+    const chatId = [user,id].sort().join('_'); // Recreate the unique chat ID
+    const Mymsg = {
+      ...msg,
+      senderId: user,
+      avatar: Profile,
+      recieverId: id,
     };
 
-    setMessages([...messages, newMessage]);
-    setInputText('');
+    setMessages(previousMessages => GiftedChat.append(previousMessages, Mymsg));
+
+    // Set a unique document ID using the concatenated user IDs
+    // const messageId = firestore().collection('Chats').doc(chatId).collection('Messages').doc().id;
+
+    firestore()
+      .collection('Chats')
+      .doc(chatId)
+      .collection('Messages')
+      .doc()
+      .set({
+        ...Mymsg,
+        CreatedAt: firestore.FieldValue.serverTimestamp(),
+      });
+console.log(id)
+const matchingData = AllData.find((data) => data.id === id);
+const mydata = AllData.find((data)=> data.id === user);
+console.log('sender data is ' , mydata)
+const myName = mydata.Name;
+const profileuser = mydata.Profile
+console.log(profileuser)
+
+
+setSenderName(myName)
+if (matchingData) {
+  const matchingToken = matchingData.Token;
+  console.log('Token for matching id:', matchingToken);
+
+  await  SendNotification(matchingToken)
+}
+
   };
 
-  const renderMessage = ({item}) => (
-    <View
-      style={
-        item.sender === 'user'
-          ? styles.userMessageContainer
-          : styles.otherMessageContainer
-      }>
-      <Text style={styles.messageText}>{item.text}</Text>
-    </View>
-  );
+
+
+    
+
+
+
+  const SendNotification = async (tokens) => {
+    // Import axios at the beginning of your file
+    const notificationPayload = {
+      data: {},
+      notification: {
+        body: SenderMsg.text,
+        title: SenderName,
+      },
+    };
+  
+    const data = JSON.stringify({
+      ...notificationPayload,
+      to: tokens,
+    });
+  
+    const config = {
+      method: 'post',
+      url: 'https://fcm.googleapis.com/fcm/send',
+      headers: {
+        Authorization:
+          'key=AAAAwX1-1m8:APA91bH0tS2C1hcko9fEhgCCGFl6k4kEdLi2BrXJC2ZMyh5QAsO6Flr7QNhQe-QFmqSPGAEQuwFLwnHOsWjhtKlu8VuWAPCFAQXm9ulcymkwv2_-dEEZXDhXaf2uDxbtu_cZbNjBQDNl',
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    };
+  
+    try {
+      const response = await axios(config);
+      console.log(JSON.stringify(response.data));
+    } catch (error) {
+      console.log('Error sending notification:', error);
+    }
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    const funcData = async () => {
+      try {
+        await fetchalldata();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    funcData();
+  }, []);
+  const funcat = async()=>{
+
+    try {
+      
+      const concatenatedData = StudentData.concat(IndividualData, BusinessData, JobSeekerData);
+      setAllData(concatenatedData);
+      if (concatenatedData.length>0){
+        console.log('me andr')
+        
+  // console.log('concatenated data',concatenatedData  )
+  
+      }
+      
+  
+      // setAllData(concatenatedData.flat()); // flat() to flatten the array of arrays
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error concatenating data:', error);
+    }
+  }
+  // Data fetching for user id
+  const fetchalldata = async () => {
+    console.log('student');
+    try {
+      const studentQuerySnapshot = await firestore()
+        .collection('StudentData')
+        .get();
+
+      const datastudent = studentQuerySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      if (datastudent && Array.isArray(datastudent)) {
+        setStudentData(datastudent);
+      } else {
+        console.log('No student documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+    }
+
+    console.log('business');
+    try {
+      const businessQuerySnapshot = await firestore()
+        .collection('BusinessPerson')
+        .get();
+
+      const databusiness = businessQuerySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      if (databusiness && Array.isArray(databusiness)) {
+        setBusinessData(databusiness);
+        console.log('my business data is ', databusiness);
+      } else {
+        console.log('No business documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching business data:', error);
+    }
+
+    console.log('individual');
+    try {
+      const individualQuerySnapshot = await firestore()
+        .collection('OtherData')
+        .get();
+
+      const dataindividual = individualQuerySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      if (dataindividual && Array.isArray(dataindividual)) {
+        setIndividualData(dataindividual);
+      } else {
+        console.log('No individual documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching individual data:', error);
+    }
+
+    console.log('jobseeker');
+    try {
+      const jobseekerQuerySnapshot = await firestore()
+        .collection('JobSeekerData')
+        .get();
+
+      const datajobseeker = jobseekerQuerySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      if (datajobseeker && Array.isArray(datajobseeker)) {
+        setJobSeekerData(datajobseeker);
+      } else {
+        console.log('No jobseeker documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching jobseeker data:', error);
+    }
+
+    // Wait for all asynchronous operations to complete
+    // await funcat()
+  };
+  useEffect(() => {
+    // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
+    funcat();
+
+        
+  
+  }, [StudentData, BusinessData, IndividualData, JobSeekerData]);
+
+
 
   return (
     <KeyboardAvoidingView
       style={{
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: 'white',
       }}>
       <View style={styles.container}>
-        <FlatList
+        <GiftedChat
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: user,
+           
+            avatar: UserProfile,
+            
+          }}
+          alwaysShowSend
+          // textInputProps={{
+          //   style: {
+
+          //     color: 'black', // Set the text input color to black
+          //   },
+
+          // }}
+
+          renderInputToolbar={props => {
+            return (
+              <InputToolbar
+                {...props}
+                containerStyle={{
+                  color: 'black',
+                  backgroundColor: '#1d6b34',
+                  borderRadius: 22,
+                  alignSelf: 'center',
+                  margin: 8,
+                }}></InputToolbar>
+            );
+          }}
+          renderSend={props => {
+            return (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 40,
+                }}>
+                <Send {...props} containerStyle={{justifyContent: 'center'}}>
+                  <View style={{marginRight: 10, marginBottom: 10}}>
+                    <MaterialIcons name="send" size={28} color={'white'} />
+                  </View>
+                  {/* <Image source={require('./')} */}
+                </Send>
+              </View>
+            );
+          }}
+          renderBubble={props => {
+            return (
+              <Bubble
+                {...props}
+                wrapperStyle={{
+                  right: {
+                    backgroundColor: 'green',
+                  },
+                  // left: {
+                    
+                  // },
+                }}
+              />
+            );
+          }}
+
+          // textInputProps={{
+          //   style: {
+          //     color: 'black',
+
+          //      // Set the text input color to black
+          //   },
+          // }}
+        />
+        {/* <FlatList
           data={messages}
           keyExtractor={item => item.id}
           renderItem={renderMessage}
           inverted // to display messages from bottom to top
-        />
+        /> */}
 
-        <View style={styles.inputContainer}>
+        {/* <View style={styles.inputContainer}>
           <TextInput
             style={styles.textInput}
             placeholder="Type your message..."
@@ -71,7 +393,7 @@ const SingleChatPage = () => {
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <Icon source="send" color={myTheme.colors.primary} size={20} />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </KeyboardAvoidingView>
   );
@@ -80,8 +402,8 @@ const SingleChatPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 10,
+    backgroundColor: 'white',
+    //  padding: 10,
   },
   userMessageContainer: {
     alignSelf: 'flex-end',

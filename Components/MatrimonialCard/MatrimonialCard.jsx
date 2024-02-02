@@ -25,7 +25,7 @@ const MatrimonialCard = ({
 
   return (
     <Card style={styles.card}>
-      <Card.Title title={fullName} titleStyle={styles.cardTitle} />
+      <Card.Title title={Name} titleStyle={styles.cardTitle} />
       <Card.Content>
         <Text style={styles.heading}>Father Name:</Text>
         <Text style={styles.detailText}>{fatherName}</Text>
@@ -72,20 +72,25 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontWeight: 'bold',
     fontSize: 18,
+    color:'black'
   },
   heading: {
     fontWeight: 'bold',
     marginTop: 10,
+    color:'black'
   },
   detailText: {
     marginBottom: 5,
+    color:'black'
   },
   listTitle: {
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 5,
+    color:'black'
   },
   listText: {
     marginLeft: 10,
+    color:'black'
   },
 });

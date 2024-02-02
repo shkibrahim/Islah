@@ -19,12 +19,13 @@ import {
 import CustomButton from '../../../Components/CustomButton';
 import CustomTextInput from '../../../Components/CustomTextInput';
 import {login} from '../../../redux/reducers/authReducers';
+import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {AnyAction} from '@reduxjs/toolkit';
 import Loader from '../../../Components/loader/Loader';
 import { useNavigation } from '@react-navigation/native';
 import {clearError} from '../../../redux/slice/authSlice';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignIn = ({route,   }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -34,30 +35,32 @@ const SignIn = ({route,   }) => {
   const [error, setError] = useState(false);
   const {err, loading, isAuthenticated} = useSelector(state => state.auth);
 const navigation = useNavigation()
-  console.log(
-    `error ->`,
-    err,
-    'loading ->',
-    loading,
-    'isAuthenticated ->',
-    isAuthenticated,
-  );
+  // console.log(
+  //   `error ->`,
+  //   err,
+  //   'loading ->',
+  //   loading,
+  //   'isAuthenticated ->',
+  //   isAuthenticated,
+  // );
 
-  useEffect(() => {
-    if (isAuthenticated) {
-        navigation.navigate('home');
-    }
-    if (err) {
-      Alert.alert('Error', err);
-      dispatch(clearError());
-    }
-  }, [isAuthenticated, err, dispatch]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //       navigation.navigate('home');
+  //   }
+  //   if (err) {
+  //     Alert.alert('Error', err);
+  //     dispatch(clearError());
+  //   }
+  // }, [isAuthenticated, err, dispatch]);
 
   const dispatch = useDispatch();
-  const loginHandler = () => {
+  const loginHandler = async() => {
     if (username === '' || password === '') {
       setError(true);
     } else {
+
+      await AsyncStorage.setItem('userName', username);
       setError(false);
       // dispatch(login(username, password));
         navigation.navigate('home')

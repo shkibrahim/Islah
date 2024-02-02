@@ -11,11 +11,10 @@ function CarouselPage({data , indicatorshows , autoPlay}) {
   const renderItem = ({ item }) => (
     /* Your custom rendering logic for each item goes here */
     // Example:
-    <View style={{backgroundColor:'red', alignItems:'center', justifyContent:'center', padding:10}}>
+    <View style={{ }}>
       {/* Content styling goes here */}
-      <Text style={styles.text}>{item.title}</Text>
-      <Text style={styles.text}>{item.text}</Text>
-      <Image source={{ uri: item.image }} style={{ width:300,height:200 }} />
+    
+      <Image source={{ uri: item.image }} style={{ width:'100%',height:'100%' }} />
     </View>
   );
   const renderIndicator = () => {
@@ -50,21 +49,7 @@ function CarouselPage({data , indicatorshows , autoPlay}) {
         scrollAnimationDuration={1000}
         onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={renderItem}
-        // renderItem={({ index }) => (
-        //   <View
-        //     style={{
-        //       flex: 1,
-        //       justifyContent: 'center',
-        //       marginHorizontal: 8,
-        //       backgroundColor:'red',
-        //       marginTop: 4,
-        //     }}
-        //   >
-        //     <Image source={{
-        //       uri: data[index].image,
-        //     }} style={{ width: '100%', height: '100%', objectFit: "contain" , borderRadius : 8 }} />
-        //   </View>
-        // )}
+        
       />
       {
         indicatorshows && renderIndicator()
