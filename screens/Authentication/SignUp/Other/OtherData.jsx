@@ -30,7 +30,7 @@ const getdevicetoken = async()=>{
   }
 }
   const {
-    Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+    Image,surname,name,Status,fatherName,userID,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const [error, setError] = React.useState(false);
   const [isSchoolEmpty, setIsSchoolEmpty] = useState(false);
@@ -121,6 +121,7 @@ const getdevicetoken = async()=>{
         // .collection('EventData')
         // .doc()
         .set({
+          userID:userID,
           Profile: Image,
           Name: name,
           FatherName: fatherName,
@@ -135,6 +136,7 @@ const getdevicetoken = async()=>{
           State: state,
           City: city,
           Token:token,
+          Status:Status,
           District: district,
           PostalCode: postalCode,
           Address: Address,

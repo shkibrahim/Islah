@@ -96,6 +96,7 @@ console.log('agf')
   setLoading(false)
   navigation.navigate('imagepickerpage', {
     surname:surname,
+    
     name:name,
     fatherName:fatherName,
     motherName:motherName,
@@ -112,7 +113,7 @@ console.log('agf')
   postalCode:postalCode,
   Address:Address,
   Street:Street,
-
+userID:generatedID,
   email:email,
   password:password,
   nationality:indian,
@@ -151,6 +152,41 @@ console.log('agf')
   
   };
 
+
+  const generateRandomLetters = (length) => {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * letters.length);
+      result += letters.charAt(randomIndex);
+    }
+    return result;
+  };
+  
+  const generateRandomDigits = (length) => {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += Math.floor(Math.random() * 10);
+    }
+    return result;
+  };
+  
+  const generateID = () => {
+    const randomLetters = generateRandomLetters(3);
+    const fourthLetter = gender === 'male' ? 'M' : 'F';
+    const fifthLetter = userName.charAt(0).toUpperCase();
+    const sixthLetter = fatherName.charAt(0).toUpperCase();
+    const randomDigits = generateRandomDigits(4);
+  
+    const id = `${randomLetters}${fourthLetter}${fifthLetter}${sixthLetter}${randomDigits}`;
+  
+    return id;
+  };
+  
+  // Example usage
+  const generatedID = generateID();
+  console.log('Generated ID:', generatedID);
+  
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -180,6 +216,7 @@ console.log('agf')
           value={password}
           onChange={setPassword}
           label="Password"
+          secureText={true}
         />
         <CustomTextInput
           setError={setIsConfirmPasswordEmpty}
@@ -188,6 +225,7 @@ console.log('agf')
           value={confirmPassword}
           onChange={setConfirmPassword}
           label="Confirm Password"
+          secureText={true}
         />
 
         {/* Radio buttons for currently living in */}

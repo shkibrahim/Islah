@@ -85,8 +85,8 @@ const SingleChatPage = ({props, navigation, route}) => {
   const [messages, setMessages] = useState([]);
 
   const onSend =  async (messageArray) => {
-    const msg = messageArray[0];
-    setSendermsg(msg)
+    const msg = await messageArray[0];
+   await setSendermsg(msg)
     const chatId = [user,id].sort().join('_'); // Recreate the unique chat ID
     const Mymsg = {
       ...msg,
@@ -100,7 +100,7 @@ const SingleChatPage = ({props, navigation, route}) => {
     // Set a unique document ID using the concatenated user IDs
     // const messageId = firestore().collection('Chats').doc(chatId).collection('Messages').doc().id;
 
-    firestore()
+   await  firestore()
       .collection('Chats')
       .doc(chatId)
       .collection('Messages')
@@ -124,6 +124,8 @@ if (matchingData) {
   console.log('Token for matching id:', matchingToken);
 
   await  SendNotification(matchingToken)
+
+
 }
 
   };

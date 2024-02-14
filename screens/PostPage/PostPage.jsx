@@ -1,6 +1,6 @@
 import {
   ScrollView,
-  StyleSheet,
+  StyleSheet,Share,
   Text,Pressable,FlatList,Image,
   TextInput,
   TouchableOpacity,ActivityIndicator,
@@ -425,7 +425,25 @@ useEffect(() => {
 
 const[PostData,setPostData] = useState([])
 
-
+const Sharebtn= async(item)=>{
+  Share.share({
+    message: `  Post By: ${item.Name}\n Post: ${item.Content}`,
+  })
+    .then(result => {
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(`Shared via ${result.activityType}`);
+        } else {
+          console.log('Shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Share dismissed');
+      }
+    })
+    .catch(error => {
+      console.error('Error sharing:', error.message);
+    });
+}
 
 
   const renderItem = ({ item }) => (
@@ -454,6 +472,12 @@ const[PostData,setPostData] = useState([])
     
       </View>
       <Text style={{color:"black", margin:12,width:'95%'}}> {item.Content}</Text>
+
+
+      <TouchableOpacity onPress={()=>Sharebtn(item)}
+       style={{borderColor:'black',borderWidth:0.7,borderRadius:5,paddingHorizontal:16,alignSelf:"flex-end",paddingVertical:7,backgroundColor:myTheme.colors.primary,margin:12}}>
+        <Text style={{color:"white"}}>Share</Text>
+      </TouchableOpacity>
     </View>
   );
   return (
@@ -575,7 +599,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
   },
   card: {
-    backgroundColor: '#c4c4c4',
+    backgroundColor: '#ddd',
   padding:5,
   margin:12,
     borderRadius: 16,

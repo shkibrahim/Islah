@@ -47,7 +47,7 @@ const getdevicetoken = async()=>{
   const [ambition, setAmbition] = useState('');
   const [isAmbitionEmpty, setisAmbitionEmpty] = useState(false);
   const {
-    Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+    Image,surname,name,userID,fatherName,Status,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const meduims = ['Medium', 'English', 'Urdu', 'Hindi', 'Marathi', 'Other'];
 
@@ -164,6 +164,7 @@ if (ambition == '') {
       // .collection('EventData')
       // .doc()
       .set({
+        userID:userID,
         Profile: Image,
         Name: name,
         FatherName: fatherName,
@@ -174,6 +175,7 @@ if (ambition == '') {
         Gender :gender,
         Dob: dob,
         Token:token,
+        Status:Status,
         MaritalStatus: maritalStatus,
         Country: country,
         State: state,

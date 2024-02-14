@@ -16,8 +16,8 @@ const AuthorizedMemberCard = ({name , designation ,   image ,  message }) => {
         
         }}>
             <Text style={{fontSize: 20, fontWeight: '500' , color : myTheme.colors.primary}}>Name</Text>
-            <Text style={{fontSize: 13 , fontWeight : 'bold' }}>Chairman</Text>
-            <Text style={{fontSize: 14 , padding : 4 , textAlign : 'justify' , fontStyle : 'italic'}}>
+            <Text style={{fontSize: 13 , fontWeight : 'bold' ,color:"black"}}>Chairman</Text>
+            <Text style={{fontSize: 14 , padding : 4 , textAlign : 'justify' , fontStyle : 'italic',color:'black'}}>
               "Lorem ipsum dolor, sit amet consectetur adipisicing elit"
             </Text>
         </View>

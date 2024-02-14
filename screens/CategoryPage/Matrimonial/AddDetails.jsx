@@ -26,6 +26,7 @@ const [Gender,setGender] = useState()
     useState('');
   const [isPCNBE, setIsPCNBE] = useState(false);
   const [maritalStatus, setMaritalStatus] = useState('');
+  const [looker,setlooker]= useState('i am looker')
 const [Data,setData] = useState()
   const submitHandler = () => {
     console.log('submitHandler');
@@ -279,7 +280,7 @@ useEffect(() => {
     try {
           
      
-   
+      await AsyncStorage.setItem('Looker', looker);
       await firestore()
         .collection('Matrimonial')
         .doc(user)

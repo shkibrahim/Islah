@@ -42,7 +42,7 @@ const getdevicetoken = async()=>{
   const [selectedSourceType, setSelectedSourceType] = useState('');
 
   const {
-    surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
+    surname,name,fatherName,userID,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
   }=route.params
 
 
@@ -169,7 +169,7 @@ const getdevicetoken = async()=>{
           // Nationality: nationality,
           // PhoneNumber: phoneNumber,
           // PartnerName: partnerName,
-
+          userID:userID,
           Surname: surname,
           Name: name,
           FatherName: fatherName,
@@ -179,6 +179,7 @@ const getdevicetoken = async()=>{
           Gender: gender,
           Dob: dob,
           PartnerName: partnerName,
+          Status:'Active',
           MaritalStatus: maritalStatus,
           Country: country,
           State: state,
@@ -262,13 +263,14 @@ if (
       navigation.navigate('studentData1', {
         surname:surname,
         name:name,
+        Status:'Active',
         fatherName:fatherName,
         motherName:motherName,
         grandFatherName:grandFatherName,
         grandFatherNameNana:grandFatherNameNana,
         gender:gender,
         dob:dob,
-        
+        userID:userID,
         maritalStatus:maritalStatus,
         country:country,
         state:state,
@@ -384,13 +386,14 @@ console.log('geg')
     navigation.navigate('jobseekerData1', {
         surname:surname,
         name:name,
+        Status:'Active',
         fatherName:fatherName,
         motherName:motherName,
         grandFatherName:grandFatherName,
         grandFatherNameNana:grandFatherNameNana,
         gender:gender,
         dob:dob,
-        
+        userID:userID,
         maritalStatus:maritalStatus,
         country:country,
         state:state,
@@ -417,12 +420,13 @@ console.log('geg')
         surname:surname,
         name:name,
         fatherName:fatherName,
+        Status:'Active',
         motherName:motherName,
         grandFatherName:grandFatherName,
         grandFatherNameNana:grandFatherNameNana,
         gender:gender,
         dob:dob,
-        
+        userID:userID,
         maritalStatus:maritalStatus,
         country:country,
         state:state,

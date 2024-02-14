@@ -30,7 +30,7 @@ const TopBar= (props) => {
                 </View>
             </TouchableOpacity>
             <View style={styles.right_container}>
-                <Menu
+                {/* <Menu
                     anchorPosition='bottom'
                     visible={visible}
                     onDismiss={closeMenu}
@@ -40,7 +40,7 @@ const TopBar= (props) => {
                     }} onPress={() => { }} 
                     title="No Notication" 
                   />
-                </Menu>
+                </Menu> */}
                 <IconButton icon="android-messages" iconColor='#fff' size={22} onPress={() => props.navigation.navigate('chat')} />
             </View>
         </View>

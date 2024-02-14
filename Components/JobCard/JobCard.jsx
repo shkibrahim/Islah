@@ -72,11 +72,12 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 5,color:"black"
   },
   content: {
     fontSize: 16,
-    fontWeight: 'normal', // Adjust the fontWeight as needed
+    fontWeight: 'normal'
+    ,color:'black', // Adjust the fontWeight as needed
   },
   btn_container: {
     flexDirection: 'row',

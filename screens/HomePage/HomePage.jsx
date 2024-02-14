@@ -485,6 +485,8 @@ const fetchalldata = async () => {
 
   // func()
   // }, []);
+
+  const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData1, setFilteredData] = useState([]);
   const [index, setIndex] = useState(0);
@@ -501,8 +503,14 @@ const fetchalldata = async () => {
     filterData();
   }, [AllData, searchQuery]);
 
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
+  const showModal = (item) => {
+    setSelectedItem(item);
+    setVisible(true);
+  };
+
+  const hideModal = () => {
+    setVisible(false);
+  };
   const containerStyle = {
     backgroundColor: 'white',
     padding: 14,
@@ -583,6 +591,9 @@ const fetchalldata = async () => {
       <Carousel
         loop
         width={windowWidth}
+        autoPlay
+        scrollAnimationDuration={2000}
+        autoPlayInterval={5000}
         height={windowHeight / 3.5}
         data={item.SlidingBannerList}
         renderItem={({item: imageURL}) => (
@@ -702,8 +713,8 @@ const fetchalldata = async () => {
 
   const renderUserItem = ({item}) => (
     <TouchableOpacity
-    onPress={()=>console.log('c')}
-    activeOpacity={0.6}
+    onPress={() => showModal(item)}
+    activeOpacity={0.4}
       style={{
         height: 90,
         marginVertical: 4,
@@ -785,7 +796,7 @@ const fetchalldata = async () => {
     return carouselDataOptions[selectedDataIndex];
   };
 
-  const [currentIndex, setCurrentIndex] = React.useState(1);
+  const [currentIndex, setCurrentIndex] = React.useState(2);
   return (
     <View style={styles.container}>
       {/* Top Bar */}
@@ -843,7 +854,51 @@ const fetchalldata = async () => {
           contentContainerStyle={containerStyle}
           visible={visible}
           onDismiss={hideModal}>
-          <View style={styles.filter_container}></View>
+         <View style={styles.filter_container}>
+            {selectedItem && (
+              <>
+                {selectedItem.Profile ? (
+                  <Image source={{ uri: selectedItem.Profile }} style={styles.img} />
+                  
+                ) : (
+                  <Image source={{ uri: 'https://intentplanning.ca/wp-content/uploads/2019/01/sample-person.jpg' }} style={styles.img} />
+                )}
+                <Text style={{ color: 'black' ,alignSelf:"center",fontSize:20,fontWeight:"bold"}}>{selectedItem.Name}</Text>
+<Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"300"}}>{selectedItem.Category}</Text>
+<View style={{flexDirection:"row",alignItems:"center",alignSelf:"center", justifyContent:"space-evenly",width:"100%"}}>
+  <View style={{alignItems:"center"}}>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"600"}}>Father Name</Text>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"300"}}>{selectedItem.FatherName}</Text>
+  <View style={{alignItems:"center" ,marginVertical:5}}>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"600"}}>City</Text>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"300"}}>{selectedItem.City}</Text>
+  </View>
+  </View>
+
+  <View style={{alignItems:"center"}}>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"600"}}>Grand Father Name</Text>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"300"}}>{selectedItem.GrandFatherName}</Text>
+  <View style={{alignItems:"center", marginVertical:5}}>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"600"}}>Postal Code</Text>
+  <Text style={{ color: 'black' ,alignSelf:"center",fontWeight:"300"}}>{selectedItem.PostalCode}</Text>
+  </View>
+  </View>
+
+</View>
+
+
+<View style={{flexDirection:"row",alignItems:"center",alignSelf:"center", justifyContent:"space-evenly",width:"100%"}}>
+ 
+
+
+
+</View>
+                {/* other modal content using selectedItem */}
+              </>
+            )}
+
+
+          </View>
         </Modal>
       </Portal>
 
@@ -870,7 +925,7 @@ const fetchalldata = async () => {
                   />
                 ) : (
                   <Text
-                    style={{color: 'red', fontSize: 22, alignSelf: 'center',fontWeight:'bold'}}>
+                    style={{color: 'gray', fontSize: 18, alignSelf: 'center',fontWeight:'300'}}>
                     {Banner[0].FixedT}
                   </Text>
                 )}
@@ -881,14 +936,14 @@ const fetchalldata = async () => {
             <View style={{}}>
               <View style={{}}>
                 <Carousel
-                  loop
+                  // loop
                   width={windowWidth}
                   height={windowHeight / 4}
-                  autoPlay={true}
+                  // autoPlay={true}
                   data={Data1}
-                  autoPlayInterval={5000}
-                  scrollAnimationDuration={1000}
-                  onSnapToItem={index => setCurrentIndex(index)}
+                  // autoPlayInterval={5000}
+                  // scrollAnimationDuration={1000}
+                  // onSnapToItem={index => setCurrentIndex(index)}
                   renderItem={renderItem}
                   sliderWidth={windowWidth}
                 />
@@ -896,13 +951,24 @@ const fetchalldata = async () => {
             </View>
 
             <View style={{}}>
-              <FlatList
-              data={searchQuery> 0 ? filteredData1 : AllData}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({index, item}) =>
-                  renderCombinedItem({index, item})
-                }
-              />
+             
+            {AllData.length > 10 ? (
+  <FlatList
+    data={searchQuery > 0 ? filteredData1 : AllData}
+    keyExtractor={item => item.id.toString()}
+    renderItem={({ index, item }) =>
+      renderCombinedItem({ index, item })
+    }
+  />
+) : (
+  <FlatList
+  data={searchQuery > 0 ? filteredData1 : AllData}
+  keyExtractor={item => item.id.toString()}
+  renderItem={renderUserItem}
+ 
+/>
+)}
+
             </View>
           </ScrollView>
         </View>
@@ -970,8 +1036,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   img: {
-    width: '100%',
-    height: '100%',
+    width: 100,alignSelf:"center",borderRadius:70,
+    height: 100
     // resizeMode: 'contain',
   },
   img_container: {

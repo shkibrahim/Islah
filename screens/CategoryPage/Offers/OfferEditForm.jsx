@@ -1,24 +1,28 @@
 import {
     ScrollView,
     StyleSheet,
-    Text,
-    TouchableOpacity,
+    Text,ActivityIndicator,
+    TouchableOpacity,Alert,
     View,
   } from 'react-native';
+  
+  import { format } from 'date-fns';
+  import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
   import React, {useEffect, useState} from 'react';
   import BackButton from '../../../Components/BackButton/BackButton';
   import CustomTextInput from '../../../Components/CustomTextInput';
   import {Button, Paragraph} from 'react-native-paper';
   import DatePicker from 'react-native-date-picker';
   
-  const OfferEditForm = ({route}) => {
+  const OfferEditForm = ({route,navigation}) => {
 
       
     //   useEffect(() => {
     //     console.log(route.params.id);
     // }, [])
 
-  
+  const {offerid} = route.params
     const [category, setCategory] = useState('');
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false);
     const [title, setTitle] = useState('');
@@ -42,13 +46,163 @@ import {
     const [toDatePickerOpen, setToDatePickerOpen] = useState(false);
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
-  
+    const [Loading,setLoading] = useState()
+  const formattedStartDate = format(fromDate, "EEE dd, MMM yyyy");
+  const formattedEndDate = format(toDate, "EEE dd, MMM yyyy");
+
+  const formattedStartTime = format(fromtime, "hh:mm a");
+  const formattedEndTime = format(totime, "hh:mm a");
+
+  console.log('my id',offerid)
+  const [user, setuser] = useState();
+
+  useEffect(() => {
+    getEmailFromStorage();
+  }, []);
+
+  const getEmailFromStorage = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+
+
+
+  useEffect(() => {
+    console.log('svsv');
+
+    // Check for non-empty fields and update error state
+    if (
+      category !== '' &&
+      title !== '' &&
+      offersDetails !== '' &&
+     
+      city !== '' &&
+      areaName !== '' &&
+      contactDetails !== '' &&
+      postalCode !== ''
+     
+      
+    ) {
+      setError(false);
+    }
+
+    else {
+      setError(true);
+    }
+  }, [error, category, title, offersDetails, city,areaName,contactDetails,postalCode]); // Include all relevant dependencies
+
+  const Register = async () => {
+    if (category == '') {
+      setIsCategoryEmpty(true);
+      setError(true);
+    }
+
+    if (title == '') {
+      setIsTitleEmpty(true);
+      setError(true);
+    }
+
+    if (offersDetails == '') {
+      setIsOffersDetailsEmpty(true);
+      setError(true);
+    }
+
+    if (city == '') {
+      setIsCityEmpty(true);
+      setError(true);
+    }
+
+    if (areaName == '') {
+      setIsAreaNameEmpty(true);
+      setError(true);
+    }
+
+    if (postalCode == '') {
+      setIsPostalCodeEmpty(true);
+      setError(true);
+    }
+
+    if (contactDetails == '') {
+      setIsContactDetailsEmpty(true);
+      setError(true);
+    }
+
+    if (error == false) {
+
+      setLoading(true);
+      console.log('agf');
+      try {
+        await firestore()
+          .collection('Offers')
+          .doc(user).collection('OffersIndividual')
+.doc(offerid)
+          .update({
+            Category: category,
+            Title: title,
+            OffersDetails: offersDetails,
+            StartDate: formattedStartDate,
+            EndDate: formattedEndDate,
+            StartTime: formattedStartTime,
+            EndTime: formattedEndTime,
+            City: city,
+            Area: areaName,
+            PostalCode: postalCode,
+            ContactDetails: contactDetails,
+            myid:user
+          
+          });
+
+        setLoading(false);
+        Alert.alert('Offer Updated')
+        navigation.navigate('Categories')
+      } catch (error) {
+        setLoading(false);
+        console.log('Error addinfsf product:', error);
+        // Handle any error that might occur during the process
+      }
+
+      
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
       <View
         style={{
           flex: 1,
           backgroundColor: '#fff',
         }}>
+
+{Loading ? (
+        <ActivityIndicator
+          size="large"
+          color="green"
+          style={{alignSelf: 'center',marginTop:300}}
+        />
+      ) : (
+          <View>
         <BackButton label="Deals" />
         <ScrollView
           style={{
@@ -276,10 +430,13 @@ import {
             </Text>
           ) : null}
   
-          <Button mode="contained" style={styles.button}>
+          <Button mode="contained" style={styles.button} 
+          onPress={Register}>
             Save
           </Button>
         </ScrollView>
+        </View>
+         )}
       </View>
     );
   };

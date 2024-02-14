@@ -73,10 +73,7 @@ const CategoryPage = ({navigation}) => {
             name: 'I am a job Seeker',
             path: 'jobSeekers',
           },
-          {
-            name: 'I am a job Provider',
-            path: 'viewAllStudents',
-          },
+         
           {
             name: 'Post New Job',
             path: 'postJob',
@@ -137,10 +134,10 @@ const CategoryPage = ({navigation}) => {
             name: 'Add Proposal',
             path: 'addProposal',
           },
-          {
-            name: 'Edit Proposal',
-            path: 'editProposal',
-          },
+          // {
+          //   name: 'Edit Proposal',
+          //   path: 'editProposal',
+          // },
         ],
         [
           {
@@ -178,10 +175,7 @@ const CategoryPage = ({navigation}) => {
             name: 'I am a job Seeker',
             path: 'jobSeekers',
           },
-          {
-            name: 'I am a job Provider',
-            path: 'viewAllStudents',
-          },
+         
           {
             name: 'Post New Job',
             path: 'postJob',
@@ -234,10 +228,10 @@ const CategoryPage = ({navigation}) => {
             name: 'Add Proposal',
             path: 'addProposal',
           },
-          {
-            name: 'Edit Proposal',
-            path: 'editProposal',
-          },
+          // {
+          //   name: 'Edit Proposal',
+          //   path: 'editProposal',
+          // },
         ],
         [
           {

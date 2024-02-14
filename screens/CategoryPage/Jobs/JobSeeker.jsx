@@ -1,13 +1,13 @@
 import {
   StyleSheet,
   View,
-  FlatList,
+  FlatList,ScrollView,
   Touchable,
-  TouchableOpacity,
+  TouchableOpacity,Image,
   Button,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import JobCard from '../../../Components/JobCard/JobCard';
 import BackButton from '../../../Components/BackButton/BackButton';
 import {Icon, Modal, Portal, Searchbar, Text} from 'react-native-paper';
@@ -17,6 +17,7 @@ import CustomDropDown from '../../../Components/CustomDropDown';
 import firestore from '@react-native-firebase/firestore';
 const JobSeeker = () => {
   const [postalCode, setPostalCode] = useState('');
+  const [Loading, setLoading] = useState();
   const [isPostalCodeEmpty, setIsPostalCodeEmpty] = useState(false);
   const [slaryMin, setSalaryMin] = useState('');
   const [isSalaryMinEmpty, setIsSalaryMinEmpty] = useState(false);
@@ -27,7 +28,39 @@ const JobSeeker = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [visible, setVisible] = useState(false);
 
+  const [JobData, setJobData] = useState();
+  useEffect(() => {
 
+
+
+    fetchData();
+
+  }, []);
+    
+  const fetchData = async () => {
+    setLoading(true);
+
+    console.log('fsf');
+    try {
+      const querySnapshot = await firestore().collectionGroup('Jobs').get();
+
+      const data = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      // Check if data.docs is defined before mapping
+      if (data && Array.isArray(data)) {
+        setLoading(false);
+        setJobData(data);
+        console.log(data);
+      } else {
+        console.log('No documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const data = [
     {
@@ -74,40 +107,76 @@ const JobSeeker = () => {
   ];
 
   const renderItem = ({item}) => (
-    <JobCard
-      title={item.title}
-      jobProfile={item.jobProfile}
-      experience={item.experience}
-      location={item.location}
-      salary={item.salary}
-      contactNumber={item.contactNumber}
-      concernPersonname={item.concernPersonname}
-    />
-  );
+    <View
+      style={{
+        borderWidth: 0.5,
+        borderColor: '#ddd',
+        borderRadius: 10,
+        elevation: 2,
+        marginHorizontal: 16,
+        marginVertical: 6,
+        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+      }}>
+      <View>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 12,
+            alignSelf:"center",
+          }}>
+          {item.Title} 
+        </Text>
 
+     
+
+        <Text style={styles.overhead}>Job Profile:</Text>
+   
+        <Text style={{...styles.text, marginHorizontal:12}}>{item.JobProfile}</Text>
+           
+           
+         
+        
+
+        <Text style={styles.overhead}>Experience Required:</Text>
+        <Text style={{...styles.text, marginHorizontal:12}}>{item.Experience}</Text>
+        <Text style={styles.overhead}>Concern Person Name:</Text>
+        <Text style={{...styles.text, marginHorizontal:12}}>{item.ConcernPersonname}</Text>
+      
+        <Text style={styles.overhead}>Location:</Text>
+        <Text style={{...styles.text, marginHorizontal:12}}>{item.Location}</Text>
+
+        <Text style={styles.overhead}>Offering Salary:</Text>
+        <Text style={{...styles.text, marginHorizontal:12}}>{item.Salary}</Text>
+      </View>
+    </View>
+  );
   return (
     <View style={styles.container}>
       <BackButton label={'Jobs'} />
 
       <View
         style={{
-          justifyContent: 'space-between',
+         
           alignItems: 'center',
-          flexDirection: 'row',
+       
           marginHorizontal: 10,
           marginVertical: 6,
         }}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             setVisible(true);
           }}>
           <Icon source="filter" size={30} color={myTheme.colors.primary} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <Searchbar
           placeholder="Search Jobs"
           onChangeText={query => setSearchQuery(query)}
           value={searchQuery}
-          style={{borderRadius: 32, width: '87%', backgroundColor: '#ddd'}}
+          style={{borderRadius: 22, width: '87%', backgroundColor: '#ddd',alignSelf:"center"}}
         />
       </View>
 
@@ -204,7 +273,7 @@ const JobSeeker = () => {
       </Portal>
 
       <FlatList
-        data={data}
+        data={JobData}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
@@ -213,9 +282,7 @@ const JobSeeker = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+
   input: {
     backgroundColor: '#ddd',
     marginVertical: 8,
@@ -231,6 +298,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 8,
   },
+
+  container: {
+    flex: 1,
+  },
+  image:{
+    
+      width: 300,
+      height: 300,
+      borderRadius: 12,marginHorizontal:12,borderWidth:0.8,borderColor:'gray',opacity:2,shadowRadius:3,
+      alignSelf: 'center',
+      marginBottom: 16,
+    
+  },
+  heading:{
+    fontSize:16,color:"black",fontWeight:'normal'
+  },
+  text:{
+color:"black"
+  },
+  overhead:{
+color:"black"
+,fontSize:17,fontWeight:"bold"
+  }
 });
 
 export default JobSeeker;

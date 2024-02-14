@@ -23,6 +23,10 @@ const SideBar = () => {
     navigation.navigate(screen);
   };
 
+
+  const Logout =()=>{
+    
+  }
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
@@ -39,7 +43,7 @@ const SideBar = () => {
       ))}
       <TouchableOpacity
         style={styles.menuItem}
-        onPress={() => console.log('logged out')}
+        onPress={Logout}
       >
         <Text style={styles.menuItemText}>Log Out</Text>
       </TouchableOpacity>

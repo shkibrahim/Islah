@@ -6,7 +6,7 @@ import CustomTextInput from '../../../Components/CustomTextInput';
 import CustomButton from '../../../Components/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-const AddJob = () => {
+const AddJob = ({navigation}) => {
   const [title, setTitle] = useState('');
   const [isTitleEmpty, setIsTitleEmpty] = useState(false);
   const [jobProfile, setJobProfile] = useState('');
@@ -112,6 +112,7 @@ const [Loading,setLoading] = useState(false);
       await firestore()
         .collection('Job')
         .doc(user)
+        .collection('Jobs').doc()
       
         .set({
           JobProfile:jobProfile,
@@ -126,6 +127,7 @@ const [Loading,setLoading] = useState(false);
         });
   
         setLoading(false);
+        navigation.navigate('Categories')
     } catch (error) {
       setLoading(false);
       console.log('Error addinfsf product:', error);

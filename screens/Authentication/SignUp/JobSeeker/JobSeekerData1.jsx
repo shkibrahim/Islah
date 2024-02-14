@@ -33,7 +33,7 @@ const getdevicetoken = async()=>{
   }
 }
   const {
-    Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+    Image,surname,name,userID,Status,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const [error, setError] = React.useState(false);
   const [isEducationEmpty, setIsEducationEmpty] = useState(false);
@@ -188,9 +188,10 @@ const getdevicetoken = async()=>{
         MaritalStatus: maritalStatus,
         Country: country,
         State: state,
+        surname:surname,
         Token:token,
         City: city,
-        District: district,
+        District: district,Status:Status,
         PostalCode: postalCode,
         Address: Address,
         Street: Street,
@@ -199,7 +200,7 @@ const getdevicetoken = async()=>{
         PhoneNumber: phoneNumber,
         PartnerName: partnerName,
 Category:category,
-
+userID:userID,
 Bio:'',
         AboutMe:aboutMe,
         Education:education,

@@ -21,6 +21,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {myTheme} from '../../theme';
 
 const UserProfile = ({navigation}) => {
+  const [Looker,setlooker] = useState(null)
   const [StudentData, setStudentData] = useState([]);
   const [BusinessData, setBusinessData] = useState([]);
   const [IndividualData, setIndividualData] = useState([]);
@@ -49,7 +50,16 @@ const UserProfile = ({navigation}) => {
   useEffect(() => {
     // getCategory()
     getEmailFromStorage();
+    checklooker();
   }, [StudentData, BusinessData, JobSeekerData, IndividualData]);
+  const checklooker =async()=>{
+    try {
+      const look = await AsyncStorage.getItem('Looker');
+      setlooker(look);
+    } catch (error) {
+      console.error('Error getting looker from AsyncStorage:', error);
+    }
+  }
   const getEmailFromStorage = async () => {
     try {
       const storedEmail = await AsyncStorage.getItem('userName');
@@ -278,7 +288,7 @@ const UserProfile = ({navigation}) => {
   const DataMerging = async () => {
     console.log('Data Merging');
     setProfessionCategory(Data.Profession);
-    setAddress(Data.Address);
+    setAddress(Data.City);
     setName(Data.Name);
     setCategory(Data.Category);
     setGender(Data.Gender);
@@ -328,20 +338,22 @@ const UserProfile = ({navigation}) => {
             Bio: Bio,
             // ... (rest of the data)
           });
+if (Looker!== null){
+  await firestore()
+  .collection('Matrimonial')
+  .doc(user)
 
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
+  .update({
+    Name: Name,
 
-          .update({
-            Name: Name,
-
-            Profile: url,
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+    Profile: url,
+    Profession: ProfessionCategory,
+    Address: Address,
+    Bio: Bio,
+    // ... (rest of the data)
+  });
+}
+       
 
         await firestore()
           .collection('BusinessPerson')
@@ -402,18 +414,21 @@ const UserProfile = ({navigation}) => {
             Bio: Bio,
             // ... (rest of the data)
           });
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!== null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+            
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
         await firestore()
           .collection('BusinessPerson')
           .doc(user)
@@ -473,19 +488,21 @@ const UserProfile = ({navigation}) => {
             // ... (rest of the data)
           });
 
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profile: url,
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!==null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+              Profile: url,
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
         await firestore()
           .collection('JobSeekerData')
           .doc(user)
@@ -543,18 +560,21 @@ const UserProfile = ({navigation}) => {
             // ... (rest of the data)
           });
 
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker !==null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+             
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
         await firestore()
           .collection('JobSeekerData')
           .doc(user)
@@ -614,19 +634,21 @@ const UserProfile = ({navigation}) => {
             Bio: Bio,
             // ... (rest of the data)
           });
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profile: url,
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!==null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+              Profile: url,
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
 
         await firestore()
           .collection('StudentData')
@@ -685,18 +707,21 @@ const UserProfile = ({navigation}) => {
             // ... (rest of the data)
           });
 
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!==null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+             
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
         await firestore()
           .collection('StudentData')
           .doc(user)
@@ -755,19 +780,21 @@ const UserProfile = ({navigation}) => {
             Bio: Bio,
             // ... (rest of the data)
           });
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profile: url,
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!==null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+              Profile: url,
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
 
         await firestore()
           .collection('OtherData')
@@ -826,18 +853,21 @@ const UserProfile = ({navigation}) => {
             // ... (rest of the data)
           });
 
-        await firestore()
-          .collection('Matrimonial')
-          .doc(user)
-
-          .update({
-            Name: Name,
-
-            Profession: ProfessionCategory,
-            Address: Address,
-            Bio: Bio,
-            // ... (rest of the data)
-          });
+          if (Looker!== null){
+            await firestore()
+            .collection('Matrimonial')
+            .doc(user)
+          
+            .update({
+              Name: Name,
+          
+              
+              Profession: ProfessionCategory,
+              Address: Address,
+              Bio: Bio,
+              // ... (rest of the data)
+            });
+          }
         await firestore()
           .collection('OtherData')
           .doc(user)

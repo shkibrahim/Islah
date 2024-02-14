@@ -7,12 +7,13 @@ import { useNavigation } from '@react-navigation/native';
 const IsEditContainer = ({isEdit , path , id }) => {
   const navigation = useNavigation();
 
-    const eidtButtonHanlder = () => {
-        console.log(id);
+    const eidtButtonHanlder = (item) => {
+        console.log(item.id);
 
         navigation.navigate(path , {id : id});
     }
-    const deleteButtonHanlder = () => {
+    const deleteButtonHanlder = (item) => {
+      console.log(item.id);
         console.log("Delete Button Pressed");
     }
   return (

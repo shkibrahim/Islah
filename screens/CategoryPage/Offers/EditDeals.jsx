@@ -1,11 +1,13 @@
 import React, { useState,useEffect } from 'react';
-import {FlatList, StyleSheet, View,TextInput,Text} from 'react-native';
+import {FlatList, StyleSheet, View,TextInput,Text, Pressable,ActivityIndicator,Alert} from 'react-native';
 import BackButton from '../../../Components/BackButton/BackButton';
-import firestore from '@react-native-firebase/firestore';
+
 import OfferCard from '../../../Components/OfferCard/OfferCard';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { myTheme } from '../../../theme';
-const EditDeals = () => {
+const EditDeals = ({navigation}) => {
   const [user, setuser] = useState();
 
   useEffect(() => {
@@ -33,61 +35,32 @@ const EditDeals = () => {
   const [StartTime,setStartTime] = useState('')
   const [EndTime,setEndTime] = useState('')
 const [Data,setData] = useState([])
-
-// const fetchData = async () => {
-
-//   // console.log('fsf')
-//   try {
-//     const querySnapshot = await firestore()
-//       .collectionGroup('OffersIndividual')
-//       .get();
-
-//     const data = querySnapshot.docs.map(doc => ({
-//       ...doc.data(),
-//       id: doc.id,
-//     }));
-
-//     // Check if data.docs is defined before mapping
-//     if (data && Array.isArray(data)) {
-//       // setIsLoading(false);
-
-//       setData(data);
-    
-
-//       // You can set other states here if needed
-//       // setData2(data);
-//       // setoriginalData(data);
-
-//       // console.log('Data1:', data); // Log the fetched data
-//     } else {
-//       console.log('No documents found.');
-//     }
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//   }
-// };
-
+const [Loader,setLoader] = useState()
 
 const Database = firestore().collection('Offers').doc(user).collection('OffersIndividual');
+const getdata = async () => {
+  setLoader(true)
+  try {
+    const querySnapshot = await Database.get(); // Remove the 'where' method
 
+    const newData = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    setData(newData);
+    setLoader(false)
+    console.log(newData)
+  } catch (error) {
+    setLoader(false)
+    console.error('Error fetching data:', error);
+  }
+};
 useEffect(() => {
-  const getdata = async () => {
-    try {
-      const querySnapshot = await Database.get(); // Remove the 'where' method
-
-      const newData = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-
-      setData(newData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  
 
   getdata();
-}, [user, Database]);
+}, [user]);
 
   useEffect(() => {
     // fetchData()
@@ -168,6 +141,35 @@ useEffect(() => {
     // Add more offer data objects as needed
   ];
 
+
+
+  const Deleter =async(item)=>{
+    setLoader(true)
+console.log('Deleting')
+console.log(item.id)
+
+try {
+  await firestore().collection('Offers').doc(user).collection('OffersIndividual').doc(item.id).delete();
+  console.log('Document successfully deleted!');
+  getdata()
+ 
+  setLoader(false)
+  Alert.alert('Offer Deleted')
+  
+} catch (error) {
+  setLoader(false)
+  console.error('Error deleting document:', error);
+}
+
+  }
+
+
+  const Editor = async (item)=>{
+navigation.navigate('offerEditForm',{
+  offerid:item.id
+})
+  
+  }
   const renderItem = ({item}) => (
     <View style={{ borderWidth: .5,
       borderColor: '#ddd',
@@ -179,7 +181,19 @@ useEffect(() => {
       paddingHorizontal: 16,
       paddingVertical: 12,}}>
     
-    
+    <View style={{flexDirection:"row",alignItems:"center",position:'absolute',right:12,top:5}}>
+<Pressable style={{...styles.button,backgroundColor:main,}}
+onPress={()=>Editor(item)}>
+<MaterialIcons name="edit" size={12} color={'white'} />
+           
+</Pressable>
+
+            
+<Pressable style={{...styles.button,backgroundColor:main,}}
+onPress={()=>Deleter(item)}>
+<MaterialIcons name="delete" size={12} color={'white'} />
+</Pressable>
+    </View>
     <View>
               <TextInput 
                value={Title}
@@ -277,6 +291,15 @@ useEffect(() => {
 
   return (
     <View style={styles.container}>
+
+{Loader ? (
+        <ActivityIndicator
+          size="large"
+          color="green"
+          style={{alignSelf: 'center',marginTop:300}}
+        />
+      ) : (
+      <View>
       <BackButton label="Edit deals" />
       <View>
         <FlatList
@@ -285,13 +308,18 @@ useEffect(() => {
           keyExtractor={item => item.id}
         />
       </View>
+      </View>
+         )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
+  button:{ height:25,width:25,borderRadius:20,marginRight:12,alignItems:"center", justifyContent:'center'}
+  ,
   container: {
-    flex: 1,
+    flex: 1,height:"100%",
     backgroundColor: '#fff',
   },
   title: {

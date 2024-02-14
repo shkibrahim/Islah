@@ -18,6 +18,7 @@ import {
 } from 'react-native-paper';
 import CustomButton from '../../../Components/CustomButton';
 import CustomTextInput from '../../../Components/CustomTextInput';
+
 import {login} from '../../../redux/reducers/authReducers';
 import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
@@ -59,11 +60,32 @@ const navigation = useNavigation()
     if (username === '' || password === '') {
       setError(true);
     } else {
-
       await AsyncStorage.setItem('userName', username);
-      setError(false);
-      // dispatch(login(username, password));
-        navigation.navigate('home')
+
+      try {
+        await auth()
+          .signInWithEmailAndPassword(username, password);
+          navigation.replace('home');
+        // Save email in AsyncStorage regardless of its value
+    
+  setUsername('')
+  setPassword('')
+        // Navigate to the 'Map' screen
+     
+  
+        console.log('User Stored Successfully');
+      } catch (error) {
+       if (error.code === 'auth/invalid-credential') {
+          Alert.alert('Invalid Credentials!');
+        } else if (error.code === 'auth/invalid-login') {
+          Alert.alert('Wrong Email or Password');
+        } else {
+          Alert.alert(error)
+          console.error(error);
+        }
+
+  
+      }
     }
   };
 
