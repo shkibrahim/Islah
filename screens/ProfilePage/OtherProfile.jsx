@@ -1048,7 +1048,7 @@ Sign out
             // secureTextEntry={true}
           />
 
-          <View
+          {/* <View
             style={{
               height: 1,
               width: '120%',
@@ -1057,7 +1057,7 @@ Sign out
               marginTop: 100,
             }}>
             <Text></Text>
-          </View>
+          </View> */}
 
           {/* <View style={styles.statsContainer}>
           <Text>{`Posts: ${postCount}`}</Text>

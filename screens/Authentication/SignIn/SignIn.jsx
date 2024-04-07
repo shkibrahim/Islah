@@ -16,6 +16,8 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native-paper';
+import messaging from '@react-native-firebase/messaging';
+
 import CustomButton from '../../../Components/CustomButton';
 import CustomTextInput from '../../../Components/CustomTextInput';
 import {useFocusEffect} from '@react-navigation/native';
@@ -29,6 +31,7 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import {clearError} from '../../../redux/slice/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OtherData from '../SignUp/Other/OtherData';
 const SignIn = ({route,   }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('ibrahim123');
@@ -53,16 +56,17 @@ useEffect(() => {
   getdevicetoken()
 }, []);
 
-const getdevicetoken = async()=>{
+const getdevicetoken= async()=>{
+  
+  let a =await messaging().getToken()
+settoken(a);
+console.log('my token',a)
 
-  try {
-    const Token = await AsyncStorage.getItem('Token');
-    settoken(Token);
-    console.log('my category is', Token )
-  } catch (error) {
-    console.error('Error getting category from AsyncStorage:', error);
-  }
+await AsyncStorage.setItem('Token', a);
+
 }
+
+
 const tokenlist = async()=>{
   try {
    
@@ -222,7 +226,7 @@ useEffect(() => {
 
   funcat()
 
-}, []);
+}, [StudentData,OtherData,BusinessData,JobSeekerData]);
 
 
 // useFocusEffect(
@@ -239,96 +243,101 @@ const DataUpdate = async () => {
   const mydata = await AllData.find(data => data.id === username);
   setData(mydata);
 
-if (Data && Data.length>0)
-const mycategory =Data.Category
-console.log('category coming from be',mycategory)
+if (Data && Data.length>0){
+  // const mycategory ='svs'
+  console.log('category coming from be',mycategory)
+  
+  
+  const id =mydata.id
+  setmyID(id)
+  setCategory(mycategory)
+}
 
-
-const id =mydata.id
-setmyID(id)
-setCategory(mycategory)
+const mycategory =mydata.Category
+console.log('asli ha',mycategory)
 // await AsyncStorage.setItem('Category', mycategory);
  
-  if (mycategory === 'business') {
-    try {
+  // if (mycategory === 'business') {
+  //   try {
    
-      await firestore()
-        .collection('BusinessPerson')
-        .doc(username)
+  //     await firestore()
+  //       .collection('BusinessPerson')
+  //       .doc(username)
 
-        .update({
-         Token:token
-          // ... (rest of the data)
-        });
+  //       .update({
+  //        Token:token
+  //         // ... (rest of the data)
+  //       });
 
     
-    } catch (error) {
-      console.error('Error updating business data:', error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error('Error updating business data:', error);
+  //   }
+  // }
 
  
 
-  if (mycategory == 'jobseeker' ) {
-    try {
+  // if (mycategory == 'jobseeker' ) {
+  //   try {
     
-      await firestore()
-        .collection('JobSeekerData')
-        .doc(username)
+  //     await firestore()
+  //       .collection('JobSeekerData')
+  //       .doc(username)
 
-        .update({
-          Token: token,
+  //       .update({
+  //         Token: token,
 
          
-          // ... (rest of the data)
-        });
+  //         // ... (rest of the data)
+  //       });
 
     
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error('Error updating data:', error);
+  //   }
+  // }
 
 
 
   if (mycategory == 'student') {
-    try {
+    console.log('first student')
+    // try {
       
-      await firestore()
-        .collection('StudentData')
-        .doc(username)
+    //   await firestore()
+    //     .collection('StudentData')
+    //     .doc(username)
 
-        .update({
-          Token: token,
-        });
+    //     .update({
+    //       Token: token,
+    //     });
       
      
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
+    // } catch (error) {
+    //   console.error('Error updating data:', error);
+    // }
   }
 
   
 
-  if (mycategory == 'other' ) {
-    try {
+  // if (mycategory == 'other' ) {
+  //   try {
   
-      await firestore()
-        .collection('OtherData')
-        .doc(username)
+  //     await firestore()
+  //       .collection('OtherData')
+  //       .doc(username)
 
-        .update({
-          Token: token,
+  //       .update({
+  //         Token: token,
 
         
-        });
+  //       });
      
    
        
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error('Error updating data:', error);
+  //   }
+  // }
 
  
 };
