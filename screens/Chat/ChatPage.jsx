@@ -49,6 +49,28 @@ const [user,setuser] =useState();
   ]);
 
 
+  const myDatafetch = async () => {
+    console.log('datafetch ke andr');
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+      console.log('email is', storedEmail);
+      // console.log('Sara Data', AllData);
+
+      const mydata = await AllData.find(data => data.id === storedEmail);
+
+      setData(mydata);
+     
+      
+      setCategory(mydata.Category);
+
+      // console.log('profile data is ', mydata);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData1, setFilteredData] = useState([]);
   const [index, setIndex] = useState(0);
@@ -70,22 +92,31 @@ const [UserProfile,setUserProfile] = useState()
   }, [users, searchQuery]);
   const funcat = async () => {
     try {
-      const concatenatedData = await StudentData.concat(
+      const concatenatedData = StudentData.concat(
         IndividualData,
         BusinessData,
-        JobSeekerData,
+        JobSeekerData
       );
-      setUsers(concatenatedData);
-      
-      if (concatenatedData.length > 0) {
-        console.log('me andr');
-      }
-
+  
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+      console.log('email is', storedEmail);
+  
+      // Find the item from AllData based on storedEmail
+      // const mydata = AllData.find(data => data.id === storedEmail);
+  
+      // Filter out the item found from concatenatedData
+      const filteredData = concatenatedData.filter(item => item.id !== storedEmail);
+  
+      // Set the filtered data to the state
+      setUsers(filteredData);
+  
       setIsLoading(false);
     } catch (error) {
       console.error('Error concatenating data:', error);
     }
   };
+  
   const fetchalldata = async () => {
     console.log('student');
     try {

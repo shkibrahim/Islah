@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,Image
 } from 'react-native';
 import {myTheme} from '../../theme';
 import {Bubble, GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
@@ -15,7 +15,7 @@ import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-const SingleChatPage = ({props, navigation, route}) => {
+const SingleChatPage = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState();
   const [StudentData, setStudentData] = useState([]);
   const [BusinessData, setBusinessData] = useState([]);
@@ -41,7 +41,7 @@ const SingleChatPage = ({props, navigation, route}) => {
   };
   const [user, setuser] = useState();
   const {id, Name,Profile,UserProfile} = route.params;
-  console.log(UserProfile)
+  console.log('isme masla ha',UserProfile)
   
   // useEffect(() => {
   //   setMessages([
@@ -141,7 +141,7 @@ if (matchingData) {
     const notificationPayload = {
       data: {},
       notification: {
-        body: SenderMsg.text,
+        body: SenderMsg,
         title: SenderName,
       },
     };
@@ -304,14 +304,39 @@ if (matchingData) {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <View style={styles.container}>
+      <View style={styles.container }>
+      <View style={{
+  height: 70,
+  // borderWidth: 0.7,
+  borderBottomColor: 'gray',
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingHorizontal: 12,
+  ...Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 1,
+    },
+    android: {
+      elevation: 2,
+    },
+  })
+}}>
+
+          <View style={{borderRadius:50,height:50,width:50,backgroundColor:"blue",overflow:"hidden"}}>
+          <Image source={{ uri: Profile }} style={{height:50,width:50,}} />
+          </View>
+          <Text style={{color:"black", fontSize:18,fontWeight:"800",marginLeft:12}}>{Name}</Text>
+        </View>
         <GiftedChat
           messages={messages}
           onSend={messages => onSend(messages)}
           user={{
             _id: user,
            
-            avatar: UserProfile,
+            avatar: Profile,
             
           }}
           alwaysShowSend

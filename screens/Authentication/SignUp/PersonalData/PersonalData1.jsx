@@ -51,7 +51,8 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
       name !== '' &&
       fatherName !== '' &&
       grandFatherName !== '' &&
-      gender !== 'gender' 
+      gender !== 'gender'  &&
+      grandFatherNameNana !== ''
       
     ) {
       setError(false);
@@ -60,7 +61,7 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
     else {
       setError(true);
     }
-  }, [error, name, fatherName, grandFatherName, gender]); // Include all relevant dependencies
+  }, [error, name, fatherName, grandFatherName, gender,grandFatherNameNana]); // Include all relevant dependencies
 
 
   const signupHandler = async () => {
@@ -77,6 +78,11 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
     }
     if (grandFatherName === '') {
       setIsGrandFatherNameEmpty(true);
+      setError(true);
+    }
+
+    if (grandFatherNameNana === '') {
+      setIsGrandFatherNameNanaEmpty(true);
       setError(true);
     }
     if (gender == 'gender') {
@@ -190,7 +196,7 @@ const PersonalData = React.memo(({ route ,props,navigation}) => {
         />
         <CustomTextInput
           setError={setIsGrandFatherNameNanaEmpty}
-          required={false}
+          required={true}
           error={isGrandFatherNameNanaEmpty}
           value={grandFatherNameNana}
           onChange={setGrandFatherNameNana}

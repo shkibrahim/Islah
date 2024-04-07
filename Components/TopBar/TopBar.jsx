@@ -30,17 +30,7 @@ const TopBar= (props) => {
                 </View>
             </TouchableOpacity>
             <View style={styles.right_container}>
-                {/* <Menu
-                    anchorPosition='bottom'
-                    visible={visible}
-                    onDismiss={closeMenu}
-                    anchor={<IconButton icon="bell" iconColor='#fff' size={22} onPress={openMenu} />}>
-                    <Menu.Item style={{
-                        backgroundColor: "#f0f0f0",
-                    }} onPress={() => { }} 
-                    title="No Notication" 
-                  />
-                </Menu> */}
+            <IconButton icon="bell" iconColor='#fff' size={22} onPress={() => props.navigation.navigate('Notification')} />
                 <IconButton icon="android-messages" iconColor='#fff' size={22} onPress={() => props.navigation.navigate('chat')} />
             </View>
         </View>

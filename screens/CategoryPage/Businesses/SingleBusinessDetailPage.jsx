@@ -1,98 +1,222 @@
-import React from 'react';
-import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
+import React, { useState,useEffect } from 'react';
+import {FlatList, StyleSheet, View,Image,TouchableOpacity,Text} from 'react-native';
+import BusinessCard from '../../../Components/BusinessCard/BusinessCard';
 import BackButton from '../../../Components/BackButton/BackButton';
-import CarouselPage from '../../../Components/Carousel/Carousel';
-import {myTheme} from '../../../theme';
+import { myTheme } from '../../../theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Linking } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import {Icon} from 'react-native-paper';
 
 const SingleBusinessDetailPage = () => {
-  const business = {
-    name: 'Business Name',
-    description:
-      'Business Description lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.  lorem   consectetur adipisicing elit. Quisquam, voluptatum.  lorem  consectetur adipisicing elit. Quisquam, voluptatum.  lorem   ',
-    category: 'Business Category',
-    education: 'Business Person Education',
-    contact: 'Business Contact',
-    weekdayFrom: 'Monday',
-    weekdayTo: 'Friday',
-    from: '9:00 AM',
-    to: '5:00 PM',
-    id: 'Business Id',
-    state: 'State',
-    city: 'City',
-    area: '',
-    postalCode: 'Postal Code',
-    country: 'Country',
-    timings: 'Business Timings',
-    images: [
-      {
-        id: 1,
-        title: 'First Item',
-        text: 'First Item Text',
-        image: 'https://picsum.photos/720/353',
-      },
-      {
-        id: 2,
-        title: 'Second Item',
-        text: 'Second Item Text',
-        image: 'https://picsum.photos/720/351',
-      },
-      {
-        id: 3,
-        title: 'Third Item',
-        text: 'Third Item Text',
-        image: 'https://picsum.photos/720/350',
-      },
-    ],
+  // const businessData = [
+  //   // Add your business data here
+  //   // Example:
+  //   {
+  //     id: '1',
+  //     name: 'Business 1',
+  //     description: 'Description 1',
+  //     category: 'Category 1',
+  //     contact: '+92361548795',
+  //     weekdayFrom: 'Monday',
+  //     weekdayTo: 'Friday',
+  //     from: '9:00 AM',
+  //     to: '5:00 PM',
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Business 2',
+  //     description: 'Description 2',
+  //     category: 'Category 2',
+  //     contact: '+92361548795',
+  //     weekdayFrom: 'Monday',
+  //     weekdayTo: 'Sunday',
+  //     from: '9:00 AM',
+  //     to: '5:00 PM',
+  //   },
+  // ];
+  const [Loading, setLoading] = useState();
+
+  const [BusinessData, setBusinessData] = useState([]);
+  useEffect(() => {
+
+
+
+    fetchData();
+
+  }, []);
+    
+  const fetchData = async () => {
+    setLoading(true);
+
+    console.log('fsf');
+    try {
+      const querySnapshot = await firestore().collectionGroup('Business').get();
+
+      const data = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      // Check if data.docs is defined before mapping
+      if (data && Array.isArray(data)) {
+        setLoading(false);
+        setBusinessData(data);
+        console.log('Business data is',data);
+      } else {
+        console.log('No documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
-  return (
+
+  const handleOpenWhatsApp = () => {
+    const phoneNumber = '+923042336109'; // Replace with the recipient's phone number
+    const message = 'Hello! I would like to chat with you.'; // Replace with your desired message
+
+    // Use the `Linking` module to open WhatsApp with the predefined message
+    Linking.openURL(`whatsapp://send?phone=${phoneNumber}&text=${message}`);
+  };
+
+  const phoneNumber = '+923042336109'; // Replace with the desired phone number
+
+  const handleOpenDialPad = (item) => {
+    // Use the `Linking` module to open the dial pad with the specified phone number
+    // Linking.openURL(`tel:${item.phoneNumber}`);
+        Linking.openURL(`tel:${phoneNumber}`);
+  };
+
+  const handleChat = () => {
+    console.log('Chat');
+  };
+
+  const renderItem = ({item}) => (
     <View
       style={{
-        flex: 1,
+        borderRadius: 10,
+        shadowColor: '#000',
         backgroundColor: '#fff',
+        marginHorizontal: 16,
+        marginVertical: 4,
       }}>
-      <BackButton />
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.businessName}>{business.name}</Text>
-          <Text style={styles.businessCategory}>{business.category}</Text>
+      <View style={styles.card_container}>
+        <View
+          style={{
+            flexBasis: '35%',
+            height: 116,
+          }}>
+{item.Bimage1 && (
+  <Image
+    style={{
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+    }}
+    source={{uri: item.Bimage1}}
+  />
+)}
+
+
         </View>
+        <View
+          style={{
+            flexBasis: '65%',
+            paddingLeft: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('singleBusinessDetails')}>
+            <Text style={styles.card_name}>{item.BusinessName}</Text>
+          </TouchableOpacity>
+          <Text style={styles.card_category}>Category: {item.category}</Text>
+          {/* <Text style={styles.card_description}>
+            Description: {item.Description.slice(0, 20)}
+          </Text> */}
+          <Text style={styles.card_category}>
+            Weekdays: {item.WorkingFrom} - {item.WorkingTo}
+          </Text>
+          <Text style={styles.card_category}>
+            Timings: {item.Btimefrom} - {item.Btimeto}
+          </Text>
 
-        <CarouselPage
-          data={business.images}
-          indicatorshows={false}
-          autoPlay={false}
-        />
-
-        <View style={styles.detailsContainer}>
-          <Text style={styles.description}>{business.description}</Text>
-
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoLabel}>Education:</Text>
-            <Text style={styles.infoText}>{business.education}</Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoLabel}>Contact:</Text>
-            <Text style={styles.infoText}>{business.contact}</Text>
-          </View>
-
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoLabel}>Location:</Text>
-            <Text style={styles.infoText}>
-              {business.city}, {business.state}, {business.country},{' '}
-              {business.postalCode}
-            </Text>
-          </View>
-
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoLabel}>Timings:</Text>
-            <Text style={styles.infoText}>
-              {business.weekdayFrom} - {business.weekdayTo}, {business.from} -{' '}
-              {business.to}
-            </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 4,
+            }}>
+            <TouchableOpacity
+              onPress={()=>handleOpenDialPad(item)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                backgroundColor: myTheme.colors.background,
+                borderColor: myTheme.colors.primary,
+                borderWidth: 1,
+                borderRadius: 5,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                marginTop: 5,
+                width: 64,
+              }}>
+              <Icon source="phone" size={14} color="#000" />
+              <Text style={{color: '#000', fontSize: 11}}> Phone </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>handleChat(item)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                backgroundColor: myTheme.colors.background,
+                borderColor: myTheme.colors.primary,
+                borderWidth: 1,
+                borderRadius: 5,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                marginTop: 5,
+                width: 64,
+              }}>
+              <Icon source="chat" size={14} color="#000" />
+              <Text style={{color: '#000', fontSize: 11}}> Chat </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>handleOpenWhatsApp(item)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                backgroundColor: myTheme.colors.background,
+                borderColor: myTheme.colors.primary,
+                borderWidth: 1,
+                borderRadius: 5,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                marginTop: 5,
+                width: 60,
+                gap: 5,
+              }}>
+              <Icon source="whatsapp" size={14} color="#000" />
+              <Text style={{color: '#000', fontSize: 11}}>Chat</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+      </View>
+
+      {/* {isEdit && <IsEditContainer path="editBusinessDetailsForm" id={id} />} */}
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <BackButton label={'Business Details'} />
+      <FlatList
+        data={BusinessData}
+        renderItem={renderItem}
+        // keyExtractor={item => item.id} // Assuming you have a unique identifier for each item
+      />
     </View>
   );
 };
@@ -101,49 +225,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  card_container: {
+    padding: 8,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 16,
   },
-  businessName: {
-    fontSize: 24,
+  card_name: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: myTheme.colors.primary,
   },
-  businessCategory: {
-    fontSize: 14,
-    color: 'gray',
+  card_description: {
+    fontSize: 13,
   },
-  businessImage: {
-    height: 200,
-    width: '100%',
-    marginBottom: 16,
-  },
-  detailsContainer: {
-    marginVertical: 16,
-    paddingHorizontal: 16,
-  },
-  description: {
-    fontSize: 14,
-    textAlign: 'justify',
-    color: '#777',
-    paddingVertical: 16,
-  },
-  infoContainer: {
-    flexDirection: 'column',
-    marginBottom: 8,
-  },
-  infoLabel: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginRight: 8,
-    color: myTheme.colors.primary,
-  },
-  infoText: {
-    flex: 1,
-    marginLeft: 56,
-    fontSize: 15,
-    marginVertical: 4,
+  card_category: {
+    fontSize: 13,color:"black"
   },
 });
 

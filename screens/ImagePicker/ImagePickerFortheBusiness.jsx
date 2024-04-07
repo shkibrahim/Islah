@@ -208,7 +208,10 @@ const [img3, setimg3] = useState('no');
       if (selectedSourceType === 'camera') {
         response = await launchCamera({mediaType: 'photo'});
       } else if (selectedSourceType === 'gallery') {
-        response = await launchImageLibrary({mediaType: 'photo'});
+        response = await launchImageLibrary({
+          mediaType: 'photo',
+          cropping: true, 
+      });
       }
 
       if (response.assets && response.assets.length > 0) {

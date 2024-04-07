@@ -25,7 +25,7 @@ const CustomDropDown = ({
         {options.map((option, index) => (
           <Picker.Item
             style={{
-              color: '#555',
+              color: 'black',
               fontSize: 15,borderRadius:8,
              
             }}

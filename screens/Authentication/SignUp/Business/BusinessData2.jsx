@@ -34,6 +34,8 @@ const BusinessData2 = React.memo(({route, props, navigation}) => {
   const [totime, setToTime] = useState(new Date());
   const [area, setArea] = useState('');
   const [isAreaEmpty, setIsAreaEmpty] = useState(false);
+  const formattedtoTime = (new Date(totime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const formattedfromTime = (new Date(fromtime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
   // const signupHandler = () => {
   //   setError(false);
@@ -222,51 +224,7 @@ const BusinessData2 = React.memo(({route, props, navigation}) => {
         .doc(user).collection('Business').doc()
 
         .set({
-          // Profile: Pimage,
-          // Name: name,
-          // FatherName: fatherName,
-          // GrandFatherName: grandFatherName,
-          // MotherName: motherName,
-          // Nana:grandFatherNameNana,
-          // Surname:surname,
-          // Gender :gender,
-          // Dob: dob,
-          // MaritalStatus: maritalStatus,
-          // Country: country,
-          // State: state,
-          // City: city,
-          // District: district,
-          // PostalCode: postalCode,
-          // Address: Address,
-          // Street: Street,
-          // Email: email,
-          // Nationality: nationality,
-          // PhoneNumber: phoneNumber,
-          // PartnerName: partnerName,
-
-          // surname: surname,
-          // name: name,
-          // fatherName: fatherName,
-          // motherName: motherName,
-          // grandFatherName: grandFatherName,
-          // grandFatherNameNana: grandFatherNameNana,
-          // gender: gender,
-          // dob: dob,
-          // partnerName: partnerName,
-          // maritalStatus: maritalStatus,
-          // country: country,
-          // state: state,
-          // city: city,
-          // district: district,
-          // postalCode: postalCode,
-          // Address: Address,
-          // Street: Street,
-          // PImage: PImage,
-          // email: email,
-          // password: password,
-          // nationality: nationality,
-          // partnerName: partnerName,
-          // phoneNumber: phoneNumber,
+         
 category:category,
           BusinessName: BusinessName,
           BusinessCatergory: BusinessCatergory,
@@ -275,15 +233,15 @@ category:category,
           BusinessEducation: BusinessEducation,
           WorkingFrom: WorkingFrom,
           WorkingTo: WorkingTo,
-
+          User:user,
           Bcountry: Bcountry,
           Bstate: Bstate,
           Bcity: Bcity,
           Barea: area,
           Bpostalcode: Bpostalcode,
           Baddress: Baddress,
-          Btimefrom: stringBtimefrom,
-          Btimeto: stringBtimeto,
+          Btimefrom: formattedfromTime,
+          Btimeto: formattedtoTime,
           Bimage1: Bimage1,
           Bimage2: Bimage2,
           Bimage3: Bimage3,

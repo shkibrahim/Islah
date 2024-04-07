@@ -13,6 +13,8 @@ import {
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {Icon, IconButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
@@ -33,6 +35,7 @@ const UserProfile = ({navigation}) => {
   const [Gender, setGender] = useState('');
   const [Bio, setBio] = useState(' My Bio');
   const [Category, setCategory] = useState();
+  console.log('my category is ',Category)
   const [selectedImage, setselectedImage] = useState(null);
   const [Data, setData] = useState();
   const [user, setuser] = useState();
@@ -42,11 +45,19 @@ const UserProfile = ({navigation}) => {
   const [selectedImage1, setSelectedImage1] = useState(
     'https://cdn.pixabay.com/photo/2012/04/26/19/43/profile-42914_640.png',
   );
-  const [Loading, setLoading] = useState();
+  const [Loading, setLoading] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState('');
   const [StartLoading, setStartLoading] = useState(true);
   const [BtnDisabling, setBtnDisabling] = useState(false);
+const [Logoutview,setLogoutview] = useState(false)
+const LogoutviewShower =()=>{
+  setLogoutview(!Logoutview)
+}
 
+const Logout = ()=>{
+  AsyncStorage.removeItem('username')
+  navigation.navigate('signin')
+}
   useEffect(() => {
     // getCategory()
     getEmailFromStorage();
@@ -64,12 +75,13 @@ const UserProfile = ({navigation}) => {
     try {
       const storedEmail = await AsyncStorage.getItem('userName');
       setuser(storedEmail);
+      console.log('user name is',storedEmail)
     } catch (error) {
       console.error('Error getting email from AsyncStorage:', error);
     }
   };
 
-  console.log('USER KA DATA', Data);
+  // console.log('USER KA DATA', Data);
   const funcat = async () => {
     console.log('concatting starts');
     try {
@@ -80,7 +92,7 @@ const UserProfile = ({navigation}) => {
       );
       setAllData(concatenatedData);
       if (concatenatedData.length > 0) {
-        console.log('Concat func ke andr ', concatenatedData);
+        // console.log('Concat func ke andr ', concatenatedData);
 
         // console.log('concatenated data',concatenatedData  )
       }
@@ -213,12 +225,12 @@ const UserProfile = ({navigation}) => {
       const storedEmail = await AsyncStorage.getItem('userName');
       setuser(storedEmail);
       console.log(storedEmail);
-      console.log('Sara Data', AllData);
+      // console.log('Sara Data', AllData);
 
       const mydata = await AllData.find(data => data.id === user);
       setData(mydata);
 
-      console.log('profile data is ', mydata);
+      // console.log('profile data is ', mydata);
     } catch (error) {
       console.error('Error getting email from AsyncStorage:', error);
     }
@@ -257,13 +269,13 @@ const UserProfile = ({navigation}) => {
     setSelectedImageUrl(url);
   };
 
-  const getCategory = async () => {
-    try {
-      await AsyncStorage.setItem('category', Category);
-    } catch (error) {
-      console.error('Error getting category from AsyncStorage:', error);
-    }
-  };
+  // const getCategory = async () => {
+  //   try {
+  //     await AsyncStorage.setItem('category', Category);
+  //   } catch (error) {
+  //     console.error('Error getting category from AsyncStorage:', error);
+  //   }
+  // };
 
   const ProfilePicker = async () => {
     const options = {
@@ -281,7 +293,7 @@ const UserProfile = ({navigation}) => {
 
   useEffect(() => {
     DataMerging();
-    getCategory();
+    // getCategory();
     // }
   }, [Data]);
 
@@ -333,7 +345,7 @@ const UserProfile = ({navigation}) => {
             Name: Name,
 
             Profile: url,
-            Profession: ProfessionCategory,
+            // Profession: ProfessionCategory,
             Address: Address,
             Bio: Bio,
             // ... (rest of the data)
@@ -384,6 +396,8 @@ if (Looker!== null){
 
         alert('Data updated');
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -391,15 +405,7 @@ if (Looker!== null){
     if (Category === 'business' && selectedImage === Data.Profile) {
       setLoading(true);
       try {
-        //  const reference = storage().ref(selectedImage.assets[0].fileName);
-        //     const pathToFile = selectedImage;
-
-        //     await reference.putFile(pathToFile);
-
-        //     const url = await storage()
-        //       .ref(selectedImage1.assets[0].fileName)
-        //       .getDownloadURL();
-        //     setSelectedImageUrl(url);
+     
 
         await AsyncStorage.setItem('Name', Name);
         await firestore()
@@ -409,7 +415,7 @@ if (Looker!== null){
           .update({
             Name: Name,
 
-            Profession: ProfessionCategory,
+            // Profession: ProfessionCategory,
             Address: Address,
             Bio: Bio,
             // ... (rest of the data)
@@ -457,6 +463,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -526,11 +534,15 @@ if (Looker!== null){
             });
           })
           .catch(error => {
+            setLoading(false);
+
             console.error('Error updating documents:', error);
           });
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -603,6 +615,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -678,6 +692,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -750,6 +766,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -824,6 +842,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -896,6 +916,8 @@ if (Looker!== null){
         alert('Data updated');
         setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error('Error updating data:', error);
       }
     }
@@ -937,6 +959,25 @@ if (Looker!== null){
         />
       ) : (
         <View style={styles.container}>
+
+<View style={{alignSelf:"flex-end",margin:12,position:"absolute",right:12}}>
+<TouchableOpacity 
+              onPress={LogoutviewShower}
+              style={{}}>
+              <MaterialIcons name="dots-vertical" size={28} color={'darkgray'} />
+              </TouchableOpacity>
+              </View>
+          {Logoutview &&    <TouchableOpacity 
+          onPress={Logout}
+              activeOpacity={0.6}
+              style={{paddingHorizontal:(10),paddingVertical:5,position:"absolute",right:42,backgroundColor:"green",alignItems:"center",elevation:5,borderRadius:7,top:40}}>
+<Text style={{color:"white",fontFamily:"Montserrat-Regular",fontSize:12}}>
+Sign out 
+  
+
+  
+  </Text>
+              </TouchableOpacity>}
           <View
             style={{
               alignItems: 'center',
@@ -964,7 +1005,7 @@ if (Looker!== null){
             <TextInput
               editable={inputEditable}
               style={[styles.fullName, {}]}
-              placeholderTextColor="grey"
+              placeholderTextColor="lightgray"
               value={Name}
               // keyboardType="Numeric"
               onChangeText={setName}
@@ -974,21 +1015,21 @@ if (Looker!== null){
             <TextInput
               editable={inputEditable}
               style={styles.role}
-              // placeholderTextColor="grey"
+              placeholderTextColor="lightgray"
               value={ProfessionCategory}
               // keyboardType="Numeric"
               onChangeText={setProfessionCategory}
-              // placeholder="Role"
+              placeholder="Role"
               // secureTextEntry={true}
             />
             <TextInput
               editable={inputEditable}
               style={styles.location}
-              // placeholderTextColor="grey"
+              placeholderTextColor="lightgray"
               value={Address}
               // keyboardType="Numeric"
               onChangeText={setAddress}
-              // placeholder="Location"
+              placeholder="City"
               // secureTextEntry={true}
             />
             {/* <Text style={styles.qualification}>{qualification}</Text> */}

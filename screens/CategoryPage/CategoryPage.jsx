@@ -21,17 +21,24 @@ const CategoryPage = ({navigation}) => {
     // Handle logic for displaying content based on the selected category
   };
 
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState();
   useEffect(() => {
     const getCategory = async () => {
-      const category = await AsyncStorage.getItem('category');
+      const category = await AsyncStorage.getItem('Category');
       setCategory(category);
     };
     getCategory();
-    a();
-    console.log('my category is',category);
+  
+    console.log('bhai my category is',category);
   }, []);
 
+
+  useEffect(() => {
+ 
+    a();
+
+  }, [category]);
+  console.log(category)
   const categories = [
     'Offers',
     'Education',
@@ -86,7 +93,7 @@ const CategoryPage = ({navigation}) => {
         [
           {
             name: 'View All ',
-            path: 'businessListed',
+            path: 'singleBusinessDetails',
           },
           {
             name: 'Add New Business',
@@ -98,10 +105,10 @@ const CategoryPage = ({navigation}) => {
           },
         ],
         [
-          {
-            name: 'Matrimonial',
-            path: 'matrimonial',
-          },
+          // {
+          //   name: 'Matrimonial',
+          //   path: 'matrimonial',
+          // },
           {
             name: 'Looking For Bride',
             path: 'lookingForBride',
@@ -148,7 +155,7 @@ const CategoryPage = ({navigation}) => {
       ]);
     }
 
-    if (category != 'business') {
+    if (category !== 'business') {
       setSubCategories([
         [
           {
@@ -192,10 +199,7 @@ const CategoryPage = ({navigation}) => {
           },
         ],
         [
-          {
-            name: 'Matrimonial',
-            path: 'matrimonial',
-          },
+          
           {
             name: 'Looking For Bride',
             path: 'lookingForBride',

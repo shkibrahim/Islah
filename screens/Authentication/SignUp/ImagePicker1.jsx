@@ -13,11 +13,11 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../../../Components/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
-
+import ImagePicker from 'react-native-image-crop-picker'
 import PushNotification from 'react-native-push-notification';
 
 
-const ImagePicker = ({ route,navigation }) => {
+const ImagePicker1 = ({ route,navigation }) => {
 const [token,settoken] = useState()
 useEffect(() => {
   getdevicetoken()
@@ -42,7 +42,7 @@ const getdevicetoken = async()=>{
   const [selectedSourceType, setSelectedSourceType] = useState('');
 
   const {
-    surname,name,fatherName,userID,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
+    surname,name,fatherName,userID,HusbandName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
   }=route.params
 
 
@@ -64,6 +64,27 @@ const getdevicetoken = async()=>{
     setDialogVisible(false);
   };
 
+
+
+
+  const ImageSelector  =async  ()=>{
+  ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(image => {
+        if (image.path) {
+          setSelectedImage(image.path);
+          setSelectedImage1(image)
+          setAvatarUri(image.path)
+        }
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+
+  }
   const handleImageSelection = async () => {
     try {
       closeImagePicker();
@@ -71,8 +92,11 @@ const getdevicetoken = async()=>{
       if (selectedSourceType === 'camera') {
         response = await launchCamera({mediaType: 'photo'});
       } else if (selectedSourceType === 'gallery') {
+
+        // ImageSelector()
         const options = {
           mediaType: 'photo',
+          cropping:true,
           includeBase64: false,
         };
         response = await launchImageLibrary(options);
@@ -179,6 +203,7 @@ const getdevicetoken = async()=>{
           Gender: gender,
           Dob: dob,
           PartnerName: partnerName,
+          HusbandName:HusbandName,
           Status:'Active',
           MaritalStatus: maritalStatus,
           Country: country,
@@ -211,7 +236,13 @@ Bio:''
 
       // setIsLoading(false);
       // alert('Product Added Successfully');
-      navigation.replace('businessData1');
+      navigation.navigate('businessData1',{
+        phoneNumber: phoneNumber,
+        chatid:user,
+        Profile:selectedImageUrl,
+        Name:name,
+        // UserProfile:UserProfile,
+      });
     } catch (error) {
       // setIsLoading(false);
       console.log('Error addinfsf product:', error);
@@ -271,6 +302,7 @@ if (
         gender:gender,
         dob:dob,
         userID:userID,
+        HusbandName:HusbandName,
         maritalStatus:maritalStatus,
         country:country,
         state:state,
@@ -392,6 +424,7 @@ console.log('geg')
         grandFatherName:grandFatherName,
         grandFatherNameNana:grandFatherNameNana,
         gender:gender,
+        HusbandName:HusbandName,
         dob:dob,
         userID:userID,
         maritalStatus:maritalStatus,
@@ -438,6 +471,7 @@ console.log('geg')
   
       email:email,
       password:password,
+      HusbandName:HusbandName,
       nationality:nationality,
       phoneNumber:phoneNumber
       ,Image:selectedImageUrl,
@@ -487,7 +521,7 @@ console.log('geg')
     backgroundColor: "#197739",
   }}
   onPress={uploadtofbStorage}
-  disabled={Loading2} // Disable the button while loading
+  // disabled={Loading2} // Disable the button while loading
 >
   {Loading2 ? (
     <ActivityIndicator size="small" color="red" style={{ alignSelf: "center" }} />
@@ -530,7 +564,7 @@ console.log('geg')
   );
 };
 
-export default ImagePicker;
+export default ImagePicker1;
 
 const styles = StyleSheet.create({
   container: {

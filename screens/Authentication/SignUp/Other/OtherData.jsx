@@ -30,7 +30,7 @@ const getdevicetoken = async()=>{
   }
 }
   const {
-    Image,surname,name,Status,fatherName,userID,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+    Image,surname,name,Status,fatherName,userID,motherName,HusbandName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const [error, setError] = React.useState(false);
   const [isSchoolEmpty, setIsSchoolEmpty] = useState(false);
@@ -124,7 +124,7 @@ const getdevicetoken = async()=>{
           userID:userID,
           Profile: Image,
           Name: name,
-          FatherName: fatherName,
+          FatherName: fatherName,HusbandName:HusbandName,
           GrandFatherName: grandFatherName,
           MotherName: motherName,
           Nana:grandFatherNameNana,

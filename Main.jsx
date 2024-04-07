@@ -14,7 +14,7 @@ import Associates from './screens/Associates/Associates';
 import SignIn from './screens/Authentication/SignIn/SignIn';
 import BusinessData1 from './screens/Authentication/SignUp/Business/BusinessData1';
 import BusinessData2 from './screens/Authentication/SignUp/Business/BusinessData2';
-import ImagePicker from './screens/Authentication/SignUp/ImagePicker';
+import ImagePicker1 from './screens/Authentication/SignUp/ImagePicker1';
 import JobSeekerData1 from './screens/Authentication/SignUp/JobSeeker/JobSeekerData1';
 import OtherData from './screens/Authentication/SignUp/Other/OtherData';
 import PersonalData1 from './screens/Authentication/SignUp/PersonalData/PersonalData1';
@@ -61,6 +61,8 @@ import EditBusinessProposalForm from './screens/CategoryPage/BusinessProposal/Ed
 import LookingForBride from './screens/CategoryPage/Matrimonial/LookingForBride';
 import LookingForGroom from './screens/CategoryPage/Matrimonial/LookingForGroom';
 import messaging from '@react-native-firebase/messaging';
+import Notification from './screens/Notification/Notification';
+import PersonalView from './screens/PersonalView/PersonalView';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
@@ -181,6 +183,11 @@ const StackNavigator = ({isAuthenticated}) => (
       component={TabNavigator}
       options={{headerShown: false, animation: 'slide_from_bottom'}}
     />
+     <Stack.Screen
+      name="PersonalView"
+      component={PersonalView}
+      options={{headerShown: false, animation: 'slide_from_bottom'}}
+    />
     <Stack.Screen
       name="signin"
       component={SignIn}
@@ -238,7 +245,7 @@ const StackNavigator = ({isAuthenticated}) => (
     />
     <Stack.Screen
       name="imagepickerpage"
-      component={ImagePicker}
+      component={ImagePicker1}
       options={{headerShown: false}}
     />
     <Stack.Screen
@@ -384,17 +391,17 @@ const StackNavigator = ({isAuthenticated}) => (
       component={SingleChatPage}
       options={{
         animation: 'slide_from_right',
-        headerTitleAlign: 'center',
-        headerTitle: 'Chat',
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: '#fff',
-        },
+        // headerTitleAlign: 'center',
+        // headerTitle: 'Chat',
+        headerShown: false,
+        // headerStyle: {
+        //   backgroundColor: '#fff',
+        // },
       }}
     />
     <Stack.Screen
-      name="testing"
-      component={Testing}
+      name="Notification"
+      component={Notification}
       options={{headerShown: true}}
     />
   </Stack.Navigator>

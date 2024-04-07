@@ -63,6 +63,8 @@ const BeforeSignUp = ({ route,props ,navigation}) => {
           <View
             style={{
               height: 50,
+              position:"absolute",
+              right:10,
               width: 50,
             }}>
             <Image

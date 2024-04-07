@@ -39,7 +39,9 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
   const [isAddressLine2Empty, setIsAddressLine2Empty] = React.useState(false);
   const [isAddressLine3Empty, setIsAddressLine3Empty] = React.useState(false);
   const [ismaritalStatusEmpty, setIsmaritalStatusEmpty] = React.useState(true);
-  const [partnerName, setpartnerName] = React.useState(null);
+  const [partnerName, setpartnerName] = React.useState('');
+  const [HusbandName, setHusbandName] = React.useState('');
+  const [isHusbandNameEmpty, setIsHusbandNameEmpty] = React.useState(false);
   const [ispartnerNameEmpty, setIspartnerNameEmpty] = React.useState(false);
   const [maritalStatus, setmaritalStatus] = React.useState('None');
 
@@ -47,7 +49,7 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
   const [postalCode, setPostalCode] = React.useState('');
   const [isPostelcodeEmpty, setIsPostelCodeEmpty] = React.useState(false);
   const [isCountryEmpty, setIsCountryEmpty] = React.useState(false);
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState(true);
   const maritalOptions = [
     'Marital Status',
     'Married',
@@ -58,23 +60,22 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
 
   useEffect(() => {
     console.log(gender);
-
+  
     // Check for non-empty fields and update error state
     if (
       country !== '' &&
       state !== '' &&
       city !== '' &&
       addressLine1 !== '' &&
-      postalCode !== '' && maritalStatus!== 'marital status'
+      postalCode !== '' &&
+      (maritalStatus !== 'marital status' || ( maritalStatus === 'widow' && HusbandName !== ''))
     ) {
       setError(false);
-    }
-
-    else {
+    } else {
       setError(true);
     }
-  }, [error, country, state, city, addressLine1, postalCode,maritalStatus]); // Include all relevant dependencies
-
+  }, [error, country, state, city, addressLine1, postalCode, maritalStatus, HusbandName]); // Include all relevant dependencies
+  
   const signupHandler = async () => {
     // setError(false);
 
@@ -82,10 +83,17 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
       // setIsmaritalStatusEmpty(true)
       setError(true)
     }
+
+    if (maritalStatus === 'widow' && HusbandName ===''){
+      setIsHusbandNameEmpty(true)
+     
+      setError(true)
+    }
     if (country === '') {
       setIsCountryEmpty(true);
       setError(true);
     }
+
     if (state === '') {
       setIsstateEmpty(true);
       setError(true);
@@ -122,7 +130,7 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
         grandFatherNameNana: grandFatherNameNana,
         gender: gender,
         dob: dob,
-
+HusbandName:HusbandName,
         maritalStatus: maritalStatus,
         country: country,
         state: state,
@@ -172,6 +180,17 @@ const PersonalData2 = React.memo(({route, props, navigation}) => {
               value={partnerName}
               onChange={setpartnerName}
               label="Partner name"
+            />
+          ) : null}
+
+{maritalStatus === 'widow' ? (
+            <CustomTextInput
+              setError={setIsHusbandNameEmpty}
+              required={true}
+              error={isHusbandNameEmpty}
+              value={HusbandName}
+              onChange={setHusbandName}
+              label="Husband name"
             />
           ) : null}
           <View

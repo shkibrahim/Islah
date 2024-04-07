@@ -47,7 +47,7 @@ const getdevicetoken = async()=>{
   const [ambition, setAmbition] = useState('');
   const [isAmbitionEmpty, setisAmbitionEmpty] = useState(false);
   const {
-    Image,surname,name,userID,fatherName,Status,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
+    Image,surname,name,userID,fatherName,Status,motherName,HusbandName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const meduims = ['Medium', 'English', 'Urdu', 'Hindi', 'Marathi', 'Other'];
 
@@ -171,6 +171,7 @@ if (ambition == '') {
         GrandFatherName: grandFatherName,
         MotherName: motherName,
         Nana:grandFatherNameNana,
+        HusbandName:HusbandName,
         Surname:surname,
         Gender :gender,
         Dob: dob,

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Keyboard,
@@ -14,27 +14,48 @@ import CustomTextInput from '../../../../Components/CustomTextInput';
 import firestore from '@react-native-firebase/firestore';
 const {height} = Dimensions.get('window');
 
-const JobSeekerData1 = React.memo(({route ,props,navigation}) => {
+const JobSeekerData1 = React.memo(({route, props, navigation}) => {
+  const [token, settoken] = useState();
+  useEffect(() => {
+    getdevicetoken();
+  }, []);
 
-  const [token,settoken] = useState()
-useEffect(() => {
-  getdevicetoken()
-}, []);
-
-
-const getdevicetoken = async()=>{
-
-  try {
-    const Token = await AsyncStorage.getItem('Token');
-    settoken(Token);
-    console.log('my category is', Token )
-  } catch (error) {
-    console.error('Error getting category from AsyncStorage:', error);
-  }
-}
+  const getdevicetoken = async () => {
+    try {
+      const Token = await AsyncStorage.getItem('Token');
+      settoken(Token);
+      console.log('my token is', Token);
+    } catch (error) {
+      console.error('Error getting category from AsyncStorage:', error);
+    }
+  };
   const {
-    Image,surname,name,userID,Status,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
-  }=route.params
+    Image,
+    surname,
+    name,
+    userID,
+    Status,
+    fatherName,
+    motherName,
+    HusbandName,
+    grandFatherName,
+    grandFatherNameNana,
+    gender,
+    dob,
+    maritalStatus,
+    country,
+    state,
+    city,
+    district,
+    postalCode,
+    Address,
+    Street,
+    email,
+    password,
+    nationality,
+    phoneNumber,
+    partnerName,
+  } = route.params;
   const [error, setError] = React.useState(false);
   const [isEducationEmpty, setIsEducationEmpty] = useState(false);
   const [education, setEducation] = useState('');
@@ -43,10 +64,9 @@ const getdevicetoken = async()=>{
     const getCategory = async () => {
       const category = await AsyncStorage.getItem('category');
       setCategory(category);
+      console.log(category)
     };
     getCategory();
-    
-   
   }, []);
   // experince dropdown
 
@@ -60,8 +80,8 @@ const getdevicetoken = async()=>{
   ];
 
   // experince
-  const [user,setuser] = useState()
-  
+  const [user, setuser] = useState();
+
   useEffect(() => {
     getEmailFromStorage();
   }, []);
@@ -88,8 +108,7 @@ const getdevicetoken = async()=>{
   const [isLastCompanyEmpty, setIsLastCompanyEmpty] = useState(false);
   const [lastCompanyName, setLastCompanyName] = useState('');
 
-
-  const tokenlist = async()=>{
+  const tokenlist = async () => {
     try {
       // await uploadimage1();
       // await uploadimage2();
@@ -97,143 +116,139 @@ const getdevicetoken = async()=>{
       // await uploadimage3();
       console.log('data transfering');
       await firestore()
-          .collection('Tokens')
-          .doc()
-        
-        .set({
-         
-          Token:token,
-      
-    
+        .collection('Tokens')
+        .doc()
 
-        
+        .set({
+          Token: token,
         });
 
-      
       navigation.replace('businessData1');
     } catch (error) {
       // setIsLoading(false);
       console.log('Error addinfsf product:', error);
       // Handle any error that might occur during the process
     }
-  }
+  };
 
-
-  
   useEffect(() => {
     setError(false);
-  
+
     // Check for non-empty fields and update error state
-    if (aboutMe !== '' && education !== '' && profession !== '' && skills !== '' && salary !== '' && join !== '' && lastCompanyName!== '') {
-    console.log('sfgs')
+    if (
+      aboutMe !== '' &&
+      education !== '' &&
+      profession !== '' &&
+      skills !== '' &&
+      salary !== '' &&
+      join !== '' &&
+      lastCompanyName !== ''
+    ) {
+      console.log('sfgs');
     } else {
       setError(true);
     }
-  }, [error, aboutMe, education, profession,skills,salary,join,lastCompanyName]); // Include all relevant dependencies
-  
-  const onpressHandler = async() => {
-   console.log('agr',user)
-    
+  }, [
+    error,
+    aboutMe,
+    education,
+    profession,
+    skills,
+    salary,
+    join,
+    lastCompanyName,
+  ]); // Include all relevant dependencies
+
+  const onpressHandler = async () => {
+    console.log('agr', user);
+
     if (aboutMe === '') {
-      setIsAboutMeEmpty(true)
-        setError(true)
-    } if (education === '') {
-      setIsEducationEmpty(true)
-        setError(true)
-    } if (profession === '') {
-      setIsProfessionEmpty(true)
-        setError(true)
+      setIsAboutMeEmpty(true);
+      setError(true);
+    }
+    if (education === '') {
+      setIsEducationEmpty(true);
+      setError(true);
+    }
+    if (profession === '') {
+      setIsProfessionEmpty(true);
+      setError(true);
     }
     if (skills === '') {
-        setIsSkillsEmpty(true)
-        setError(true)
+      setIsSkillsEmpty(true);
+      setError(true);
     }
     if (salary === '') {
-      setIsSalaryEmpty(true)
-      setError(true)
-  }
-  if (join === '') {
-    setIsJoinEmpty(true)
-    setError(true)
-  }
+      setIsSalaryEmpty(true);
+      setError(true);
+    }
+    if (join === '') {
+      setIsJoinEmpty(true);
+      setError(true);
+    }
 
+    if (lastCompanyName === '') {
+      setIsLastCompanyEmpty(true);
+      setError(true);
+    }
 
+    if (error == false) {
+      console.log('agf');
+      try {
+        await firestore()
+          .collection('JobSeekerData')
+          .doc(user)
+          // .collection('EventData')
+          // .doc()
+          .set({
+            Profile: Image,
+            Name: name,
+            FatherName: fatherName,
+            GrandFatherName: grandFatherName,
+            MotherName: motherName,
+            Nana: grandFatherNameNana,
+            Gender: gender,
+            Dob: dob,
+            MaritalStatus: maritalStatus,
+            HusbandName:HusbandName,
+            Country: country,
+            State: state,
+            surname: surname,
+            Token: token,
+            City: city,
+            District: district,
+            Status: Status,
+            PostalCode: postalCode,
+            Address: Address,
+            Street: Street,
+            Email: email,
+            Nationality: nationality,
+            PhoneNumber: phoneNumber,
+            PartnerName: partnerName,
+            Category: category,
+            userID: userID,
+            Bio: '',
+            AboutMe: aboutMe,
+            Education: education,
+            Profession: profession,
+            Skills: skills,
+            Salary: salary,
+            Join: join,
+            Experience: experience,
+            LastCompanyName: lastCompanyName,
 
-  if (lastCompanyName === '') {
-    setIsLastCompanyEmpty(true)
-    setError(true)
-  }
-
-
-      if (error == false ) {
-  console.log('agf')
-  try {
-        
-   
- 
-    await firestore()
-      .collection('JobSeekerData')
-      .doc(user)
-      // .collection('EventData')
-      // .doc()
-      .set({
-        Profile: Image,
-        Name: name,
-        FatherName: fatherName,
-        GrandFatherName: grandFatherName,
-        MotherName: motherName,
-        Nana:grandFatherNameNana,
-        Gender :gender,
-        Dob: dob,
-        MaritalStatus: maritalStatus,
-        Country: country,
-        State: state,
-        surname:surname,
-        Token:token,
-        City: city,
-        District: district,Status:Status,
-        PostalCode: postalCode,
-        Address: Address,
-        Street: Street,
-        Email: email,
-        Nationality: nationality,
-        PhoneNumber: phoneNumber,
-        PartnerName: partnerName,
-Category:category,
-userID:userID,
-Bio:'',
-        AboutMe:aboutMe,
-        Education:education,
-        Profession:profession,
-Skills:skills,
-Salary:salary,
-Join:join,
-Experience:experience,
-LastCompanyName:lastCompanyName
-
-        // ... (rest of the data)
-      });
-await tokenlist();
-    // setIsLoading(false);
-    // alert('Product Added Successfully');
-    navigation.replace('home');
-  } catch (error) {
-    // setIsLoading(false);
-    console.log('Error addinfsf product:', error);
-    // Handle any error that might occur during the process
-  }
-
-
+            // ... (rest of the data)
+          });
+        await tokenlist();
+        // setIsLoading(false);
+        // alert('Product Added Successfully');
+        navigation.replace('home');
+      } catch (error) {
+        // setIsLoading(false);
+        console.log('Error addinfsf product:', error);
+        // Handle any error that might occur during the process
       }
-
-
-
-
-
-
-
-
-
+    }
   };
 
   return (
@@ -325,7 +340,7 @@ await tokenlist();
             mode="contained"
             style={styles.button}
             onPress={onpressHandler}>
-           Sign Up
+            Sign Up
           </Button>
         </View>
       </TouchableWithoutFeedback>

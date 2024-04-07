@@ -14,7 +14,7 @@ const [Loading,setLoading] = useState(false)
 
 
   const {
-    surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street,partnerName
+    surname,name,fatherName,HusbandName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street,partnerName
   }=route.params
 
   const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -114,6 +114,7 @@ console.log('agf')
   Address:Address,
   Street:Street,
 userID:generatedID,
+HusbandName:HusbandName,
   email:email,
   password:password,
   nationality:indian,

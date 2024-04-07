@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { enableScreens } from 'react-native-screens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { myTheme } from './theme';
+import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import store from './redux/store';
 import { PermissionsAndroid, Platform } from "react-native";
@@ -51,6 +52,50 @@ const App = () => {
     };
   }
 
+  const sendNotification = async (message) => {
+console.log('first')
+    PushNotification.localNotification({
+      channelId: 'default-channel-id',
+      title: 'Islah',
+      message: 'A new notification',
+    });
+  
+
+  };
+  useEffect(() => {
+    sendNotification()
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await firestore().collection('News').get();
+        const data = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+  
+        console.log('Fetched data:', data);
+  
+ 
+      
+  
+        // Set up real-time listener for changes
+        const unsubscribe = firestore().collection('News').onSnapshot(snapshot => {
+          // Trigger a notification when there's a change
+          sendNotification();
+          console.log('fwf')
+        });
+  
+        // Clean up the listener when the component unmounts
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      
+      }
+    };
+  
+  
+  
+    fetchData();
+  }, []);
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       hasAndroidPermission()
