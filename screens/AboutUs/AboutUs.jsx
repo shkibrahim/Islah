@@ -11,28 +11,68 @@ import {Icon} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import BackButton from '../../Components/BackButton/BackButton';
 import AuthorizedMemberCard from '../../Components/AuthorizedMemberCard/AuthorizedMemberCard';
-
+import firestore from '@react-native-firebase/firestore'
+import { myTheme } from '../../theme';
 const AboutUs = () => {
 
   
   const navigation = useNavigation();
 const [AboutUs,setAboutus] = useState();
+console.log(JSON.stringify(AboutUs))
+const fetchData = async () => {
+  console.log('fetching members');
+  try {
+    const querySnapshot = await firestore()
+      .collection('AboutUs')
+      .get();
+
+    const data = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    // Check if data.docs is defined before mapping
+    if (data && Array.isArray(data)) {
+      setAboutus(data);
+    } else {
+      console.log('No documents found.');
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+
+useEffect(()=>{
+  fetchData()
+},[])
+
 const renderItem = ({ item }) => (
   <View style={styles.card}>
   <View style={{
     flexBasis: '30%',
   }}>
-      <Image source={require('../../assets/images/user.png')} style={{width: 80, height: 80, borderRadius: 40}} />
+
+
+{/* <Text style={{color:'red'}}>{JSON.stringify(item)}</Text> */}
+    <View style={{width:60,height:60,borderRadius:40,overflow:"hidden"}}>
+    <Image
+            source={{uri: item?.MemberImage}}
+            style={{height: '100%', width: '100%',}}
+            onError={error => console.error('Image Error: ', error)}
+          />
+    </View>
+       
   </View>
   <View style={{
     flexBasis: '70%',
     paddingHorizontal: 10
   
   }}>
-      <Text style={{fontSize: 20, fontWeight: '500' , color : myTheme.colors.primary}}>Name</Text>
-      <Text style={{fontSize: 13 , fontWeight : 'bold' ,color:"black"}}>Chairman</Text>
+      <Text style={{fontSize: 20, fontWeight: '500' , color : myTheme.colors.primary}}>{item?.Name}</Text>
+      <Text style={{fontSize: 13 , fontWeight : 'bold' ,color:"black"}}>{item?.Status}</Text>
       <Text style={{fontSize: 14 , padding : 4 , textAlign : 'justify' , fontStyle : 'italic',color:'black'}}>
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit"
+    {item?.Description}
       </Text>
   </View>
 
@@ -54,8 +94,10 @@ const renderItem = ({ item }) => (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Mission</Text>
             <Text style={styles.sectionText}>
-              " Our mission is to Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Nulla quam velit,"
+              " Our mission is to  To provide common platform to explore member's unique 
+ quality and make it evident which can benefit his/her own ,
+ Optimum Realization and Utilization of the resources 
+ of the community for the benefit of the community members"
             </Text>
           </View>
         </View>
@@ -75,12 +117,12 @@ const renderItem = ({ item }) => (
             Authorized Members
           </Text>
           <FlatList
-        data={AboutUs}
+        data={AboutUs[0]?.AboutUs}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        // keyExtractor={(item) => item.id.toString()}
       />
-          <AuthorizedMemberCard />
-          <AuthorizedMemberCard />
+          {/* <AuthorizedMemberCard />
+          <AuthorizedMemberCard /> */}
         </View>
       </ScrollView>
     </View>
@@ -89,9 +131,10 @@ const renderItem = ({ item }) => (
 
 const styles = StyleSheet.create({
   card : {
-    width: '100%',
+    width: '96%',
     backgroundColor: '#fff',
     borderRadius: 10,
+    alignSelf:"center",
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

@@ -46,7 +46,7 @@ const HomePage = ({route, navigation}) => {
   // const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [isListening, setIsListening] = useState(false);
-  console.log('filtereddata',filteredData)
+  // console.log('filtereddata',filteredData)
 
   
   
@@ -65,9 +65,9 @@ const [EmptyData,setEmptyData] = useState([])
 
 useEffect(() => {
   Voice.onSpeechResults = onSpeechResults;
-  return () => {
-    Voice.destroy().then(Voice.removeAllListeners);
-  };
+  // return () => {
+  //   Voice.destroy().then(Voice.removeAllListeners);
+  // };
 }, []);
 
 const onSpeechResults = (e) => {

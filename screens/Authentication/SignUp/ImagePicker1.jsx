@@ -45,7 +45,37 @@ const getdevicetoken = async()=>{
     surname,name,fatherName,userID,HusbandName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
   }=route.params
 
+  const[Data,setData] = useState({
+    userID:userID,
+    Surname: surname,
+    Name: name,
+    FatherName: fatherName,
+    MotherName: motherName,
+    GrandFatherName: grandFatherName,
+    GrandFatherNameNana: grandFatherNameNana,
+    Gender: gender,
+    Dob: dob,
+    PartnerName: partnerName,
+    HusbandName:HusbandName,
+    Status:'Active',
+    MaritalStatus: maritalStatus,
+    Country: country,
+    State: state,
+    City: city,
+    District: district,
+    PostalCode: postalCode,
+    Address: Address,
+    Street: Street,
+    Profile: selectedImageUrl,
+    email: email,
+    Token:token,
+    nationality: nationality,
+    partnerName: partnerName,
+    phoneNumber: phoneNumber,
+Category:category,
+Bio:''
 
+  })
   const [category, setCategory] = useState('');
   useEffect(() => {
     const getCategory = async () => {
@@ -378,6 +408,8 @@ console.log('geg')
   
         //       })
         await fetchdata();
+        const jsonData = JSON.stringify(Data);
+        await AsyncStorage.setItem('UserData', jsonData);
       await tokenlist();
         setLoading(false) 
 

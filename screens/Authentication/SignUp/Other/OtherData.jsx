@@ -44,6 +44,39 @@ const getdevicetoken = async()=>{
   const [aboutMe, setAboutMe] = useState('');
   const [isProfessionEmpty, setIsProfessionEmpty] = useState(false);
   const [profession, setProfession] = useState('');
+  const[Data,setData] = useState({
+    userID:userID,
+    Profile: Image,
+    Name: name,
+    FatherName: fatherName,HusbandName:HusbandName,
+    GrandFatherName: grandFatherName,
+    MotherName: motherName,
+    Nana:grandFatherNameNana,
+    Surname:surname,
+    Gender :gender,
+    Dob: dob,
+    MaritalStatus: maritalStatus,
+    Country: country,
+    State: state,
+    City: city,
+    Token:token,
+    Status:Status,
+    District: district,
+    PostalCode: postalCode,
+    Address: Address,
+    Street: Street,
+    Email: email,
+    Nationality: nationality,
+    PhoneNumber: phoneNumber,
+    PartnerName: partnerName,
+AboutMe:aboutMe,
+Education:education,
+SchoolName:schoolName,
+CollegeName:collegeName,Bio:'',
+Profession:profession,
+Category:category,
+
+  })
   const tokenlist = async()=>{
     try {
       // await uploadimage1();
@@ -163,6 +196,8 @@ const getdevicetoken = async()=>{
           // ... (rest of the data)
         });
   await tokenlist();
+  const jsonData = JSON.stringify(Data);
+  await AsyncStorage.setItem('UserData', jsonData);
       // setIsLoading(false);
       // alert('Product Added Successfully');
       navigation.replace('home');

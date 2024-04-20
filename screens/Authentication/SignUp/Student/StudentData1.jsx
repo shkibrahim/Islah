@@ -50,7 +50,45 @@ const getdevicetoken = async()=>{
     Image,surname,name,userID,fatherName,Status,motherName,HusbandName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
   }=route.params
   const meduims = ['Medium', 'English', 'Urdu', 'Hindi', 'Marathi', 'Other'];
+  const[Data,setData] = useState({
+    userID:userID,
+    Profile: Image,
+    Name: name,
+    FatherName: fatherName,
+    GrandFatherName: grandFatherName,
+    MotherName: motherName,
+    Nana:grandFatherNameNana,
+    HusbandName:HusbandName,
+    Surname:surname,
+    Gender :gender,
+    Dob: dob,
+    Token:token,
+    Status:Status,
+    MaritalStatus: maritalStatus,
+    Country: country,
+    State: state,
+    City: city,
+    District: district,
+    PostalCode: postalCode,
+    Address: Address,
+    Street: Street,
+    Email: email,
+    Nationality: nationality,
+    PhoneNumber: phoneNumber,
+    PartnerName: partnerName,
+Category:category,
 
+
+Degree:degree,
+Degreeyear:year,
+Board:board,
+Medium:medium,
+SchoolName:schoolName,
+Ambition:ambition,
+Achievement:achievement,
+Profession:'',
+Bio:''
+  })
   // const signupHandler = () => {
   
   //   setError(false);
@@ -204,6 +242,8 @@ Bio:''
         // ... (rest of the data)
       });
 await tokenlist();
+const jsonData = JSON.stringify(Data);
+await AsyncStorage.setItem('UserData', jsonData);
     // setIsLoading(false);
     // alert('Product Added Successfully');
     navigation.replace('home');

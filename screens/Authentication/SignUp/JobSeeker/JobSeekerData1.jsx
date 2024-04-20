@@ -107,7 +107,43 @@ const JobSeekerData1 = React.memo(({route, props, navigation}) => {
   const [join, setJoin] = useState('');
   const [isLastCompanyEmpty, setIsLastCompanyEmpty] = useState(false);
   const [lastCompanyName, setLastCompanyName] = useState('');
-
+const[Data,setData] = useState({
+  Profile: Image,
+  Name: name,
+  FatherName: fatherName,
+  GrandFatherName: grandFatherName,
+  MotherName: motherName,
+  Nana: grandFatherNameNana,
+  Gender: gender,
+  Dob: dob,
+  MaritalStatus: maritalStatus,
+  HusbandName:HusbandName,
+  Country: country,
+  State: state,
+  surname: surname,
+  Token: token,
+  City: city,
+  District: district,
+  Status: Status,
+  PostalCode: postalCode,
+  Address: Address,
+  Street: Street,
+  Email: email,
+  Nationality: nationality,
+  PhoneNumber: phoneNumber,
+  PartnerName: partnerName,
+  Category: category,
+  userID: userID,
+  Bio: '',
+  AboutMe: aboutMe,
+  Education: education,
+  Profession: profession,
+  Skills: skills,
+  Salary: salary,
+  Join: join,
+  Experience: experience,
+  LastCompanyName: lastCompanyName,
+})
   const tokenlist = async () => {
     try {
       // await uploadimage1();
@@ -240,6 +276,8 @@ const JobSeekerData1 = React.memo(({route, props, navigation}) => {
             // ... (rest of the data)
           });
         await tokenlist();
+        const jsonData = JSON.stringify(Data);
+        await AsyncStorage.setItem('UserData', jsonData);
         // setIsLoading(false);
         // alert('Product Added Successfully');
         navigation.replace('home');

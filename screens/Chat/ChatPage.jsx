@@ -254,7 +254,7 @@ const [UserProfile,setUserProfile] = useState()
     const mydata =  await users.find((data)=> data.id === user);
     console.log('sender data is ' , mydata)
   
-    const profileuser =  await mydata.Profile
+    const profileuser =  await mydata?.Profile
     console.log(profileuser)
     setUserProfile(profileuser)
  
@@ -273,7 +273,7 @@ const [UserProfile,setUserProfile] = useState()
   const renderUserItem = ({item}) => (
     <View style={styles.userItem}>
       <View style={styles.userInfo}>
-        <Image source={{uri: item.Profile}} style={styles.dp} />
+        <Image source={{uri: item?.Profile}} style={styles.dp} />
         <View>
           <Text style={{color:"black",fontWeight:'bold'}}>{item.Name}</Text>
           <Text style={{color:"black",fontWeight:'300'}}>{item.Category}</Text>
@@ -311,11 +311,13 @@ const [UserProfile,setUserProfile] = useState()
       />
 
       <View style={{height:"90%"}}> 
+      {filteredData1.length>0 && 
       <FlatList
         data={filteredData1}
         keyExtractor={item => item.id.toString()}
         renderItem={renderUserItem}
       />
+}
       </View>
       </View>
         )}

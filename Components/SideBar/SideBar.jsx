@@ -41,12 +41,12 @@ const SideBar = () => {
           <Text style={styles.menuItemText}>{item.label}</Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.menuItem}
         onPress={Logout}
       >
         <Text style={styles.menuItemText}>Log Out</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
     </View>
   );

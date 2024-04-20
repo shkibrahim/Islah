@@ -32,6 +32,7 @@ import { useNavigation } from '@react-navigation/native';
 import {clearError} from '../../../redux/slice/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtherData from '../SignUp/Other/OtherData';
+import { set } from 'date-fns';
 const SignIn = ({route,   }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('ibrahim123');
@@ -49,6 +50,7 @@ const SignIn = ({route,   }) => {
   const[Data,setData] = useState()
   const [Category,setCategory] = useState('')
   const [Loader,setLoader]=useState(false)
+  const [StartLoader,setStartLoader]= useState(false)
 const navigation = useNavigation()
 
 const [token,settoken] = useState()
@@ -94,31 +96,10 @@ const tokenlist = async()=>{
 }
 
 
-const funcat = async () => {
 
-  // setLoader(true)
-  console.log('concatting starts');
-  try {
-    const concatenatedData = await StudentData.concat(
-      IndividualData,
-      BusinessData,
-      JobSeekerData,
-    );
-    setAllData(concatenatedData);
-    if (concatenatedData.length > 0) {
-      console.log('Concat func ke andr ', );
-      // setLoader(false)r
-      // console.log('concatenated data',concatenatedData  )
-    }
-
-    // setAllData(concatenatedData.flat()); // flat() to flatten the array of arrays
-
-  } catch (error) {
-    console.error('Error concatenating data:', error);
-  }
-};
 
 const fetchalldata = async () => {
+  setStartLoader(true)
   console.log('student');
   try {
     const studentQuerySnapshot = await firestore()
@@ -196,24 +177,152 @@ const fetchalldata = async () => {
     } else {
       console.log('No jobseeker documents found.');
     }
+    // const concatenatedData = await StudentData.concat(
+    //   IndividualData,
+    //   BusinessData,
+    //   JobSeekerData,)
+
+
+
+
+    setStartLoader(false)
+
+
+
+
+
   } catch (error) {
     console.error('Error fetching jobseeker data:', error);
   }
 
-  // Wait for all asynchronous operations to complete
-  // await funcat()
+
+};
+const funcat = async () => {
+
+  // setLoader(true)
+  console.log('concatting starts');
+  try {
+    const concatenatedData = await StudentData.concat(
+      IndividualData,
+      BusinessData,
+      JobSeekerData,
+    );
+    setAllData(concatenatedData);
+    if (concatenatedData.length > 0) {
+      console.log('overall',concatenatedData)
+      const mydata = await concatenatedData?.find(data => data?.id === username);
+      const mycategory =mydata?.Category
+      console.log('Concat func ke andr ', );
+console.log('my user data',mydata)
+if (mydata) {
+  // Convert the object to a JSON string
+  const jsonData = JSON.stringify(mydata);
+
+  // Save the JSON string to AsyncStorage
+  await AsyncStorage.setItem('UserData', jsonData);
+}
+
+if (mycategory){
+  await AsyncStorage.setItem('Category', mycategory)
+
+}
+if (mycategory === 'business') {
+  try {
+ 
+    await firestore()
+      .collection('BusinessPerson')
+      .doc(username)
+
+      .update({
+       Token:token
+        // ... (rest of the data)
+      });
+
+  
+  } catch (error) {
+    console.error('Error updating business data:', error);
+  }
+}
+
+
+
+if (mycategory == 'jobseeker' ) {
+  try {
+  
+    await firestore()
+      .collection('JobSeekerData')
+      .doc(username)
+
+      .update({
+        Token: token,
+
+       
+        // ... (rest of the data)
+      });
+
+  
+  } catch (error) {
+    console.error('Error updating data:', error);
+  }
+}
+
+
+
+if (mycategory == 'student') {
+  console.log('first student')
+  try {
+    
+    await firestore()
+      .collection('StudentData')
+      .doc(username)
+
+      .update({
+        Token: token,
+      });
+    
+   
+  } catch (error) {
+    console.error('Error updating data:', error);
+  }
+}
+
+
+
+if (mycategory == 'other' ) {
+  try {
+
+    await firestore()
+      .collection('OtherData')
+      .doc(username)
+
+      .update({
+        Token: token,
+
+      
+      });
+   
+ 
+     
+  } catch (error) {
+    console.error('Error updating data:', error);
+  }
+}
+
+
+  navigation.replace('home');
+
+
+      // setLoader(false)r
+      // console.log('concatenated data',concatenatedData  )
+    }
+
+    // setAllData(concatenatedData.flat()); // flat() to flatten the array of arrays
+
+  } catch (error) {
+    console.error('Error concatenating data:', error);
+  }
 };
 
-// const funcData = async () => {
-//   try {
-    
-//     await fetchalldata();
-   
-    
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//   }
-// };
 
 
 useEffect(() => {
@@ -222,26 +331,24 @@ useEffect(() => {
   fetchalldata();
 }, []);
 
-useEffect(() => {
 
-  funcat()
-
-}, [StudentData,OtherData,BusinessData,JobSeekerData]);
-
-
-// useFocusEffect(
-//   React.useCallback(() => {
-  
-  
-//     fetchalldata();
-//     funcat()
-//   }, []),
-//   );
 
 const DataUpdate = async () => {
-  console.log('data fetching starts ');
-  const mydata = await AllData.find(data => data.id === username);
+  console.log('data merging starts ');
+
+  console.log('ALL THE DATA IS',AllData)
+  const mydata = await AllData?.find(data => data?.id === username);
+  console.log('username is going in',username)
+  console.log('my data is',mydata)
   setData(mydata);
+
+  if (mydata) {
+    // Convert the object to a JSON string
+    const jsonData = JSON.stringify(mydata);
+
+    // Save the JSON string to AsyncStorage
+    await AsyncStorage.setItem('UserData', jsonData);
+}
 
 if (Data && Data.length>0){
   // const mycategory ='svs'
@@ -253,93 +360,98 @@ if (Data && Data.length>0){
   setCategory(mycategory)
 }
 
-const mycategory =mydata.Category
+const mycategory =mydata?.Category
 console.log('asli ha',mycategory)
 // await AsyncStorage.setItem('Category', mycategory);
- 
-  // if (mycategory === 'business') {
-  //   try {
+
+if (mycategory){
+  await AsyncStorage.setItem('Category', mycategory)
+
+}
+  if (mycategory === 'business') {
+    try {
    
-  //     await firestore()
-  //       .collection('BusinessPerson')
-  //       .doc(username)
+      await firestore()
+        .collection('BusinessPerson')
+        .doc(username)
 
-  //       .update({
-  //        Token:token
-  //         // ... (rest of the data)
-  //       });
+        .update({
+         Token:token
+          // ... (rest of the data)
+        });
 
     
-  //   } catch (error) {
-  //     console.error('Error updating business data:', error);
-  //   }
-  // }
+    } catch (error) {
+      console.error('Error updating business data:', error);
+    }
+  }
 
  
 
-  // if (mycategory == 'jobseeker' ) {
-  //   try {
+  if (mycategory == 'jobseeker' ) {
+    try {
     
-  //     await firestore()
-  //       .collection('JobSeekerData')
-  //       .doc(username)
+      await firestore()
+        .collection('JobSeekerData')
+        .doc(username)
 
-  //       .update({
-  //         Token: token,
+        .update({
+          Token: token,
 
          
-  //         // ... (rest of the data)
-  //       });
+          // ... (rest of the data)
+        });
 
     
-  //   } catch (error) {
-  //     console.error('Error updating data:', error);
-  //   }
-  // }
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  }
 
 
 
   if (mycategory == 'student') {
     console.log('first student')
-    // try {
+    try {
       
-    //   await firestore()
-    //     .collection('StudentData')
-    //     .doc(username)
+      await firestore()
+        .collection('StudentData')
+        .doc(username)
 
-    //     .update({
-    //       Token: token,
-    //     });
+        .update({
+          Token: token,
+        });
       
      
-    // } catch (error) {
-    //   console.error('Error updating data:', error);
-    // }
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
   }
 
   
 
-  // if (mycategory == 'other' ) {
-  //   try {
+  if (mycategory == 'other' ) {
+    try {
   
-  //     await firestore()
-  //       .collection('OtherData')
-  //       .doc(username)
+      await firestore()
+        .collection('OtherData')
+        .doc(username)
 
-  //       .update({
-  //         Token: token,
+        .update({
+          Token: token,
 
         
-  //       });
+        });
      
    
        
-  //   } catch (error) {
-  //     console.error('Error updating data:', error);
-  //   }
-  // }
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  }
 
- 
+
+  // navigation.replace('home');
 };
   // console.log(
   //   `error ->`,
@@ -364,7 +476,7 @@ console.log('asli ha',mycategory)
 
   const loginHandler = async() => {
 
-    if (username === '' || password === '') {
+    if (username === '' || password === ''  ) {
       setError(true);
     } else {
       setLoader(true)
@@ -374,12 +486,12 @@ console.log('asli ha',mycategory)
         await auth()
           .signInWithEmailAndPassword(username, password);
           await tokenlist()
-          await DataUpdate()
-
-          navigation.replace('home');
+          await funcat()
+          // await DataUpdate()
+   
         // Save email in AsyncStorage regardless of its value
     
-  setUsername('')
+  // setUsername('')
   setPassword('')
 
         // Navigate to the 'Map' screen
@@ -405,112 +517,129 @@ console.log('asli ha',mycategory)
 
   return (
     <View style={{flex:1}}>
-       {Loader ? (
-        <View style={{alignSelf: 'center', marginTop: 350}}>
-        {/* <Text  style={{color:'green',marginBottom:10}}>Signing in</Text> */}
-        <ActivityIndicator
-          size="large"
-          color="green"
-          style={{}}
+{StartLoader ? (
+  <View style={{alignSelf:"center",marginTop:300,justifyContent:"center",alignItems:"center"}}>
+    <Image
+      source={require('../../../assets/images/logo.png')}
+      style={styles.logo2}
+    />
+<Text style={{color:'green',fontSize:18,fontWeight:"900",}}>WELCOME TO ISLAH</Text>
+
+  </View>
+
+): (
+<View style={{flex:1}}>
+{Loader ? (
+  <View style={{alignSelf: 'center', marginTop: 350}}>
+  <Text  style={{color:'green',marginBottom:10}}>Signing in</Text>
+  <ActivityIndicator
+    size="large"
+    color="green"
+    style={{}}
+  />
+  </View>
+) : (
+<ScrollView style={{
+flex: 1,
+backgroundColor: '#fff',
+}}>
+<TouchableWithoutFeedback
+  onPress={() => {
+    Keyboard.dismiss();
+  }}>
+  <View style={styles.container}>
+    <Image
+      source={require('../../../assets/images/logo.png')}
+      style={styles.logo}
+    />
+    <Title style={styles.brandName}>Islah Committee</Title>
+    <Title style={styles.heading}>Welcome Back</Title>
+    <Paragraph style={{marginBottom: 8}}>Sign in to continue</Paragraph>
+    {/* input Fields */}
+    <CustomTextInput
+      setError={setIsUsernameEmpty}
+      required={false}
+      error={isUsernameEmpty}
+      value={username}
+      onChange={setUsername}
+      label="Username"
+    />
+    <TextInput
+      underlineColor="#000"
+      activeOutlineColor="#197739"
+      placeholderTextColor="#666"
+      textColor="#000"
+      selectionColor="green"
+      outlineColor="#197739"
+      style={styles.input}
+      outlineStyle={{borderRadius: 8}}
+      cursorColor="green"
+      label="Password"
+      value={password}
+      onChangeText={setPassword}
+      secureTextEntry={hidePassword}
+      mode="outlined"
+      right={
+        <TextInput.Icon
+          size={20}
+          color="#666"
+          icon={hidePassword ? 'eye-off' : 'eye'}
+          onPress={() => setHidePassword(!hidePassword)}
         />
-        </View>
-      ) : (
-    <ScrollView style={{
-      flex: 1,
-      backgroundColor: '#fff',
-    }}>
-      <TouchableWithoutFeedback
+      }
+      error={isPasswordEmpty}
+    />
+
+    {/* Showing error  */}
+
+    {error && (
+      <Text style={{marginTop: 8, color: 'red', marginBottom: 8}}>
+        Please enter Username and password
+      </Text>
+    )}
+
+    {/* Sign In button */}
+
+    <CustomButton
+      label="Sign In"
+      onPress={() => {
+        loginHandler();
+      }}
+    />
+
+    <Text>
+      Don't have an account?
+      <TouchableOpacity
         onPress={() => {
-          Keyboard.dismiss();
+          navigation.navigate('beforesignup');
         }}>
-        <View style={styles.container}>
-          <Image
-            source={require('../../../assets/images/logo.png')}
-            style={styles.logo}
-          />
-          <Title style={styles.brandName}>Islah Committee</Title>
-          <Title style={styles.heading}>Welcome Back</Title>
-          <Paragraph style={{marginBottom: 8}}>Sign in to continue</Paragraph>
-          {/* input Fields */}
-          <CustomTextInput
-            setError={setIsUsernameEmpty}
-            required={false}
-            error={isUsernameEmpty}
-            value={username}
-            onChange={setUsername}
-            label="Username"
-          />
-          <TextInput
-            underlineColor="#000"
-            activeOutlineColor="#197739"
-            placeholderTextColor="#666"
-            textColor="#000"
-            selectionColor="green"
-            outlineColor="#197739"
-            style={styles.input}
-            outlineStyle={{borderRadius: 8}}
-            cursorColor="green"
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={hidePassword}
-            mode="outlined"
-            right={
-              <TextInput.Icon
-                size={20}
-                color="#666"
-                icon={hidePassword ? 'eye-off' : 'eye'}
-                onPress={() => setHidePassword(!hidePassword)}
-              />
-            }
-            error={isPasswordEmpty}
-          />
+        <Text
+          style={{color: '#197739', marginLeft: 4, fontWeight: 'bold'}}>
+          {' '}
+          Sign Up
+        </Text>
+      </TouchableOpacity>
+    </Text>
+    <TouchableOpacity
+      style={{
+        paddingTop: 8,
+      }}
+      onPress={() => {
+          navigation.navigate('forgotPassword');
+      }}>
+      <Text style={{color: '#197739', marginLeft: 4}}>
+        Forgot Password?
+      </Text>
+    </TouchableOpacity>
+  </View>
+</TouchableWithoutFeedback>
+</ScrollView>
+)}
+</View>
+)}
 
-          {/* Showing error  */}
-
-          {error && (
-            <Text style={{marginTop: 8, color: 'red', marginBottom: 8}}>
-              Please enter Username and password
-            </Text>
-          )}
-
-          {/* Sign In button */}
-
-          <CustomButton
-            label="Sign In"
-            onPress={() => {
-              loginHandler();
-            }}
-          />
-
-          <Text>
-            Don't have an account?
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('beforesignup');
-              }}>
-              <Text
-                style={{color: '#197739', marginLeft: 4, fontWeight: 'bold'}}>
-                {' '}
-                Sign Up
-              </Text>
-            </TouchableOpacity>
-          </Text>
-          <TouchableOpacity
-            style={{
-              paddingTop: 8,
-            }}
-            onPress={() => {
-                navigation.navigate('forgotPassword');
-            }}>
-            <Text style={{color: '#197739', marginLeft: 4}}>
-              Forgot Password?
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
-      )}
+      
+  
     </View>
   );
 };
@@ -544,6 +673,11 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 8,
+    objectFit: 'cover',
+  },
+  logo2: {
+    width: 150,
+    height: 150,
     objectFit: 'cover',
   },
   input: {

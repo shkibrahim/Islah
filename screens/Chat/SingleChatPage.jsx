@@ -325,6 +325,11 @@ if (matchingData) {
   })
 }}>
 
+<TouchableOpacity onPress={()=>navigation.goBack()}> 
+<MaterialIcons name="keyboard-arrow-left" size={33} color={'black'} />
+
+</TouchableOpacity>
+{/* ff */}
           <View style={{borderRadius:50,height:50,width:50,backgroundColor:"blue",overflow:"hidden"}}>
           <Image source={{ uri: Profile }} style={{height:50,width:50,}} />
           </View>
