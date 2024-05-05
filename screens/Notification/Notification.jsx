@@ -42,14 +42,15 @@ useEffect(() => {
       // notif?.forEach(item => {
       //   console.log('collapseKey:', item.notification?.title ?? 'Not found');
       // });
-      
-      const notificationDoc = await firestore().collection('Notification').doc(user).get();
-      const firestoreNotification = notificationDoc?.data();
+    
+      const notificationDocs = await firestore().collection('Notification').doc(String(user)).collection(user).get();
+      const firestoreNotification = notificationDocs.docs.map(doc => doc.data());
       console.log('data is',firestoreNotification)
-      const mydat =(firestoreNotification?.notification)
+      const mydat =(firestoreNotification[0]?.notification)
       // const pard = JSON.parse(mydat)
+      const str = JSON.stringify(mydat)
       console.log('myda',mydat)
-      setNewsData(mydat);
+      setNewsData(firestoreNotification);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -64,12 +65,12 @@ useEffect(() => {
   const main = '#197739';
 
 const Directing =async(item)=>{
-if (item.notification?.title == 'Islah'){
+if (item.notification[0]?.notification?.title == 'Islah' || !item.notification[0]?.notification?.title){
   navigation.navigate('News')
 
 }
 
-if (item.notification?.title != 'Islah'){
+if (item.notification[0]?.notification?.title != 'Islah' &&  item.notification[0]?.notification?.title){
   navigation.navigate('chat')
 
 }
@@ -82,12 +83,11 @@ if (item.notification?.title != 'Islah'){
     
 >
   {/* {JSON.stringify(item)} */}
-   {item.notification?.title}
+   {item.notification[0]?.notification?.title ?  item.notification[0]?.notification?.title : 'Islah'}
     </Text>
-    <Text style={{color:"white"}}
-   
->
-{item.notification?.body}
+    <Text style={{color:"white"}}>
+{item.notification[0]?.notification?.body ?  item.notification[0]?.notification?.body : 'has a news for you'}
+{/* {JSON.stringify(item.notification[0]?.notification?.title)} */}
     </Text>
 
  

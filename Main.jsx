@@ -419,11 +419,11 @@ const Main = () => {
   
   const yourNavigationContainerRef = useRef();
 
-  messaging().onNotificationOpenedApp((remoteMessage) => {
-    const { navigation } = yourNavigationContainerRef.current;
-    const screenName = 'chat'; // Name of the screen you want to navigate to
-    handleNotificationClick(navigation, screenName);
-  });
+  // messaging().onNotificationOpenedApp((remoteMessage) => {
+  //   const { navigation } = yourNavigationContainerRef.current;
+  //   const screenName = 'chat'; // Name of the screen you want to navigate to
+  //   handleNotificationClick(navigation, screenName);
+  // });
   const dispatch = useDispatch();
   const [pageLoading, setPageLoading] = useState(true);
   useEffect(() => {
@@ -432,16 +432,16 @@ const Main = () => {
   }, [dispatch]);
   const {loading, isAuthenticated , error } = useSelector(state => state.auth);
 
-  const handleNotificationClick = (navigation, screenName) => {
-    navigation.dispatch(
-      CommonActions.navigate({
-        name:screenName,
-        // params: {
-        //   // Any parameters you want to pass to the screen
-        // },
-      })
-    );
-  };
+  // const handleNotificationClick = (navigation, screenName) => {
+  //   navigation.dispatch(
+  //     CommonActions.navigate({
+  //       name:screenName,
+  //       // params: {
+  //       //   // Any parameters you want to pass to the screen
+  //       // },
+  //     })
+  //   );
+  // };
   return (
     <NavigationContainer  ref={yourNavigationContainerRef}>
       <StatusBar

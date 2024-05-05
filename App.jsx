@@ -108,6 +108,41 @@ const App = () => {
     }
   };
 
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+
+    const parsed =([remoteMessage])
+  // console.log('parsed are',parsed)
+      const updatedNotifications = [remoteMessage];
+  
+      console.log('updates are',updatedNotifications)
+      await firestore().collection('Notification').doc(String(user)).collection('shk').doc().set({
+        notification: parsed
+      });
+      
+  
+    console.log('Message handled in the background!', remoteMessage);
+  
+    let message_body = remoteMessage.data.body;
+    let message_title = remoteMessage.data.title;
+  
+    PushNotification.localNotification({
+      channelId: 'channel-id',
+      title: message_title,
+      message: message_body,
+      playSound: true,
+      soundName: 'default',
+    });
+  
+    PushNotification.configure({
+      onNotification: function (notification) {
+        console.log('LOCAL NOTIFICATION ==>', notification);
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
+  });
+  
+
   
 //   const sendNotification = async (message) => {
 // console.log('first')
@@ -188,9 +223,58 @@ const user = newdata?.id
 console.log('user is',user)
 
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  const data = await AsyncStorage.getItem('UserData')
+  console.log('my data is',data)
+
+const newdata= JSON.parse(data)
+const user = newdata?.id
+  const parsed =([remoteMessage])
+// console.log('parsed are',parsed)
+    const updatedNotifications = [remoteMessage];
+
+    console.log('updates are back',updatedNotifications)
+    if (user){
+      await firestore().collection('Notification').doc(String(user)).collection(user).doc().set({
+        notification: parsed
+      });
+      
+    }
+
+
+  console.log('Message handled in the background!', remoteMessage);
+
+  let message_body = remoteMessage.data.body;
+  let message_title = remoteMessage.data.title;
+
+  PushNotification.localNotification({
+    channelId: 'channel-id',
+    title: message_title,
+    message: message_body,
+    playSound: true,
+    soundName: 'default',
+  });
+
+  PushNotification.configure({
+    onNotification: function (notification) {
+      console.log('LOCAL NOTIFICATION ==>', notification);
+    },
+    popInitialNotification: true,
+    requestPermissions: true,
+  });
+});
+
  
   const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const data = await AsyncStorage.getItem('UserData')
+    console.log('my data is in foreground',data)
+  
+  const newdata= JSON.parse(data)
+  const user = newdata?.id
     console.log('message is',remoteMessage)
+
+  
+
     // const notificationDoc = await firestore().collection('Notification').doc(a).get();
     // const firestoreNotification = notificationDoc.data();
 
@@ -201,9 +285,10 @@ const parsed =([remoteMessage])
     const updatedNotifications = [remoteMessage];
 
     console.log('updates are',updatedNotifications)
-      await firestore().collection('Notification').doc(user).set({
-        notification:parsed
-      });
+    await firestore().collection('Notification').doc(String(user)).collection(user).doc().set({
+      notification: parsed
+    });
+    
 
     try {
       // Fetch the notification from Firestore

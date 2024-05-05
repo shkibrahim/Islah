@@ -8,6 +8,17 @@ import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
+
+  const parsed =([remoteMessage])
+// console.log('parsed are',parsed)
+    const updatedNotifications = [remoteMessage];
+
+    console.log('updates are',updatedNotifications)
+    await firestore().collection('Notification').doc(String(user)).collection('shk').doc().set({
+      notification: parsed
+    });
+    
+
   console.log('Message handled in the background!', remoteMessage);
 
   let message_body = remoteMessage.data.body;
