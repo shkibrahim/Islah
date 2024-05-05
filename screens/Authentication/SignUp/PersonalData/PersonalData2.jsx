@@ -172,7 +172,7 @@ HusbandName:HusbandName,
             setSelectedOption={setmaritalStatus}
             selectedOption={maritalStatus}
           />
-          {maritalStatus === 'married' ? (
+          {maritalStatus === 'married' && gender == 'female' ? (
             <CustomTextInput
               setError={setIspartnerNameEmpty}
               required={true}

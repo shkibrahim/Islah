@@ -11,7 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 import { myTheme } from '../../theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { set } from 'date-fns';
-const NewsPage = () => {
+const NewsPage = ({navigation}) => {
   const [RideTypeModal, setRideTypeModal] = useState(false);
   const [selectedItem,setselectedItem]= useState(null)
   const RideTypeSelector = (item) => {
@@ -40,11 +40,12 @@ const [WorldData,setWorldData] = useState()
   
         console.log('Fetched data:', data);
         setNewsData(data);
-        const Educationdata =  data?.find(data => data?.NewsCategory === 'Education');
+        const Educationdata =data?.filter(data => data?.NewsCategory == 'Education');
         setEducationData(Educationdata)
-        const Worlddata =  data?.find(data => data?.NewsCategory === 'World');
+        const Worlddata =data?.filter(data => data?.NewsCategory == 'World');
+        console.log('the world news is',WorldData)
         setWorldData(Worlddata)
-        const Businessdata =  data?.find(data => data?.NewsCategory === 'Business');
+        const Businessdata =data?.filter(data => data?.NewsCategory == 'Business');
         setBusinessData(Businessdata)
 
 
@@ -101,19 +102,21 @@ const [WorldData,setWorldData] = useState()
 const [selectedImage,setselectedImage] = useState('https://firebasestorage.googleapis.com/v0/b/islah-8f61c.appspot.com/o/1000202110.jpg?alt=media&token=9d0ee881-1d43-4bb5-8c28-1440d7d5a69b')
   const renderItem1 = ({item}) => (
     <TouchableOpacity
-    disabled={true}
+    // disabled={true}
     activeOpacity={0.6}
-    // onPress={RideTypeSelector}
+    onPress={()=>navigation.navigate('NewsDescription',{
+      item:item
+    })}
      style={{borderRadius:15,   borderWidth: 0.5,
       backgroundColor : "#fff",flexDirection:"row",alignItems:"center",justifyContent:"space-between",
       borderColor: '#ddd',height:100,margin:12,padding:12}}>
     <Text style={styles.title}>
-     {item.News}
+     {item.Title}
     </Text>
 
 
 <View style={{height:'100%',width:75,borderRadius:4,alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-<Image source={{uri: selectedImage}} style={{width:'100%',height:"100%"}} />
+<Image source={{uri: item.NewsImage}} style={{width:'100%',height:"100%"}} />
 
 </View>
  
@@ -223,6 +226,7 @@ const [selectedImage,setselectedImage] = useState('https://firebasestorage.googl
         </TouchableOpacity>
       </View>
 
+      <View style={{height:630}}>
       {ViewAll && <View>
         <FlatList
           data={NewsData}
@@ -259,11 +263,14 @@ const [selectedImage,setselectedImage] = useState('https://firebasestorage.googl
         <FlatList
           data={WorldData}
           renderItem={renderItem1}
-          keyExtractor={item => item.id}
+          // keyExtractor={item => item.id}
         />
 
 
         </View>}
+      </View>
+
+  
       </View>
            )} 
 

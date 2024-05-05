@@ -16,6 +16,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import {myTheme} from '../../theme';
 import CustomTextInput from '../../Components/CustomTextInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Modal from 'react-native-modal';
 import firestore from '@react-native-firebase/firestore';
 import CustomButton from '../../Components/CustomButton';
 import PostCard from '../../Components/PostCard/PostCard';
@@ -54,6 +56,14 @@ console.log("Current time:", formattedTime);
   const [JobSeekerData, setJobSeekerData] = useState([]);
   const [AllData, setAllData] = useState([]);
   const snapPoints = ['60%', '70%'];
+  
+  const [RideTypeModal, setRideTypeModal] = useState(false);
+  const RideTypeSelector = () => {
+setRideTypeModal(!RideTypeModal)
+    // setContent(item.Content);
+  
+  };
+
   const bottomSheetModalRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const funcat = async () => {
@@ -197,8 +207,9 @@ console.log("Current time:", formattedTime);
 
   const handlePresentModal = async (item) => {
      await myDatafetch(item)
-    bottomSheetModalRef.current?.present();
-    setIsOpen(true);
+    // bottomSheetModalRef.current?.present();
+    // setIsOpen(true);
+    setRideTypeModal(!RideTypeModal)
     setSelectedItem(item);
     console.log('my item is', item.Comments);
   };
@@ -876,7 +887,7 @@ console.log('yehi to ha',mydata.Category)
 
   // console.log(CommentList)
   const renderCard = ({item}) => (
-    <View style={{ backgroundColor: 'lightgray',borderRadius:20,padding:12,width:windowWidth-15,alignSelf:"center",marginVertical:6}}>
+    <View style={{ backgroundColor: 'lightgray',borderRadius:20,padding:12,alignSelf:"center",marginVertical:6,width:'100%'}}>
       <View
         style={{
           flexDirection: 'row',
@@ -1017,6 +1028,71 @@ console.log('yehi to ha',mydata.Category)
         )}
       </ScrollView>
 
+
+      <Modal
+        isVisible={RideTypeModal}
+        onBackdropPress={RideTypeSelector}
+        backdropColor="rgba(0, 0, 0, 0.5)" // Transparent black background color
+        animationIn="slideInUp"
+        animationOut="slideOutDown">
+       <View style={{ flex: 1, alignItems: 'center',backgroundColor: 'white',  padding: 10,borderRadius:12,height:500}}>
+    <View style={{ backgroundColor: 'white', padding: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between",width:"100%"}}>
+    <MaterialIcons name="close" size={18} color={'transparent'} />
+
+        <Text style={{ color: 'black' }}>Comments</Text>
+        <TouchableOpacity onPress={()=>setRideTypeModal(!RideTypeModal)}>
+        <MaterialIcons name="close" size={18} color={'black'} />
+
+        </TouchableOpacity>
+        
+      </View>
+
+      <View style={{ flex: 1, width: '100%' ,height:'100%'}}>
+        <FlatList style={{height:'100%'}}
+          data={selectedItem ? selectedItem.Comments : []}
+          renderItem={renderCard}
+          showsVerticalScrollIndicator={true}
+          ref={flatListRef}
+          // other props
+          // onScroll={(event) => {
+          //   const offsetY = event.nativeEvent.contentOffset.y;
+          //   if (offsetY === 0) {
+          //     bottomSheetModalRef.current?.dismiss();
+          //   }
+          // }}
+        />
+      </View>
+
+      <View style={{ backgroundColor: 'white', paddingBottom: 20 }}>
+        <TextInput
+          multiline={true}
+          style={{
+            height: 45,
+            backgroundColor: 'lightgray',
+            // margin: 14,
+            width: 330,
+            paddingHorizontal: 10,
+            paddingVertical: 8,
+            color: 'black',
+            borderRadius: 20,
+            borderColor: myTheme.colors.primary,
+            borderWidth: 1,
+          }}
+          placeholder="Add Comment"
+          value={Comment}
+          placeholderTextColor="gray"
+          onChangeText={setComment}
+        />
+
+        <TouchableOpacity
+          style={{ alignSelf: 'flex-end', marginHorizontal: 14 }}
+          onPress={() => UpdateComments(selectedItem)}
+        >
+          <Text style={{ color: myTheme.colors.primary }}>Send</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+      </Modal>
       <BottomSheetModalProvider>
   <BottomSheetModal
     ref={bottomSheetModalRef}
@@ -1030,8 +1106,9 @@ console.log('yehi to ha',mydata.Category)
       borderColor:"green",borderWidth:1,
       flex: 1,
     }}
-    gestureEnabled={true}
-    onDismiss={() => setIsOpen(false)}
+    
+    gestureEnabled={false}
+    // onDismiss={() => setIsOpen(false)}
   >
     <View style={{ flex: 1, alignItems: 'center' }}>
     <View style={{ backgroundColor: 'white', padding: 10 }}>
@@ -1045,12 +1122,12 @@ console.log('yehi to ha',mydata.Category)
           showsVerticalScrollIndicator={true}
           ref={flatListRef}
           // other props
-          onScroll={(event) => {
-            const offsetY = event.nativeEvent.contentOffset.y;
-            if (offsetY === 0) {
-              bottomSheetModalRef.current?.dismiss();
-            }
-          }}
+          // onScroll={(event) => {
+          //   const offsetY = event.nativeEvent.contentOffset.y;
+          //   if (offsetY === 0) {
+          //     bottomSheetModalRef.current?.dismiss();
+          //   }
+          // }}
         />
       </View>
 

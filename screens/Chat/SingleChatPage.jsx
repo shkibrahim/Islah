@@ -139,9 +139,9 @@ if (matchingData) {
   const SendNotification = async (tokens) => {
     // Import axios at the beginning of your file
     const notificationPayload = {
-      data: {},
+      // data: {},
       notification: {
-        body: SenderMsg,
+        body: SenderMsg?.text,
         title: SenderName,
       },
     };
@@ -164,7 +164,7 @@ if (matchingData) {
   
     try {
       const response = await axios(config);
-      console.log(JSON.stringify(response.data));
+      console.log('response of',JSON.stringify(response.data));
     } catch (error) {
       console.log('Error sending notification:', error);
     }

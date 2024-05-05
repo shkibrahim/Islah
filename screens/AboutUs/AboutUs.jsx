@@ -17,8 +17,8 @@ const AboutUs = () => {
 
   
   const navigation = useNavigation();
-const [AboutUs,setAboutus] = useState();
-console.log(JSON.stringify(AboutUs))
+const [AboutUs,setAboutus] = useState([{"AboutUs":[{"Name":"Ggg","Description":"Tt","MemberImage":"https://firebasestorage.googleapis.com/v0/b/islah-8f61c.appspot.com/o/1000203585.jpg?alt=media&token=9745b128-2f14-490c-bd2b-2cd08aa455e7","Status":"Ff"},{"Name":"Ff","Description":"Ff","MemberImage":"https://firebasestorage.googleapis.com/v0/b/islah-8f61c.appspot.com/o/1000203696.jpg?alt=media&token=791a34f1-b3bf-4105-b417-16c36042b918","Status":"Ff"}],"id":"Admin"}]);
+console.log((AboutUs))
 const fetchData = async () => {
   console.log('fetching members');
   try {
@@ -33,6 +33,7 @@ const fetchData = async () => {
 
     // Check if data.docs is defined before mapping
     if (data && Array.isArray(data)) {
+      
       setAboutus(data);
     } else {
       console.log('No documents found.');
@@ -57,7 +58,7 @@ const renderItem = ({ item }) => (
 {/* <Text style={{color:'red'}}>{JSON.stringify(item)}</Text> */}
     <View style={{width:60,height:60,borderRadius:40,overflow:"hidden"}}>
     <Image
-            source={{uri: item?.MemberImage}}
+            source={{uri: item.MemberImage}}
             style={{height: '100%', width: '100%',}}
             onError={error => console.error('Image Error: ', error)}
           />
@@ -69,10 +70,10 @@ const renderItem = ({ item }) => (
     paddingHorizontal: 10
   
   }}>
-      <Text style={{fontSize: 20, fontWeight: '500' , color : myTheme.colors.primary}}>{item?.Name}</Text>
-      <Text style={{fontSize: 13 , fontWeight : 'bold' ,color:"black"}}>{item?.Status}</Text>
+      <Text style={{fontSize: 20, fontWeight: '500' , color : myTheme.colors.primary}}>{item.Name}</Text>
+      <Text style={{fontSize: 13 , fontWeight : 'bold' ,color:"black"}}>{item.Status}</Text>
       <Text style={{fontSize: 14 , padding : 4 , textAlign : 'justify' , fontStyle : 'italic',color:'black'}}>
-    {item?.Description}
+    {item.Description}
       </Text>
   </View>
 
@@ -117,7 +118,7 @@ const renderItem = ({ item }) => (
             Authorized Members
           </Text>
           <FlatList
-        data={AboutUs[0]?.AboutUs}
+       data={AboutUs.length > 0 ? AboutUs[0].AboutUs : []}
         renderItem={renderItem}
         // keyExtractor={(item) => item.id.toString()}
       />

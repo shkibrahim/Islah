@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import SideBar from './Components/SideBar/SideBar';
 import {loadUser} from './redux/reducers/authReducers';
 import AboutUs from './screens/AboutUs/AboutUs';
+import { CommonActions } from '@react-navigation/native';
 import AdvertiseWithUs from './screens/AdvertiseWithUs/AdvertiseWithUs';
 import Associates from './screens/Associates/Associates';
 import SignIn from './screens/Authentication/SignIn/SignIn';
@@ -63,11 +64,13 @@ import LookingForGroom from './screens/CategoryPage/Matrimonial/LookingForGroom'
 import messaging from '@react-native-firebase/messaging';
 import Notification from './screens/Notification/Notification';
 import PersonalView from './screens/PersonalView/PersonalView';
-
+import { useRef } from 'react';
+import NewsDescription from './screens/NewsPage/NewsDescription';
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
   // You can handle the background message here
 });
+
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -404,10 +407,23 @@ const StackNavigator = ({isAuthenticated}) => (
       component={Notification}
       options={{headerShown: true}}
     />
+        <Stack.Screen
+      name="NewsDescription"
+      component={NewsDescription}
+      options={{headerShown: false}}
+    />
   </Stack.Navigator>
 );
 
 const Main = () => {
+  
+  const yourNavigationContainerRef = useRef();
+
+  messaging().onNotificationOpenedApp((remoteMessage) => {
+    const { navigation } = yourNavigationContainerRef.current;
+    const screenName = 'chat'; // Name of the screen you want to navigate to
+    handleNotificationClick(navigation, screenName);
+  });
   const dispatch = useDispatch();
   const [pageLoading, setPageLoading] = useState(true);
   useEffect(() => {
@@ -416,10 +432,18 @@ const Main = () => {
   }, [dispatch]);
   const {loading, isAuthenticated , error } = useSelector(state => state.auth);
 
-
-
+  const handleNotificationClick = (navigation, screenName) => {
+    navigation.dispatch(
+      CommonActions.navigate({
+        name:screenName,
+        // params: {
+        //   // Any parameters you want to pass to the screen
+        // },
+      })
+    );
+  };
   return (
-    <NavigationContainer>
+    <NavigationContainer  ref={yourNavigationContainerRef}>
       <StatusBar
         backgroundColor={myTheme.colors.primary}
         barStyle="light-content"

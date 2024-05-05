@@ -23,69 +23,71 @@ const Notification = ({navigation}) => {
 
 
   const[Loading,setLoading] = useState(false)
-  const [NewsData, setNewsData] = useState([]);
+  const [NewsData, setNewsData] = useState();
+const [ChatData,setChatData]=useState([])
+console.log('my news',NewsData)
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await firestore().collection('News').get();
-        const data = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-  
-        console.log('Fetched data:', data);
-  
-        setLoading(false);
-        setNewsData(data);
-  
-        // Set up real-time listener for changes
-        const unsubscribe = firestore().collection('News').onSnapshot(snapshot => {
-          // Trigger a notification when there's a change
-          sendNotification();
-          console.log('fwf')
-        });
-  
-        // Clean up the listener when the component unmounts
-        return () => unsubscribe();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
-  
-    const sendNotification = async (message) => {
 
-      PushNotification.localNotification({
-        channelId: 'default-channel-id',
-        title: 'Islah',
-        message: 'A new notification',
-      });
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data = await AsyncStorage.getItem('UserData')
+      // console.log('my data is',JSON.parse(data))
     
- 
-    };
-  
-    fetchData();
-  }, []);
-  console.log('andr wala', NewsData)
+    const newdata= JSON.parse(data)
+    const user = newdata?.id
+      // const notifStr = await AsyncStorage.getItem('notifications');
+      // const notif = JSON.parse(notifStr);
+      // notif?.forEach(item => {
+      //   console.log('collapseKey:', item.notification?.title ?? 'Not found');
+      // });
+      
+      const notificationDoc = await firestore().collection('Notification').doc(user).get();
+      const firestoreNotification = notificationDoc?.data();
+      console.log('data is',firestoreNotification)
+      const mydat =(firestoreNotification?.notification)
+      // const pard = JSON.parse(mydat)
+      console.log('myda',mydat)
+      setNewsData(mydat);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+  console.log('andr wala',NewsData)
 
   const main = '#197739';
 
+const Directing =async(item)=>{
+if (item.notification?.title == 'Islah'){
+  navigation.navigate('News')
 
+}
+
+if (item.notification?.title != 'Islah'){
+  navigation.navigate('chat')
+
+}
+}
   const renderItem1 = ({item}) => (
     <TouchableOpacity style={{borderRadius:15,   borderWidth: 0.5,
       backgroundColor : "green",
-      borderColor: '#ddd',height:60,margin:12,padding:12}}onPress={() => navigation.navigate('News')}>
+      borderColor: '#ddd',margin:12,padding:12}}onPress={() => Directing(item)}>
     <Text style={styles.title}
     
 >
-    A NEW POST BY ISLAH...
+  {/* {JSON.stringify(item)} */}
+   {item.notification?.title}
     </Text>
-    <Text style={{}}
+    <Text style={{color:"white"}}
    
 >
-   Click me to see more
+{item.notification?.body}
     </Text>
 
  
@@ -106,12 +108,17 @@ const Notification = ({navigation}) => {
         />
       ) : (
       <View>
-       <FlatList
+        {NewsData?.length>0 &&       <FlatList
           data={NewsData}
           renderItem={renderItem1}
           keyExtractor={item => item.id}
         />
-
+}
+{NewsData == undefined &&       
+<View>
+  <Text style={{color:"red",alignSelf:"center",marginTop:200,fontSize:18}}>No notifications yet.</Text>
+  </View>
+}
       {/* <View style={{height:"90%"}}> 
       <FlatList
         data={filteredData1}

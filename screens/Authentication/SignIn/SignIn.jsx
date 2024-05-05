@@ -9,6 +9,9 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import Modal from 'react-native-modal';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {
   Paragraph,
   Text,
@@ -33,9 +36,10 @@ import {clearError} from '../../../redux/slice/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtherData from '../SignUp/Other/OtherData';
 import { set } from 'date-fns';
+import { myTheme } from '../../../theme';
 const SignIn = ({route,   }) => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('ibrahim123');
+  const [password, setPassword] = useState('');
   const [isUsernameEmpty, setIsUsernameEmpty] = useState(false);
   const [StudentData, setStudentData] = useState([]);
   const [BusinessData, setBusinessData] = useState([]);
@@ -183,7 +187,11 @@ const fetchalldata = async () => {
     //   JobSeekerData,)
 
 
+    const user = await AsyncStorage.getItem('UserData')
+if (user!=null && user!=undefined){
+  navigation.replace('home')
 
+}
 
     setStartLoader(false)
 
@@ -322,8 +330,45 @@ if (mycategory == 'other' ) {
     console.error('Error concatenating data:', error);
   }
 };
+const [isModalVisible, setModalVisible] = useState(false);
+const [Loading,setLoading] = useState(false)
+const [UserEmail, setUserEmail] = useState();
+const Forgot =()=>{
+  setModalVisible(!isModalVisible);
 
+}
 
+const SendEmail = async () => {
+  console.log('gg'); // Assuming this is a debug log
+
+  // Assuming UserEmail is defined somewhere in your code
+  const email = UserEmail; // Use the email you want to send the reset password to
+
+  if (!/^[\w\.-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/.test(email)) {
+    // Assuming setEmailError is a function to set an error state
+    // Make sure to handle the state accordingly in your code
+    Alert.alert('Invalid Email format');
+    return;
+  }
+
+  try {
+    // Send password reset email using Firebase Authentication
+    await auth().sendPasswordResetEmail(email);
+
+    // Assuming you are using some kind of notification or alert mechanism
+    Alert.alert( 'Password reset code sent to your email');
+  } catch (error) {
+    if (error.code === 'auth/invalid-email') {
+      Alert.alert('Error', 'Invalid email address');
+    } else if (error.code === 'auth/user-not-found') {
+      Alert.alert('Error', 'Email address is not registered');
+    } else {
+      Alert.alert('Error', 'An error occurred. Please try again later.');
+    }
+  }
+
+  setModalVisible(!isModalVisible)
+};
 
 useEffect(() => {
   // console.log('concating')
@@ -479,12 +524,13 @@ if (mycategory){
     if (username === '' || password === ''  ) {
       setError(true);
     } else {
-      setLoader(true)
-      await AsyncStorage.setItem('userName', username);
+      
 
       try {
         await auth()
           .signInWithEmailAndPassword(username, password);
+          setLoader(true)
+      await AsyncStorage.setItem('userName', username);
           await tokenlist()
           await funcat()
           // await DataUpdate()
@@ -624,13 +670,68 @@ backgroundColor: '#fff',
       style={{
         paddingTop: 8,
       }}
-      onPress={() => {
-          navigation.navigate('forgotPassword');
-      }}>
+      onPress={Forgot}>
       <Text style={{color: '#197739', marginLeft: 4}}>
         Forgot Password?
       </Text>
     </TouchableOpacity>
+
+    <Modal isVisible={isModalVisible}
+  onBackButtonPress={() => setModalVisible(false)} // Close the modal on Android back button press
+  onBackdropPress={() => setModalVisible(false)} >
+        <View style={{padding:10, justifyContent: "center", alignItems: "center" ,backgroundColor:"white", borderRadius:12}}>
+          <View style={{flexDirection:"row", alignItems:"center",justifyContent:"space-between",width:'100%'}}>
+          <MaterialIcons name="close" size={18} color={'transparent'} />
+        
+          <Text style={{color:"black",fontFamily:"PT Serif Bold",marginBottom:12}}>Enter Email</Text>
+          <TouchableOpacity onPress={()=>setModalVisible(!isModalVisible)}>
+          <MaterialIcons name="close" size={18} color={'black'} />
+
+          </TouchableOpacity>
+
+          </View>
+          <TextInput
+      underlineColor="#000"
+      activeOutlineColor="#197739"
+      placeholderTextColor="#666"
+      textColor="#000"
+      selectionColor="green"
+      outlineColor="#197739"
+      style={styles.input}
+      outlineStyle={{borderRadius: 8}}
+      cursorColor="green"
+      label="Email"
+      value={UserEmail}
+      onChangeText={setUserEmail}
+      mode="outlined"
+      // right={
+      //   <TextInput.Icon
+      //     size={20}
+      //     color="#666"
+      //     icon={hidePassword ? 'eye-off' : 'eye'}
+      //     onPress={() => setHidePassword(!hidePassword)}
+      //   />
+      // }
+      error={isPasswordEmpty}
+    />
+
+      <TouchableOpacity
+      activeOpacity={0.6}
+        style={{ marginTop:3,backgroundColor: 'green', borderRadius: 12, justifyContent: "center", alignItems: "center", width: 75, height: 28, }}
+        onPress={SendEmail}
+      >
+       {Loading ? (
+            <ActivityIndicator
+              size="small"
+              color="white"
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+            />
+          ) : (
+        <Text style={{ color: "white" }}>Send</Text>
+        )}
+      </TouchableOpacity>
+        </View>
+      </Modal>
   </View>
 </TouchableWithoutFeedback>
 </ScrollView>

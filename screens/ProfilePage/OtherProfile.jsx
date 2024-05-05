@@ -306,6 +306,7 @@ if (mypost!=undefined){
       console.log(storedEmail);
       // console.log('Sara Data', AllData);
 const data =await AsyncStorage.getItem('UserData')
+setStartLoading(false)
 console.log('user data iv',data)
 const newdata= JSON.parse(data)
       // const mydata = await AllData.find(data => data.id === user);
@@ -448,7 +449,7 @@ const newdata= JSON.parse(data)
     // if (Data[0].Pimage.length>2){
     // setselectedImage(Data?.Profile);
 
-    setStartLoading(false);
+    // setStartLoading(false);
   };
 
 
@@ -2387,7 +2388,7 @@ Sign out
                 borderRadius: 8,
                 padding: 16,
                 alignItems: 'center',
-                width: '40%',
+                width: 150,
                 alignSelf: 'center',
                 justifyContent: 'center',
                 backgroundColor: '#1d6b34',
@@ -2408,7 +2409,7 @@ Sign out
                 borderRadius: 8,
                 padding: 16,
                 alignItems: 'center',
-                width: '40%',
+                width: 150,
                 alignSelf: 'center',
                 justifyContent: 'center',
                 backgroundColor: '#1d6b34',
