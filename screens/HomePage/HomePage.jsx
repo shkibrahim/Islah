@@ -645,11 +645,11 @@ const fetchalldata = async () => {
     <View style={styles.bg}>
       <Carousel
         loop
-        width={windowWidth}
+        width={410}
         autoPlay
         scrollAnimationDuration={2000}
         autoPlayInterval={5000}
-        height={windowHeight / 3.5}
+        height={250}
         data={item.SlidingBannerList}
         renderItem={({item: imageURL}) => (
           <Image
@@ -975,7 +975,8 @@ const fetchalldata = async () => {
             <View
               style={{
                 height: 60,
-                width: '100%',
+                width: 410,
+                alignSelf:"center",
                 backgroundColor: '#ddd',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -985,12 +986,12 @@ const fetchalldata = async () => {
                 {Banner[0].ImageUrl ? (
                   <Image
                     source={{uri: Banner[0].ImageUrl}}
-                    style={{width:windowWidth,height:60}}
+                    style={{width:'100%',height:60}}
                   />
                 ) : (
                   <Text
                     style={{color: 'gray', fontSize: 18, alignSelf: 'center',fontWeight:'300'}}>
-                    {Banner[0].FixedT}
+                    {Banner[0]?.FixedT}
                   </Text>
                 )}
            
@@ -1001,15 +1002,15 @@ const fetchalldata = async () => {
               <View style={{}}>
                 <Carousel
                   // loop
-                  width={windowWidth}
-                  height={windowHeight / 4}
+                  width={410}
+                  height={250}
                   // autoPlay={true}
                   data={Data1}
                   // autoPlayInterval={5000}
                   // scrollAnimationDuration={1000}
                   // onSnapToItem={index => setCurrentIndex(index)}
                   renderItem={renderItem}
-                  sliderWidth={windowWidth}
+                  sliderWidth={410}
                 />
               </View>
             </View>

@@ -217,16 +217,14 @@ const funcat = async () => {
     );
     setAllData(concatenatedData);
     if (concatenatedData.length > 0) {
-      console.log('overall',concatenatedData)
+      console.log('overall funcats, ',concatenatedData)
       const mydata = await concatenatedData?.find(data => data?.id === username);
       const mycategory =mydata?.Category
       console.log('Concat func ke andr ', );
 console.log('my user data',mydata)
 if (mydata) {
-  // Convert the object to a JSON string
   const jsonData = JSON.stringify(mydata);
-
-  // Save the JSON string to AsyncStorage
+  console.log('my data of login user is', mydata)
   await AsyncStorage.setItem('UserData', jsonData);
 }
 
@@ -316,9 +314,14 @@ if (mycategory == 'other' ) {
   }
 }
 
-
+if (mydata !=undefined){
   navigation.replace('home');
 
+}
+if (mydata ==undefined){
+  Alert.alert('Your account not longer exists')
+
+}
 
       // setLoader(false)r
       // console.log('concatenated data',concatenatedData  )
