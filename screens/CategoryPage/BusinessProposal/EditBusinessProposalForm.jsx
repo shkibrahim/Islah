@@ -5,8 +5,11 @@ import CustomTextInput from '../../../Components/CustomTextInput';
 import CustomButton from '../../../Components/CustomButton';
 import {myTheme} from '../../../theme';
 import {Icon} from 'react-native-paper';
+import firestore from '@react-native-firebase/firestore';
+import { NavigationHelpersContext } from '@react-navigation/native';
 
-const EditBusinessProposalForm = () => {
+const EditBusinessProposalForm = ({route,navigation}) => {
+  const {id} = route.params;
   const [name, setName] = useState('');
   const [businessCategory, setBusinessCategory] = useState('');
   const [businessDetails, setBusinessDetails] = useState('');
@@ -33,6 +36,35 @@ const EditBusinessProposalForm = () => {
   const [isGuarantorDetails3Empty, setIsGuarantorDetails3Empty] =
     useState(false);
 
+
+
+
+
+    const Updater = async()=>{
+
+console.log('working')
+
+      await firestore()
+      .collection('BusinessProposal')
+      .doc(id)
+    
+      .update({
+        // BusinessName:BusinessName,
+        BusinessCategory:businessCategory,
+        BusinessDetails:businessDetails,
+        Location:location,
+        InvestmentNeeded:investmentNeeded,
+        ReturnOnInvestment:returnOnInvestment,
+        GuarantorDetails1:GuarantorDetails1,
+        GuarantorDetails2:GuarantorDetails2,
+        GuarantorDetails3:GuarantorDetails3,
+ 
+     
+        // ... (rest of the data)
+      });
+
+      navigation.navigate('Categories')
+    }
   return (
     <ScrollView>
       <BackButton label='Edit Proposal' />
@@ -104,7 +136,7 @@ const EditBusinessProposalForm = () => {
           label="Guarantor Details 3  ( Name and Number )"
         />
 
-        <CustomButton label="Save" onPress={() => {}} />
+        <CustomButton label="Save" onPress={() => Updater()} />
       </View>
     </ScrollView>
   );

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, PermissionsAndroid, StyleSheet,TouchableOpacity, Pressable} from 'react-native';
+import {View, PermissionsAndroid, StyleSheet,TouchableOpacity, Pressable, Alert} from 'react-native';
 import {
   Avatar,
   Portal,ActivityIndicator,
@@ -18,21 +18,15 @@ import PushNotification from 'react-native-push-notification';
 
 
 const ImagePicker1 = ({ route,navigation }) => {
+  const [selectedImage1, setSelectedImage1] = useState(null);
+  const {
+    surname,name,fatherName,userID,HusbandName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
+  }=route.params
+  const [selectedImageUrl, setSelectedImageUrl] = useState();
+  console.log('selected image url  is ', selectedImageUrl)
+
 const [token,settoken] = useState()
-useEffect(() => {
-  getdevicetoken()
-}, []);
-
-const getdevicetoken = async()=>{
-
-  try {
-    const Token = await AsyncStorage.getItem('Token');
-    settoken(Token);
-    console.log('my category is', Token )
-  } catch (error) {
-    console.error('Error getting category from AsyncStorage:', error);
-  }
-}
+const [category, setCategory] = useState('');
   const [Loading, setLoading] = useState(false);
   const [Loading2, setLoading2] = useState(false);
   const [avatarUri, setAvatarUri] = useState(
@@ -41,22 +35,20 @@ const getdevicetoken = async()=>{
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedSourceType, setSelectedSourceType] = useState('');
 
-  const {
-    surname,name,fatherName,userID,HusbandName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,partnerName,password,nationality,phoneNumber
-  }=route.params
 
   const[Data,setData] = useState({
     userID:userID,
-    Surname: surname,
+    Profile: selectedImageUrl,
     Name: name,
     FatherName: fatherName,
-    MotherName: motherName,
     GrandFatherName: grandFatherName,
-    GrandFatherNameNana: grandFatherNameNana,
-    Gender: gender,
-    Dob: dob,
-    PartnerName: partnerName,
+    MotherName: motherName,
+    Nana:grandFatherNameNana,
     HusbandName:HusbandName,
+    Surname:surname,
+    Gender :gender,
+    Dob: dob,
+    Token:token,
     Status:'Active',
     MaritalStatus: maritalStatus,
     Country: country,
@@ -66,25 +58,73 @@ const getdevicetoken = async()=>{
     PostalCode: postalCode,
     Address: Address,
     Street: Street,
-    Profile: selectedImageUrl,
-    email: email,
-    Token:token,
-    nationality: nationality,
-    partnerName: partnerName,
-    phoneNumber: phoneNumber,
+    Email: email,
+    Nationality: nationality,
+    PhoneNumber: phoneNumber,
+    PartnerName: partnerName,
 Category:category,
-Bio:''
 
+
+Profession:'',
+Bio:''
   })
-  const [category, setCategory] = useState('');
+
+
+  useEffect(() => {
+    setData({
+      userID: userID,
+      Profile: selectedImageUrl,
+      Name: name,
+      FatherName: fatherName,
+      GrandFatherName: grandFatherName,
+      MotherName: motherName,
+      Nana: grandFatherNameNana,
+      HusbandName: HusbandName,
+      Surname: surname,
+      Gender: gender,
+      Dob: dob,
+      Token: token,
+      Status: 'Active',
+      MaritalStatus: maritalStatus,
+      Country: country,
+      State: state,
+      City: city,
+      District: district,
+      PostalCode: postalCode,
+      Address: Address,
+      Street: Street,
+      Email: email,
+      Nationality: nationality,
+      PhoneNumber: phoneNumber,
+      PartnerName: partnerName,
+      Category: category,
+      Profession: '',
+      Bio: ''
+    });
+  }, [userID, selectedImageUrl, name, fatherName, grandFatherName, motherName, grandFatherNameNana, HusbandName, surname, gender, dob, token, maritalStatus, country, state, city, district, postalCode, Address, Street, email, nationality, phoneNumber, partnerName, category]);
   useEffect(() => {
     const getCategory = async () => {
       const category = await AsyncStorage.getItem('category');
+      console.log('my category is',category)
       setCategory(category);
     };
     getCategory();
-  }, [avatarUri]);
-
+    
+  },[selectedImageUrl]);
+  useEffect(() => {
+    getdevicetoken()
+  }, []);
+  
+  const getdevicetoken = async()=>{
+  
+    try {
+      const Token = await AsyncStorage.getItem('Token');
+      settoken(Token);
+      console.log('my token is', Token )
+    } catch (error) {
+      console.error('Error getting category from AsyncStorage:', error);
+    }
+  }
   const openImagePicker = sourceType => {
     setSelectedSourceType(sourceType);
     setDialogVisible(true);
@@ -97,24 +137,6 @@ Bio:''
 
 
 
-  const ImageSelector  =async  ()=>{
-  ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-    })
-      .then(image => {
-        if (image.path) {
-          setSelectedImage(image.path);
-          setSelectedImage1(image)
-          setAvatarUri(image.path)
-        }
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
-
-  }
   const handleImageSelection = async () => {
     try {
       closeImagePicker();
@@ -141,10 +163,7 @@ Bio:''
     }
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImage1, setSelectedImage1] = useState(null);
 
-  const [selectedImageUrl, setSelectedImageUrl] = useState('');
 
   const [user,setuser] = useState()
   useEffect(() => {
@@ -163,10 +182,7 @@ Bio:''
 
   const tokenlist = async()=>{
     try {
-      // await uploadimage1();
-      // await uploadimage2();
-
-      // await uploadimage3();
+   
       console.log('data transfering');
       await firestore()
           .collection('Tokens')
@@ -182,7 +198,9 @@ Bio:''
         });
 
       
-      navigation.replace('businessData1');
+      // navigation.navigate('businessData1',{
+
+      // });
     } catch (error) {
       // setIsLoading(false);
       console.log('Error addinfsf product:', error);
@@ -202,27 +220,7 @@ Bio:''
           // .collection('Businesses')
           // .doc()
         .set({
-          // Profile: Pimage,
-          // Name: name,
-          // FatherName: fatherName,
-          // GrandFatherName: grandFatherName,
-          // MotherName: motherName,
-          // Nana:grandFatherNameNana,
-          // Surname:surname,
-          // Gender :gender,
-          // Dob: dob,
-          // MaritalStatus: maritalStatus,
-          // Country: country,
-          // State: state,
-          // City: city,
-          // District: district,
-          // PostalCode: postalCode,
-          // Address: Address,
-          // Street: Street,
-          // Email: email,
-          // Nationality: nationality,
-          // PhoneNumber: phoneNumber,
-          // PartnerName: partnerName,
+       
           userID:userID,
           Surname: surname,
           Name: name,
@@ -250,7 +248,9 @@ Bio:''
           partnerName: partnerName,
           phoneNumber: phoneNumber,
 Category:category,
-Bio:''
+Bio:'',
+
+
           // BusinessName: BusinessName,
           // BusinessCatergory: BusinessCatergory,
           // BusinessDescription: BusinessDescription,
@@ -266,19 +266,20 @@ Bio:''
 
       // setIsLoading(false);
       // alert('Product Added Successfully');
-      navigation.navigate('businessData1',{
-        phoneNumber: phoneNumber,
-        chatid:user,
-        Profile:selectedImageUrl,
-        Name:name,
-        // UserProfile:UserProfile,
-      });
+      // navigation.navigate('businessData1',{
+      //   phoneNumber: phoneNumber,
+      //   chatid:user,
+      //   Profile:selectedImageUrl,
+      //   Name:name,
+      //   // UserProfile:UserProfile,
+      // });
     } catch (error) {
       // setIsLoading(false);
       console.log('Error addinfsf product:', error);
       // Handle any error that might occur during the process
     }
   };
+
   const uploadtofbStorage = async () => {
     setLoading2(true)
     const reference = storage().ref(selectedImage1.assets[0].fileName);
@@ -289,11 +290,14 @@ Bio:''
     // Get the download URL using getDownloadURL() method
     const url = await reference.getDownloadURL();
     setSelectedImageUrl(url);
+    console.log('selected image url from firebase is ', url)
     setLoading2(false)
   };
 
   
   
+
+
 
   const onpressHandler =  async() => {
     
@@ -313,7 +317,7 @@ if (
   selectedImageUrl == ''
 )
 {
-  alert('Please save Image first ')
+  Alert.alert('Please save Image first ')
 }
 
     if (category === 'student' &&  avatarUri !== 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGhmTe4FGFtGAgbIwVBxoD3FmED3E5EE99UGPItI0xnQ&s'
@@ -360,86 +364,43 @@ if (
     if (category === 'business'  &&  avatarUri !== 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGhmTe4FGFtGAgbIwVBxoD3FmED3E5EE99UGPItI0xnQ&s' 
     && selectedImageUrl!='') {
      await  AsyncStorage.setItem('Profile', selectedImageUrl);
-console.log('geg')
-    
-        // await AsyncStorage.setItem('userName', userName);
-        console.log('transfering data from data');
-        //       navigation.navigate('imagePcikerForBusiness', {
-        //         surname:surname,
-        //         name:name,
-        //         fatherName:fatherName,
-        //         motherName:motherName,
-        //         grandFatherName:grandFatherName,
-        //         grandFatherNameNana:grandFatherNameNana,
-        //         gender:gender,
-        //         dob:dob,
-        //         partnerName:partnerName,
-        //         maritalStatus:maritalStatus,
-        //         country:country,
-        //         state:state,
-        //        city:city,
-        //       district:district,
-        //       postalCode:postalCode,
-        //       Address:Address,
-        //       Street:Street,
-        //   PImage:Image,
-        //       email:email,
-        //       password:password,
-        //       nationality:nationality,
-        //       partnerName:partnerName,
-        //       phoneNumber:phoneNumber,
-  
-        //       BusinessName:BusinessName,
-        //   BusinessCatergory:BusinessCatergory,
-        //   BusinessDescription:BusinessDescription,
-        //   BusinesContact:BusinesContact,
-        //   BusinessEducation:BusinessEducation,
-        //   WorkingFrom:WorkingFrom,
-        //   WorkingTo:WorkingTo,
-  
-        //   Bcountry:Bcountry,
-        //   Bstate:Bstate,
-        //   Bcity:Bcity,
-        //   Barea:area,
-        //   Bpostalcode:Bpostalcode,
-        //   Baddress:Baddress,
-        //   Btimefrom:stringBtimefrom,
-        // Btimeto:stringBtimeto
-  
-        //       })
+        console.log('transfering data from business');
+     
         await fetchdata();
-        const jsonData = JSON.stringify(Data);
-        await AsyncStorage.setItem('UserData', jsonData);
+        // const jsonData = JSON.stringify(Data);
+        // await AsyncStorage.setItem('UserData', jsonData);
       await tokenlist();
+      const jsonData = await JSON.stringify(Data);
+      await AsyncStorage.setItem('UserData', jsonData);
+      console.log('saving user data')
         setLoading(false) 
 
-    // navigation.navigate('businessData1', {
-    //     surname:surname,
-    //     name:name,
-    //     fatherName:fatherName,
-    //     motherName:motherName,
-    //     grandFatherName:grandFatherName,
-    //     grandFatherNameNana:grandFatherNameNana,
-    //     gender:gender,
-    //     dob:dob,
-        
-    //     maritalStatus:maritalStatus,
-    //     country:country,
-    //     state:state,
-    //     city:city,
-    //   district:district,
-    //   postalCode:postalCode,
-    //   Address:Address,
-    //   Street:Street,
-  
-    //   email:email,
-    //   password:password,
-    //   nationality:nationality,
-    //   phoneNumber:phoneNumber
-    //   ,Image:selectedImageUrl,
-    //   partnerName:partnerName
+    navigation.navigate('businessData1', {
+        surname:surname,
+        name:name,
+        fatherName:fatherName,
+        motherName:motherName,
+        grandFatherName:grandFatherName,
+        grandFatherNameNana:grandFatherNameNana,
+        gender:gender,
+        dob:dob,
+        maritalStatus:maritalStatus,
+        country:country,
+        state:state,
+        city:city,
+      district:district,
+      postalCode:postalCode,
+      Address:Address,
+      Street:Street,
+      email:email,
+      password:password,
+      nationality:nationality,
+      phoneNumber:phoneNumber
+      ,Image:selectedImageUrl,
+      partnerName:partnerName,
+      Category:category
       
-    //   })
+      })
 
         // navigation.navigate('businessData1');
     }

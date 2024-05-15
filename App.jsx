@@ -224,11 +224,13 @@ console.log('user is',user)
 
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  const data = await AsyncStorage.getItem('UserData')
-  console.log('my data is',data)
+//   const data = await AsyncStorage.getItem('UserData')
+//   console.log('my data is',data)
 
-const newdata= JSON.parse(data)
-const user = newdata?.id
+// const newdata= JSON.parse(data)
+// const user = newdata?.id
+const user = await AsyncStorage.getItem('userName');
+console.log('user in appjs is',user)
   const parsed =([remoteMessage])
 // console.log('parsed are',parsed)
     const updatedNotifications = [remoteMessage];
@@ -266,11 +268,7 @@ const user = newdata?.id
 
  
   const unsubscribe = messaging().onMessage(async remoteMessage => {
-    const data = await AsyncStorage.getItem('UserData')
-    console.log('my data is in foreground',data)
-  
-  const newdata= JSON.parse(data)
-  const user = newdata?.id
+    const user = await AsyncStorage.getItem('userName');
     console.log('message is',remoteMessage)
 
   
@@ -285,7 +283,7 @@ const parsed =([remoteMessage])
     const updatedNotifications = [remoteMessage];
 
     console.log('updates are',updatedNotifications)
-    await firestore().collection('Notification').doc(String(user)).collection(user).doc().set({
+    await firestore().collection('Notification').doc(String(user)).collection(String(user)).doc().set({
       notification: parsed
     });
     

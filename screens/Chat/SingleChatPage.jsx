@@ -24,6 +24,7 @@ const SingleChatPage = ({navigation, route}) => {
   const [AllData, setAllData] = useState([]);
   const [SenderName,setSenderName] = useState();
   const [SenderMsg,setSendermsg]= useState()
+  const[UserProfile,setUserProfile] =useState()
   useEffect(() => {
 
 
@@ -35,13 +36,20 @@ const SingleChatPage = ({navigation, route}) => {
     try {
       const storedEmail = await AsyncStorage.getItem('userName');
       setuser(storedEmail);
+      const user =await AsyncStorage.getItem('UserData')
+      const parsed = JSON.parse(user)
+      const sendername = parsed.Name
+      setSenderName(sendername)
+      const Profile =parsed.Profile
+      setUserProfile(Profile)
     } catch (error) {
       console.error('Error getting email from AsyncStorage:', error);
     }
   };
+
   const [user, setuser] = useState();
-  const {id, Name,Profile,UserProfile} = route.params;
-  console.log('isme masla ha',UserProfile)
+  const {id, Name,Profile} = route.params;
+  console.log('isme masla ha',Profile)
   
   // useEffect(() => {
   //   setMessages([
@@ -87,6 +95,7 @@ const SingleChatPage = ({navigation, route}) => {
   const onSend =  async (messageArray) => {
     const msg = await messageArray[0];
    await setSendermsg(msg)
+   console.log('asli message',msg)
     const chatId = [user,id].sort().join('_'); // Recreate the unique chat ID
     const Mymsg = {
       ...msg,
@@ -110,20 +119,20 @@ const SingleChatPage = ({navigation, route}) => {
         CreatedAt: firestore.FieldValue.serverTimestamp(),
       });
 console.log(id)
-const matchingData = AllData.find((data) => data.id === id);
-const mydata = AllData.find((data)=> data.id === user);
+const matchingData = await AllData.find((data) => data.id === id);
+const mydata = await AllData.find((data)=> data.id === user);
 console.log('sender data is ' , mydata)
 const myName = mydata.Name;
 const profileuser = mydata.Profile
 console.log(profileuser)
 
 
-setSenderName(myName)
+// setSenderName(myName)
 if (matchingData) {
   const matchingToken = matchingData.Token;
   console.log('Token for matching id:', matchingToken);
 
-  await  SendNotification(matchingToken)
+  await  SendNotification(matchingToken,msg)
 
 
 }
@@ -136,38 +145,53 @@ if (matchingData) {
 
 
 
-  const SendNotification = async (tokens) => {
+  const SendNotification = async (tokens,msg) => {
+
+    // if (SenderMsg?.text && SenderName){
+
+      const notificationPayload = {
+        data: {
+          body: msg?.text,
+          title: SenderName,
+          id:id,
+          Profile:Profile,
+          Name:Name
+        },
+        
+        notification: {
+          body: msg?.text,
+          title: SenderName,
+          id:id,
+          Profile:Profile,
+          Name:Name
+        },
+      };
+    
+      const data = JSON.stringify({
+        ...notificationPayload,
+        to: tokens,
+      });
+    
+      const config = {
+        method: 'post',
+        url: 'https://fcm.googleapis.com/fcm/send',
+        headers: {
+          Authorization:
+            'key=AAAAwX1-1m8:APA91bH0tS2C1hcko9fEhgCCGFl6k4kEdLi2BrXJC2ZMyh5QAsO6Flr7QNhQe-QFmqSPGAEQuwFLwnHOsWjhtKlu8VuWAPCFAQXm9ulcymkwv2_-dEEZXDhXaf2uDxbtu_cZbNjBQDNl',
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      };
+    
+      try {
+        const response = await axios(config);
+        console.log('response of',JSON.stringify(response.data));
+      } catch (error) {
+        console.log('Error sending notification:', error);
+      }
+    
     // Import axios at the beginning of your file
-    const notificationPayload = {
-      // data: {},
-      notification: {
-        body: SenderMsg?.text,
-        title: SenderName,
-      },
-    };
-  
-    const data = JSON.stringify({
-      ...notificationPayload,
-      to: tokens,
-    });
-  
-    const config = {
-      method: 'post',
-      url: 'https://fcm.googleapis.com/fcm/send',
-      headers: {
-        Authorization:
-          'key=AAAAwX1-1m8:APA91bH0tS2C1hcko9fEhgCCGFl6k4kEdLi2BrXJC2ZMyh5QAsO6Flr7QNhQe-QFmqSPGAEQuwFLwnHOsWjhtKlu8VuWAPCFAQXm9ulcymkwv2_-dEEZXDhXaf2uDxbtu_cZbNjBQDNl',
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    };
-  
-    try {
-      const response = await axios(config);
-      console.log('response of',JSON.stringify(response.data));
-    } catch (error) {
-      console.log('Error sending notification:', error);
-    }
+
   };
 
   useEffect(() => {

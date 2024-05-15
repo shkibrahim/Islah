@@ -36,37 +36,13 @@ const BusinessData2 = React.memo(({route, props, navigation}) => {
   const [isAreaEmpty, setIsAreaEmpty] = useState(false);
   const formattedtoTime = (new Date(totime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   const formattedfromTime = (new Date(fromtime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
-  // const signupHandler = () => {
-  //   setError(false);
-  //     navigation.navigate('imagePcikerForBusiness');
-  // };
-  const [user,setuser] = useState()
-  useEffect(() => {
-    getEmailFromStorage();
-  }, []);
-
-  const getEmailFromStorage = async () => {
-    try {
-      const storedEmail = await AsyncStorage.getItem('userName');
-      setuser(storedEmail);
-    } catch (error) {
-      console.error('Error getting email from AsyncStorage:', error);
-    }
-  };
-  const [category, setCategory] = useState('');
-  useEffect(() => {
-    const getCategory = async () => {
-      const category = await AsyncStorage.getItem('category');
-      setCategory(category);
-    };
-    getCategory();
-  }, []);
-
+  const [name,setname]=useState()
+  const [phoneNumber,setphoneNumber]= useState()
+  const [PImage,setPImage]=useState()
   const {
     
     surname,
-    name,
+ 
     fatherName,
     motherName,
     grandFatherName,
@@ -84,7 +60,6 @@ const BusinessData2 = React.memo(({route, props, navigation}) => {
     email,
     password,
     nationality,
-    phoneNumber,
     partnerName,
     BusinessName,
     BusinessCatergory,
@@ -96,9 +71,60 @@ const BusinessData2 = React.memo(({route, props, navigation}) => {
     Bimage1,
     Bimage2,
     Bimage3,
-    PImage,
   } = route.params;
 
+  // const signupHandler = () => {
+  //   setError(false);
+  //     navigation.navigate('imagePcikerForBusiness');
+  // };
+  const [user,setuser] = useState()
+  useEffect(() => {
+    getEmailFromStorage();
+    functuser()
+   
+  }, []);
+
+
+  const functuser = async()=>{
+    const a =  await AsyncStorage.getItem('UserData')
+    console.log('user data before signing is ' , a)
+  }
+  const getEmailFromStorage = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userName');
+      setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+  const [category, setCategory] = useState('');
+  useEffect(() => {
+    const getCategory = async () => {
+      const category = await AsyncStorage.getItem('category');
+      setCategory(category);
+    };
+
+    const getuserdata =async ()=>{
+      const mydat = await AsyncStorage.getItem('UserData')
+      const mydat1 =JSON.parse(mydat)
+      console.log('data are',mydat1)
+const Profile =mydat1.Profile
+setPImage(Profile)
+const phone =mydat1.PhoneNumber
+console.log('my phone is',phone)
+setphoneNumber(phone)
+const name= mydat1.Name
+setname(name)
+    }
+  
+    getuserdata()
+
+    getCategory();
+  }, []);
+
+
+
+  console.log('my name is',name)
   useEffect(() => {
     console.log('svsv');
     console.log('arhi ',Bimage1)
@@ -245,7 +271,9 @@ category:category,
           Bimage1: Bimage1,
           Bimage2: Bimage2,
           Bimage3: Bimage3,
-
+          phoneNumber:phoneNumber,
+          Name:name,
+          Profile:PImage
           // ... (rest of the data)
         });
 
@@ -259,6 +287,7 @@ category:category,
     }
   };
 
+  
   return (
     <ScrollView>
       <TouchableWithoutFeedback

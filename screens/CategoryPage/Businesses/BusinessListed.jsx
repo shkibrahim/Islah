@@ -4,9 +4,10 @@ import BusinessCard from '../../../Components/BusinessCard/BusinessCard';
 import BackButton from '../../../Components/BackButton/BackButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-const BusinessListed = () => {
+const BusinessListed = ({navigation,route}) => {
   const [Loading, setLoading] = useState();
-
+const {item} =route.params
+console.log('All data is',item)
   const [BusinessData, setBusinessData] = useState();
   useEffect(() => {
 
@@ -124,21 +125,32 @@ const BusinessListed = () => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
+            width:"95%",
             justifyContent: 'space-evenly',
           }}>
         
-        <Text style={styles.text}>{item.Bpostalcode}</Text>
+        <Text style={styles.text}>{item.Bpostalcode} {item.Baddress} {item.Barea} {item.Bstate} {item.Bcity} {item.Bcountry}</Text>
+        {/* <Text style={styles.text}> </Text>
+
             <Text style={styles.text}>{item.Baddress}</Text>
+        <Text style={styles.text}> </Text>
+
             <Text style={styles.text}>{item.Barea}</Text>
+        <Text style={styles.text}> </Text>
+
             <Text style={styles.text}>{item.Bstate}</Text>
+        <Text style={styles.text}> </Text>
+
        <Text style={styles.heading}>{item.Bcity}</Text>
+       <Text style={styles.text}>   </Text>
+
             <Text style={styles.text}>{item.Bcountry}</Text>
-         
+          */}
         </View>
 
         <Text style={styles.overhead}>Business Timings:</Text>
         <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
-        {formatTime(item.Btimefrom)} to  {formatTime(item.Btimeto)}
+        {(item.Btimefrom)} to  {(item.Btimeto)}
         </Text>
         <Text style={styles.overhead}>Week Days:</Text>
         <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
@@ -155,7 +167,7 @@ const BusinessListed = () => {
       <BackButton label={'Business Details'} />
     {BusinessData && (
         <FlatList
-          data={BusinessData}
+          data={[item]}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}

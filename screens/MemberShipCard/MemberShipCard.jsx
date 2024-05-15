@@ -37,45 +37,56 @@ const { width1 } = Dimensions.get('window');
     useEffect(() => {
     // getCategory()
     getEmailFromStorage();
-  }, [StudentData, BusinessData, JobSeekerData, IndividualData]);
+    getuserdata()
+  }, );
 
-  useEffect(() => {
-    // setIsLoading(true);
-    const funcData = async () => {
-      try {
-        await getEmailFromStorage();
-        await fetchalldata();
-        // await  funcat();
-        await myDatafetch();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   // setIsLoading(true);
+  //   const funcData = async () => {
+  //     try {
+  //       await getEmailFromStorage();
+  //       await fetchalldata();
+  //       // await  funcat();
+  //       await myDatafetch();
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
 
-    funcData();
-  }, []);
-  useEffect(() => {
-    // console.log('concating')
-    // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
-    funcat();
-  }, [StudentData, BusinessData, IndividualData, JobSeekerData]);
-  useEffect(() => {
-    // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
+  //   funcData();
+  // }, []);
+  // useEffect(() => {
+  //   // console.log('concating')
+  //   // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
+  //   funcat();
+  // }, [StudentData, BusinessData, IndividualData, JobSeekerData]);
+  // useEffect(() => {
+  //   // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
 
-    if (AllData) {
-      myDatafetch();
-    }
-  }, [AllData]);
-  useEffect(() => {
-    DataMerging();
+  //   if (AllData) {
+  //     myDatafetch();
+  //   }
+  // }, [AllData]);
+  // useEffect(() => {
+  //   DataMerging();
    
-    // }
-  }, [Data]);
+  //   // }
+  // }, [Data]);
 
   const getEmailFromStorage = async () => {
     try {
       const storedEmail = await AsyncStorage.getItem('userName');
       setuser(storedEmail);
+    } catch (error) {
+      console.error('Error getting email from AsyncStorage:', error);
+    }
+  };
+
+  const getuserdata = async () => {
+    try {
+      const data = await AsyncStorage.getItem('UserData');
+      const parsed = JSON.parse(data)
+      setData(parsed);
     } catch (error) {
       console.error('Error getting email from AsyncStorage:', error);
     }
@@ -361,18 +372,25 @@ setBack(false)
 
 <View style={{flexDirection:"row", alignItems:"center",paddingHorizontal:12,paddingVertical:1}}>
 <View style={{height:110,width:105,borderRadius:12,borderColor:"#0a4b25",borderWidth:3,overflow:"hidden",alignItems:"center",justifyContent:"center"}}>
-<Image source={{ uri: Profile }} style={{ width: 105, height: 110 }} />
+<Image source={{ uri: Data?.Profile }} style={{ width: 105, height: 110 }} />
 </View>
 
 <View style={{marginLeft:9}}> 
-  <Text style={{...styles.main,marginBottom:5}}>{Name}</Text>
-  <Text style={styles.main}>ID NO : {ID}</Text>
-  <Text style={styles.sub}>{FatherName}</Text>
-  <Text style={styles.sub}>{City}</Text>
+
+<View style={{flexDirection:"row", alignItems:"center",}}>
+<Text style={{...styles.main,}}>{Data?.Name}</Text>
+<Text style={{...styles.main,}}> </Text>
+
+<Text style={{...styles.main}}>{Data?.Surname}</Text>
+
+</View>
+  <Text style={styles.main}>ID NO : {Data?.userID}</Text>
+  <Text style={styles.sub}>{Data?.FatherName}</Text>
+  <Text style={styles.sub}>{Data?.City}</Text>
   <View style={{flexDirection:"row",alignItems:"center"}}>
-  <Text style={styles.sub}>{State}</Text>
+  <Text style={styles.sub}>{Data?.State}</Text>
   <Text style={styles.sub}> - </Text>
-  <Text style={styles.sub}>{PostalCode}</Text>
+  <Text style={styles.sub}>{Data?.PostalCode}</Text>
   </View>
 </View>
 
@@ -381,7 +399,7 @@ setBack(false)
 
   <View style={styles.rounder}>
   
-    <Text style={styles.address}>{Address},{Street},{City},{District} - {PostalCode}. Mob: {Mob} </Text>
+    <Text style={styles.address}>{Data?.Address}  , {Data?.District} - {Data?.PostalCode}. Mob: {Data?.phoneNumber} </Text>
  
   </View>
 
@@ -405,7 +423,7 @@ setBack(false)
          <ViewShot ref={viewShotRef} options={{ format: 'jpg', quality: 0.9 }}>
         {/* Your component content */}
 
-        <View style={{...styles.card,width:'100%',alignSelf:"center",marginTop:150}}>
+        <View style={{...styles.card,width:'100%',alignSelf:"center",marginTop:150,}}>
           <View style={styles.line}>
             <Text style={{color:'#eb5903'}}>F</Text>
           </View>
@@ -427,30 +445,36 @@ setBack(false)
           </View>
 
           <View style={styles.line3}>
-          <Text style={{color:'#1d6b34'}}>F</Text>
+          <Text style={{color:'#1d6b34'}}></Text>
           </View>
           <View style={styles.line4}>
-            <Text style={{color:'#215705'}}>F</Text>
+            <Text style={{color:'#215705'}}></Text>
           </View>
 
+<View style={{backgroundColor:"#fffbd6",height:"100%"}}>
+<View style={{width:"80%",alignItems:"center",justifyContent:"center",alignSelf:'center'}}>
 
-
-
-<View style={{alignSelf:"center", alignItems:"center", justifyContent:"center", backgroundColor:"#460000", paddingHorizontal:16,paddingVertical:5,borderRadius:18,marginVertical:7}}>
+<View style={{alignSelf:"center", alignItems:"center", justifyContent:"center", backgroundColor:"#460000", paddingHorizontal:16,paddingVertical:2,borderRadius:18,marginVertical:7}}>
   <Text style={{...styles.main,color:'white',fontSize:12 }}>: VISION :</Text>
 </View>
 <Text style={{...styles.main,fontSize:10,alignSelf:"center" }}>An Effort to Unite the Community - Unity paves way for Reform…</Text>
 
-<View style={{alignSelf:"center", alignItems:"center", justifyContent:"center", backgroundColor:"#460000", paddingHorizontal:16,paddingVertical:5,borderRadius:18,marginVertical:7}}>
+<View style={{alignSelf:"center", alignItems:"center", justifyContent:"center", backgroundColor:"#460000", paddingHorizontal:16,paddingVertical:2,borderRadius:18,marginVertical:7}}>
   <Text style={{...styles.main,color:'white',fontSize:12 }}>: MISSION :</Text>
 </View>
 <View style={{alignSelf:"center",paddingHorizontal:18,width:'100%'}}>
 <Text style={{...styles.main,fontSize:10, }}>• To provide common platform to explore member's unique 
- quality and make it evident which can benefit his/her own 
+ qualities and make it evident which can benefit his/her own 
  family and community at large. </Text>
  <Text style={{...styles.main,fontSize:10,}}>• Optimum Realization and Utilization of the resources 
  of the community for the benefit of the community members</Text>
  </View>
+
+</View>
+</View>
+
+
+
 
 
 
@@ -517,16 +541,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rounder:{borderWidth:2,alignItems:'center',borderTopColor:"#0a4b25",borderRightColor:"#0a4b25",borderBottomColor:"white",borderLeftColor:"white",
-borderRadius:6,bottom:-2,position:"absolute",
-width:"76%",paddingHorizontal:12,marginLeft:-5,paddingVertical:3
+  rounder:{borderWidth:2,alignItems:'center',borderColor:'#0a4b25',
+borderRadius:6,bottom:0,position:"absolute",
+width:"76%",paddingHorizontal:12,marginLeft:-5,paddingVertical:5
 
   },
   line:{
-    backgroundColor:"#eb5903", height:10,width:'100%'
+    backgroundColor:"#eb5903", height:5,width:'100%'
   },
   address:{
-    fontFamily:"Roboto-Regular",fontSize:11.6,color:"black",
+    fontFamily:"Roboto-Regular",fontSize:11.6,color:"black",fontWeight:"800"
   }
   ,
   line2:{
@@ -542,7 +566,7 @@ width:"76%",paddingHorizontal:12,marginLeft:-5,paddingVertical:3
     backgroundColor:"#1d6b34", height:1,width:'100%',marginTop:2
   },
   line4:{
-    backgroundColor:"#215705", height:10,width:'100%',marginTop:2
+    backgroundColor:"#215705", height:5,width:'100%',marginTop:2
   },
 })
 

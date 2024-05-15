@@ -3,41 +3,48 @@ import { Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from
 import { Button, Paragraph, Text, Title } from 'react-native-paper';
 import CustomDropDown from '../../../../Components/CustomDropDown';
 import CustomTextInput from '../../../../Components/CustomTextInput';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const BusinessData1=  React.memo(({route ,props,navigation}) => {
-  // const {
-  //   Image,surname,name,fatherName,motherName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName
-  // }=route.params
+  const {
+    Category,Image,surname,name,userID,fatherName,Status,motherName,HusbandName,grandFatherName,grandFatherNameNana,gender,dob,maritalStatus,country,state,city,district,postalCode,Address,Street, email,password,nationality,phoneNumber,partnerName,Token
+  }=route.params
 
 
+//   const[Data,setData] = useState({
+//     userID:userID,
+//     Profile: Image,
+//     Name: name,
+//     FatherName: fatherName,
+//     GrandFatherName: grandFatherName,
+//     MotherName: motherName,
+//     Nana:grandFatherNameNana,
+//     HusbandName:HusbandName,
+//     Surname:surname,
+//     Gender :gender,
+//     Dob: dob,
+//     Token:Token,
+//     Status:Status,
+//     MaritalStatus: maritalStatus,
+//     Country: country,
+//     State: state,
+//     City: city,
+//     District: district,
+//     PostalCode: postalCode,
+//     Address: Address,
+//     Street: Street,
+//     Email: email,
+//     Nationality: nationality,
+//     PhoneNumber: phoneNumber,
+//     PartnerName: partnerName,
+// Category:Category,
 
 
+// Profession:'',
+// Bio:''
+//   })
 
-  const Image = 'sfs'
-  const surname = 'fasf'
-
-const name = 'sfs'
- const fatherName = 'sfs'
-  const motherName = 'sfs'
-   const grandFatherName = 'sfs' 
-   const grandFatherNameNana = 'sfs' 
-   const gender = 'sfs'
-   const dob = 'sfs'
-   const maritalStatus = 'sfs'
-    const country = 'sfs'
-    const state = 'sfs'
-     const city = 'sfs'
-     const district = 'sfs'
-     const postalCode = 'sfs'
-     const Address = 'sfs'
-   const Street = 'sfs'
-   const email = 'sfs'
-   const password = 'sfs'
-   const nationality = 'sfs'
-   const phoneNumber = 'sfs'
-   const partnerName= 'sfs'
   const [error, setError] = React.useState()
   const [isBusinessNameEmpty, setIsBusinessNameEmpty] = useState(false)
   const [businessName, setBusinessName] = useState('')
@@ -76,7 +83,17 @@ const name = 'sfs'
   //   setError(false)
   //     navigation.navigate('businessData2')
   // }
+  useEffect(() => {
 
+    functuser()
+   
+  }, []);
+
+
+  const functuser = async()=>{
+    const a =  await AsyncStorage.getItem('UserData')
+    console.log('user data before signing is ' , a)
+  }
 
   useEffect(() => {
 
@@ -135,6 +152,8 @@ if (to === 'to') {
 
       // await AsyncStorage.setItem('userName', userName);
 console.log('agf')
+    //  const jsonData = JSON.stringify(Data);
+    //     await AsyncStorage.setItem('UserData', jsonData);
       navigation.navigate('imagePcikerForBusiness', {
         surname:surname,
         name:name,
@@ -144,6 +163,8 @@ console.log('agf')
         grandFatherNameNana:grandFatherNameNana,
         gender:gender,
         dob:dob,
+        Token:Token,
+        userID:userID,
         partnerName:partnerName,
         maritalStatus:maritalStatus,
         country:country,

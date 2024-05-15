@@ -17,6 +17,9 @@ const [Name,setName] = useState()
 const [Profile,setProfile] = useState()
 const [Gender,setGender] = useState()
   const [grandFatherNanaName, setGrandFatherNanaName] = useState('');
+  const [grandFatherName, setGrandFatherName] = useState('');
+
+  const [isGrandFatherNanaNameEmpty, setIsGrandFatherNanaNameEmpty] = useState(false);
   const [isGrandFatherNameEmpty, setIsGrandFatherNameEmpty] = useState(false);
   const [error,setError] = useState()
   const [parentContactNumberFather, setParentContactNumberFather] = useState('');
@@ -250,10 +253,15 @@ useEffect(() => {
 
 
   const Register =async()=>{
-    if ( grandFatherNanaName== '') {
+    if ( grandFatherName== '') {
       setIsGrandFatherNameEmpty(true)
         setError(true)
   }
+  if ( grandFatherNanaName== '') {
+    setIsGrandFatherNanaNameEmpty(true)
+      setError(true)
+}
+
   
   if (parentContactNumberFather == '') {
     setIsPCNFE(true)
@@ -287,6 +295,7 @@ useEffect(() => {
       
         .set({
           grandFatherNanaName:grandFatherNanaName,
+          grandFatherName:grandFatherName,
           parentContactNumberFather:parentContactNumberFather,
           parentContactNumberBrother:parentContactNumberBrother,
           maritalStatus:maritalStatus,
@@ -301,7 +310,7 @@ useEffect(() => {
        
     } catch (error) {
       setLoading(false);
-      console.log('Error addinfsf product:', error);
+      console.log('Error adding product:', error);
       // Handle any error that might occur during the process
     }
   
@@ -323,10 +332,19 @@ useEffect(() => {
       <BackButton label={'Add Details'} />
       <View style={styles.form_container}>
         <Text style={styles.heading}>Matrimonial Details</Text>
+
         <CustomTextInput
           setError={setIsGrandFatherNameEmpty}
           required={true}
           error={isGrandFatherNameEmpty}
+          value={grandFatherName}
+          onChange={setGrandFatherName}
+          label="Grandfather Name"
+        />
+        <CustomTextInput
+          setError={setIsGrandFatherNanaNameEmpty}
+          required={true}
+          error={isGrandFatherNanaNameEmpty}
           value={grandFatherNanaName}
           onChange={setGrandFatherNanaName}
           label="Grandfather Name ( Nana )"

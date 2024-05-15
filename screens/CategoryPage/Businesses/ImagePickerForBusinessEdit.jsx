@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {
   View,
   Button,
-  PermissionsAndroid,ActivityIndicator,
+  PermissionsAndroid,
+  ActivityIndicator,
   StyleSheet,
-  FlatList,Pressable,
+  FlatList,
+  Pressable,
   TouchableOpacity,
   Image,
   Alert,
@@ -20,58 +22,58 @@ import {
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import CustomButton from '../../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ImagePickerFortheBusiness = ({route, props, navigation}) => {
+const ImagePickerForBusinessEdit = ({route, props, navigation}) => {
   const {
-    PImage,
-    surname,
-    name,
-    fatherName,
-    motherName,
-    grandFatherName,
-    grandFatherNameNana,
-    gender,
-    dob,
-    maritalStatus,
-    country,
-    state,
-    city,
-    district,
-    postalCode,
-    Address,
-    Street,
-    email,
-    password,
-    nationality,
-    phoneNumber,
-    partnerName,
     BusinessName,
-    BusinessCatergory,
+    BusinessCategory,
     BusinessDescription,
-    BusinesContact,
+    BusinessContact,
     BusinessEducation,
     WorkingFrom,
     WorkingTo,
+    Btimefrom,
+    Btimeto,
     Bcountry,
     Bstate,
     Bcity,
     Barea,
-    Bpostalcode,
     Baddress,
+    Bpostalcode,
+    Id,
+    name,
+    phone,
+    Profile,
+    user,
+  } = route.params;
+console.log( 'all data in image ',
+ BusinessName,
+    BusinessCategory,
+    BusinessDescription,
+    BusinessContact,
+    BusinessEducation,
+    WorkingFrom,
+    WorkingTo,
     Btimefrom,
     Btimeto,
-  } = route.params;
-
-  const [avatarUri, setAvatarUri] = useState(
-    'https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  );
+    Bcountry,
+    Bstate,
+    Bcity,
+    Barea,
+    Baddress,
+    Bpostalcode,
+    Id,
+    name,
+    phone,
+    Profile,
+    user,)
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedSourceType, setSelectedSourceType] = useState('');
   const [category, setCategory] = useState('');
   const [currentImage, setCurrentImage] = useState('');
-  const [user, setuser] = useState();
+
   const [Loading2, setLoading2] = useState(false);
   const [firstimgUrl, setFirstimgUrl] = useState(
     'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=',
@@ -84,17 +86,10 @@ const ImagePickerFortheBusiness = ({route, props, navigation}) => {
   );
 
   const [selectedImage1, setSelectedImage1] = useState(null);
-  const [selectedImageUrl1, setSelectedImageUrl1] = useState('');
 
   const [selectedImage2, setSelectedImage2] = useState(null);
-  const [selectedImageUrl2, setSelectedImageUrl2] = useState('');
 
   const [selectedImage3, setSelectedImage3] = useState(null);
-  const [selectedImageUrl3, setSelectedImageUrl3] = useState('');
-
-  const [imageUrl1, setimageUrl1] = useState('');
-  const [imageUrl2, setimageUrl2] = useState('');
-  const [imageUrl3, setimageUrl3] = useState('');
 
   const uploadimage1 = async () => {
     try {
@@ -150,50 +145,47 @@ const ImagePickerFortheBusiness = ({route, props, navigation}) => {
     }
   };
 
+  const uploadimages = async () => {
+    if (
+      firstimgUrl !=
+        'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' &&
+      secondimgUrl !=
+        'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' &&
+      thirdimgUrl !=
+        'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE='
+    ) {
+      setLoading2(true);
+      await uploadimage1();
+      await uploadimage2();
+      await uploadimage3();
 
-  const uploadimages = async ()=>{
-
-    if (firstimgUrl  != 'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' && secondimgUrl != 'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' && thirdimgUrl != 'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE='){
-
-    setLoading2(true)
-    await uploadimage1()
-    await uploadimage2()
-    await uploadimage3()
-    
-    setLoading2(false)
+      setLoading2(false);
+    } else {
+      Alert.alert('Please Select Images');
     }
-
-    else{
-      Alert.alert('Please Select Images')
-    }
-
-  }
+  };
   useEffect(() => {
     console.log('image is', img1);
     console.log('image is', img2);
     console.log('image is', img3);
     // Code that depends on img1
-}, [img1, img2,img3]);
+  }, [img1, img2, img3]);
 
+  const [img1, setimg1] = useState('no');
+  const [img2, setimg2] = useState('no');
+  const [img3, setimg3] = useState('no');
+  //   useEffect(() => {
+  //     getEmailFromStorage();
+  //   }, []);
 
-
-
-
-const [img1, setimg1] = useState('no');
-const [img2, setimg2] = useState('no');
-const [img3, setimg3] = useState('no');
-  useEffect(() => {
-    getEmailFromStorage();
-  }, []);
-
-  const getEmailFromStorage = async () => {
-    try {
-      const storedEmail = await AsyncStorage.getItem('userName');
-      setuser(storedEmail);
-    } catch (error) {
-      console.error('Error getting email from AsyncStorage:', error);
-    }
-  };
+  //   const getEmailFromStorage = async () => {
+  //     try {
+  //       const storedEmail = await AsyncStorage.getItem('userName');
+  //       setuser(storedEmail);
+  //     } catch (error) {
+  //       console.error('Error getting email from AsyncStorage:', error);
+  //     }
+  //   };
   useEffect(() => {
     const getCategory = async () => {
       const category = await AsyncStorage.getItem('category');
@@ -220,8 +212,8 @@ const [img3, setimg3] = useState('no');
       } else if (selectedSourceType === 'gallery') {
         response = await launchImageLibrary({
           mediaType: 'photo',
-          cropping: true, 
-      });
+          cropping: true,
+        });
       }
 
       if (response.assets && response.assets.length > 0) {
@@ -254,16 +246,12 @@ const [img3, setimg3] = useState('no');
       thirdimgUrl ==
         'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE='
     ) {
-      alert('Please select Images to proceed');
+      Alert.alert('Please select Images to proceed');
     }
 
-
-    if (
-      img1 == 'no' || img2 == 'no' || img2 == 'no'
-    )
-    {
-      console.log('yha agya')
-      alert('Please save Image first ')
+    if (img1 == 'no' || img2 == 'no' || img2 == 'no') {
+      console.log('yha agya');
+      Alert.alert('Please save Image first ');
     }
 
     if (
@@ -272,58 +260,61 @@ const [img3, setimg3] = useState('no');
       secondimgUrl !=
         'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' &&
       thirdimgUrl !=
-        'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' 
-        && img1 !== 'no' &&  img2 !== 'no' && img3 !== 'no'
+        'https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=' &&
+      img1 !== 'no' &&
+      img2 !== 'no' &&
+      img3 !== 'no'
     ) {
-      navigation.navigate('businessData2', {
-        surname: surname,
-        name: name,
-        fatherName: fatherName,
-        motherName: motherName,
-        grandFatherName: grandFatherName,
-        grandFatherNameNana: grandFatherNameNana,
-        gender: gender,
-        dob: dob,
-        partnerName: partnerName,
-        maritalStatus: maritalStatus,
-        country: country,
-        state: state,
-        city: city,
-        district: district,
-        postalCode: postalCode,
-        Address: Address,
-        Street: Street,
-        PImage: PImage,
-        email: email,
-        password: password,
-        nationality: nationality,
-        partnerName: partnerName,
-        phoneNumber: phoneNumber,
   
-        BusinessName: BusinessName,
-        BusinessCatergory: BusinessCatergory,
-        BusinessDescription: BusinessDescription,
-        BusinesContact: BusinesContact,
-        BusinessEducation: BusinessEducation,
-        WorkingFrom: WorkingFrom,
-        WorkingTo: WorkingTo,
-        Bimage1: img1,
-        Bimage2: img2,
-        Bimage3: img3,
-        //   Bcountry:Bcountry,
-        //   Bstate:Bstate,
-        //   Bcity:Bcity,
-        //   Barea:area,
-        //   Bpostalcode:Bpostalcode,
-        //   Baddress:Baddress,
-        //   Btimefrom:stringBtimefrom,
-        // Btimeto:stringBtimeto
-      });
+
+        try {
+            // await uploadimage1();
+            // await uploadimage2();
+      
+            // await uploadimage3();
+            console.log('data transfering');
+            await firestore()
+              .collection('BusinessPerson')
+              .doc(user).collection('Business').doc(Id)
+      
+              .update({
+               
+      category:category,
+                BusinessName: BusinessName,
+                BusinessCatergory: BusinessCategory,
+                BusinessDescription: BusinessDescription,
+                BusinesContact: BusinessContact,
+                BusinessEducation: BusinessEducation,
+                WorkingFrom: WorkingFrom,
+                WorkingTo: WorkingTo,
+                User:user,
+                Bcountry: Bcountry,
+                Bstate: Bstate,
+                Bcity: Bcity,
+                Barea: Barea,
+                Bpostalcode: Bpostalcode,
+                Baddress: Baddress,
+                Btimefrom: Btimefrom,
+                Btimeto: Btimeto,
+                Bimage1: img1,
+                Bimage2: img2,
+                Bimage3: img3,
+                phoneNumber:phone,
+                Name:name,
+                Profile:Profile
+                // ... (rest of the data)
+              });
+      
+            // setIsLoading(false);
+            Alert.alert('Updated Successfully');
+            navigation.replace('home');
+          } catch (error) {
+            // setIsLoading(false);
+            console.log('Error addinfsf product:', error);
+            // Handle any error that might occur during the process
+          }
     }
   };
-
-
-
 
   return (
     <View style={styles.container}>
@@ -371,22 +362,28 @@ const [img3, setimg3] = useState('no');
       </Text>
 
       <Pressable
-  style={{
-    borderRadius: 32,
-    padding: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#197739",
-  }}
-  onPress={uploadimages}
-  disabled={Loading2} // Disable the button while loading
->
-  {Loading2 ? (
-    <ActivityIndicator size="small" color="red" style={{ alignSelf: "center" }} />
-  ) : (
-    <Text style={{ color: "white", fontSize: 16 }}>{Loading2 ? "Saving" : "Save Image"}</Text>
-  )}
-</Pressable>
+        style={{
+          borderRadius: 32,
+          padding: 14,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#197739',
+        }}
+        onPress={uploadimages}
+        disabled={Loading2} // Disable the button while loading
+      >
+        {Loading2 ? (
+          <ActivityIndicator
+            size="small"
+            color="red"
+            style={{alignSelf: 'center'}}
+          />
+        ) : (
+          <Text style={{color: 'white', fontSize: 16}}>
+            {Loading2 ? 'Saving' : 'Save Image'}
+          </Text>
+        )}
+      </Pressable>
       <Portal>
         <Dialog visible={dialogVisible} onDismiss={closeImagePicker}>
           <Dialog.Title>Select Image Source</Dialog.Title>
@@ -406,7 +403,7 @@ const [img3, setimg3] = useState('no');
           width: '100%',
           alignSelf: 'center',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}>
         <CustomButton label="Next" onPress={onpressHandler} />
       </View>
@@ -414,7 +411,7 @@ const [img3, setimg3] = useState('no');
   );
 };
 
-export default ImagePickerFortheBusiness;
+export default ImagePickerForBusinessEdit;
 
 const styles = StyleSheet.create({
   container: {

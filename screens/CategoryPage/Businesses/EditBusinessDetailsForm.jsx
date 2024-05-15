@@ -14,16 +14,20 @@ import {Button, Title, Paragraph} from 'react-native-paper';
 import CustomDropDown from '../../../Components/CustomDropDown';
 import DatePicker from 'react-native-date-picker';
 
-const EditBusinessDetailsForm = (navigation) => {
+const EditBusinessDetailsForm = ({navigation,route}) => {
+  const {Id,name,Profile,phone,user} = route.params;
+  console.log('y fwfw',name,phone,user)
   const [error, setError] = useState(false);
   const [isBusinessNameEmpty, setIsBusinessNameEmpty] = useState(false);
   const [businessName, setBusinessName] = useState('');
   const [isdescriptionEmpty, setIsdescriptionEmpty] = useState(false);
   const [description, setdescription] = useState('');
+  console.log('why',description)
   const [isBusinessCatergory, setIsBusinessCatergory] = useState(false);
   const [businessCatergory, setBusinessCatergory] = useState('');
   const [isbusinesContactEmpty, setIsbusinesContactEmpty] = useState(false);
   const [businesContact, setBusinesContact] = useState('');
+  console.log('why contact', businesContact)
   const [isEducationEmpty, setIsEducationEmpty] = useState(false);
   const [education, setEducation] = useState('');
 
@@ -50,10 +54,7 @@ const EditBusinessDetailsForm = (navigation) => {
   const [from, setFrom] = useState(weekdayFrom[0]);
   const [to, setTo] = useState(weekdayTo[0]);
   // Onpress handler
-  const onpressHandler = () => {
-    setError(false);
-      navigation.navigate('businessData2');
-  };
+
 
   const [isstateEmpty, setIsstateEmpty] = React.useState(false);
   const [postalCode, setPostalCode] = React.useState('');
@@ -71,10 +72,35 @@ const EditBusinessDetailsForm = (navigation) => {
   const [totime, setToTime] = useState(new Date());
   const [area, setArea] = useState('');
   const [isAreaEmpty, setIsAreaEmpty] = useState(false);
-
+  const formattedtoTime = (new Date(totime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const formattedfromTime = (new Date(fromtime)).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   const businessHandler = () => {
     setError(false);
-      navigation.navigate('imagePcikerForBusiness');
+      navigation.navigate('ImagePickerForBusinessEdit',{
+        name:name,
+        phone:phone,
+        Profile:Profile,
+        BusinessName:businessName,
+        BusinessCategory:businessCatergory,
+        BusinessDescription:description,
+        BusinessContact:businesContact,
+        BusinessEducation:education,
+        WorkingFrom:from,
+        WorkingTo:to,
+        Btimefrom:formattedfromTime,
+        Btimeto:formattedtoTime,
+        Bcountry:country,
+        Bstate:state,
+        Bcity:city,
+        Barea:area,
+        Baddress:address,
+        Bpostalcode:postalCode,
+        Id:Id,
+        user:user,
+
+
+
+      });
   };
 
   return (
@@ -86,9 +112,7 @@ const EditBusinessDetailsForm = (navigation) => {
       <BackButton label={'Edit Business Details'} />
       <ScrollView>
         <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}>
+          >
           <View style={styles.container}>
             <Title style={styles.heading}> Business Details </Title>
             <CustomTextInput

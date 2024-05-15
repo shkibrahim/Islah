@@ -16,6 +16,7 @@ const SideBar = () => {
     { label: 'Associates', screen: 'Associates' },
     { label: 'Membership Card Download', screen: 'MembershipCard' },
     { label: 'Contact Us', screen: 'ContactUs' },
+    { label: 'Report a Problem', screen: 'Report' },
 
   ];
 

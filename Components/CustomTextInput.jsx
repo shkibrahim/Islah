@@ -7,6 +7,7 @@ const CustomTextInput = props => {
   return (
     <View style={styles.text_input_container}>
       <TextInput
+      multiline = {props.multiline}
         value={props.value}
         secureTextEntry={props.secureText}
         onChange={e => {

@@ -32,20 +32,21 @@ console.log('my news',NewsData)
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const data = await AsyncStorage.getItem('UserData')
+      const user = await AsyncStorage.getItem('userName');
       // console.log('my data is',JSON.parse(data))
     
-    const newdata= JSON.parse(data)
-    const user = newdata?.id
+    // const newdata= JSON.parse(data)
+    // const user = newdata?.id
       // const notifStr = await AsyncStorage.getItem('notifications');
       // const notif = JSON.parse(notifStr);
       // notif?.forEach(item => {
       //   console.log('collapseKey:', item.notification?.title ?? 'Not found');
       // });
     
-      const notificationDocs = await firestore().collection('Notification').doc(String(user)).collection(user).get();
+      const notificationDocs = await firestore().collection('Notification').doc(String(user)).collection(String(user)).get();
+      console.log('main docs', notificationDocs)
       const firestoreNotification = notificationDocs.docs.map(doc => doc.data());
-      console.log('data is',firestoreNotification)
+      console.log('data is in data',firestoreNotification)
       const mydat =(firestoreNotification[0]?.notification)
       // const pard = JSON.parse(mydat)
       const str = JSON.stringify(mydat)
@@ -71,7 +72,11 @@ if (item.notification[0]?.notification?.title == 'Islah' || !item.notification[0
 }
 
 if (item.notification[0]?.notification?.title != 'Islah' &&  item.notification[0]?.notification?.title){
-  navigation.navigate('chat')
+  navigation.navigate('singleChat',{
+ id : item.notification[0].data?.id,
+ Profile:item.notification[0].data?.Profile,
+ Name: item.notification[0].data?.Name,
+  })
 
 }
 }
@@ -114,7 +119,7 @@ if (item.notification[0]?.notification?.title != 'Islah' &&  item.notification[0
           keyExtractor={item => item.id}
         />
 }
-{NewsData == undefined &&       
+{NewsData == undefined || NewsData.length==0 &&       
 <View>
   <Text style={{color:"red",alignSelf:"center",marginTop:200,fontSize:18}}>No notifications yet.</Text>
   </View>

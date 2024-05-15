@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   button: {
     width: 320,
     marginVertical: 16,
+    alignSelf:"center",
     backgroundColor: myTheme.colors.primary,
   },
 });

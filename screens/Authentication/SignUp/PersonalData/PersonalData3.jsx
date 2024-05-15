@@ -4,13 +4,22 @@ import {
   StyleSheet,ActivityIndicator,
   TouchableWithoutFeedback,TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {Button, Paragraph, RadioButton, Text, Title} from 'react-native-paper';
 import CustomTextInput from '../../../../Components/CustomTextInput';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Modal from 'react-native-modal';
 const PersonalData3 = React.memo(({ route ,props,navigation}) => {
 const [Loading,setLoading] = useState(false)
+const [RideTypeModal, setRideTypeModal] = useState(false);
+const RideTypeSelector = (item) => {
+  setselectedItem(item)
+  setRideTypeModal(!RideTypeModal);
+};
 
 
   const {
@@ -45,56 +54,16 @@ const[wrongpassword,setwrongpassword] = useState(false);
   }, [error, userName, phoneNumber, password, confirmPassword,wrongpassword]); // Include all relevant dependencies
   
 
-  
+  const [VerifiedLoader,setVerifiedLoader] = useState(false)
 
-
-  // useEffect(() => {
-  //   console.log('svsv');
-  // console.log('2',maritalStatus)
-  //   // Check for non-empty fields and update error state
-  //   if (wrongpassword == true) {
-  //     setError(true);
-  //   }
-  // }, [error, userName, phoneNumber, password, confirmPassword,wrongpassword]); // Include all relevant dependencies
-  
-
-  
-  const main = '#197739';
-  
-  const signupHandler = async() => {
- 
-    if (password != confirmPassword ){
-      setwrongpassword(true)
-      setError(true)
-    }
-
-    if (userName === '' || userName) {
-      setIsUsernameEmpty(true)
-        setError(true)
-    } if (phoneNumber === '') {
-      setisphoneNumberempty(true)
-        setError(true)
-    }if (password === '' || password.length < 6) {
-      setIsPasswordEmpty(true);
-      setError(true);
-  }
-  if (confirmPassword === '') {
-        setIsConfirmPasswordEmpty(true)
-        setError(true)
-    }
-
-    if (error == false && (password === confirmPassword)) {
-      setLoading(true)
-setwrongpassword(false)
-      await AsyncStorage.setItem('userName', userName);
-console.log('agf')
-
- await auth()
-.createUserWithEmailAndPassword(userName, password)
-.then(() => {
-  console.log('account registered')
-  setLoading(false)
-  navigation.navigate('imagepickerpage', {
+useEffect(()=>{
+  const unsubscribe = auth().onAuthStateChanged(user => {
+    if (user) {
+      // User is signed in
+      if (user.emailVerified) {
+        setVerifiedLoader(true)
+        // Email is verified
+       navigation.navigate('imagepickerpage', {
     surname:surname,
     
     name:name,
@@ -124,26 +93,120 @@ HusbandName:HusbandName,
   
   })
 
-})
-.catch(error => {
-  if (error.code === 'auth/email-already-in-use') {
-    
-    setLoading(false)
-   alert('That email address is already in use!');
-  }
-  if (error.code === 'auth/invalid-email') {
-   alert('That email address is invalid!');
-   setLoading(false)
-  } 
+      } else {
+        // Email is not verified
+        console.log('Email is not verified');
+      }
+    } else {
+      // No user is signed in
+      console.log('No user signed in');
+    }
+  });
+  
+  // Clean up the listener when the component unmounts
+  unsubscribe();
+},[])
+  // useEffect(() => {
+  //   console.log('svsv');
+  // console.log('2',maritalStatus)
+  //   // Check for non-empty fields and update error state
+  //   if (wrongpassword == true) {
+  //     setError(true);
+  //   }
+  // }, [error, userName, phoneNumber, password, confirmPassword,wrongpassword]); // Include all relevant dependencies
+  
 
-  if (error.code === 'auth/weak-password')
-  {
-    setLoading(false)
-    alert('Weak Password');
+  
+  const main = '#197739';
+  
+  
+
+  const sendEmailVerification = async () => {
+    const user = auth().currentUser;
+    if (user) {
+      try {
+        await user.sendEmailVerification();
+        console.log('Email verification sent');
+      } catch (error) {
+        console.error('Error sending email verification:', error);
+      }
+    } else {
+      console.error('No user found');
+    }
+  };
+  const signupHandler = async() => {
+ 
+    if (password != confirmPassword ){
+      setwrongpassword(true)
+      setError(true)
+    }
+
+    if (userName === '' || userName) {
+      setIsUsernameEmpty(true)
+        setError(true)
+    } if (phoneNumber === '') {
+      setisphoneNumberempty(true)
+        setError(true)
+    }if (password === '' || password.length < 6) {
+      setIsPasswordEmpty(true);
+      setError(true);
   }
-  setLoading(false)
-  console.error(error);
-});
+  if (confirmPassword === '') {
+        setIsConfirmPasswordEmpty(true)
+        setError(true)
+    }
+
+      if (error == false && (password === confirmPassword)) {
+        setLoading(true);
+        setwrongpassword(false);
+
+        await AsyncStorage.setItem('userName', userName);
+        console.log('agf');
+
+        try {
+            await auth().createUserWithEmailAndPassword(userName, password);
+            await sendEmailVerification();
+            console.log('account registered');
+            setLoading(false);
+
+            navigation.navigate('imagepickerpage', {
+                surname: surname,
+                name: name,
+                fatherName: fatherName,
+                motherName: motherName,
+                grandFatherName: grandFatherName,
+                grandFatherNameNana: grandFatherNameNana,
+                gender: gender,
+                dob: dob,
+                partnerName: partnerName,
+                maritalStatus: maritalStatus,
+                country: country,
+                state: state,
+                city: city,
+                district: district,
+                postalCode: postalCode,
+                Address: Address,
+                Street: Street,
+                userID: generatedID,
+                HusbandName: HusbandName,
+                email: email,
+                password: password,
+                nationality: indian,
+                partnerName: partnerName,
+                phoneNumber: phoneNumber
+            });
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                Alert.alert('Sign up Fail','That email address has already been used!');
+            } else if (error.code === 'auth/invalid-email') {
+                Alert.alert('That email address is invalid!');
+            } else if (error.code === 'auth/weak-password') {
+                Alert.alert('Weak Password');
+            } else {
+                console.error(error);
+            }
+            setLoading(false);
+        }
 
 
 
@@ -317,6 +380,28 @@ HusbandName:HusbandName,
     </TouchableOpacity>
   
       </View>
+{/* <View>
+<Modal
+        isVisible={RideTypeModal}
+        onBackdropPress={RideTypeSelector}
+        backdropColor="rgba(0, 0, 0, 0.5)" // Transparent black background color
+        animationIn="slideInUp"
+        animationOut="slideOutDown">
+        <View style={{ backgroundColor: 'white', paddingHorizontal: 20,borderRadius:8 ,paddingVertical:20}}>
+        
+        <TouchableOpacity 
+          onPress={()=>RideTypeSelector}
+          style={{borderRadius:25,width:25,height:25,backgroundColor:"red",alignItems:"center",justifyContent:"center",alignSelf:"flex-end"}}>
+          <MaterialIcons name="close" size={18} color={'black'} />
+
+          </TouchableOpacity>
+
+
+    
+        </View>
+      </Modal>
+</View> */}
+
     </TouchableWithoutFeedback>
   );
 });

@@ -32,36 +32,31 @@ const [WorldData,setWorldData] = useState()
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await firestore().collection('News').get();
+        const querySnapshot = await firestore().collection('News').orderBy('createdAt', 'desc').get();
         const data = querySnapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
         }));
-  
+    
         console.log('Fetched data:', data);
         setNewsData(data);
-        const Educationdata =data?.filter(data => data?.NewsCategory == 'Education');
-        setEducationData(Educationdata)
-        const Worlddata =data?.filter(data => data?.NewsCategory == 'World');
-        console.log('the world news is',WorldData)
-        setWorldData(Worlddata)
-        const Businessdata =data?.filter(data => data?.NewsCategory == 'Business');
-        setBusinessData(Businessdata)
-
-
-        setLoading(false);
-
-
-
+        const Educationdata = data.filter(item => item.NewsCategory === 'Education');
+        setEducationData(Educationdata);
+        const Worlddata = data.filter(item => item.NewsCategory === 'World');
+        console.log('the world news is', WorldData);
+        setWorldData(Worlddata);
+        const Businessdata = data.filter(item => item.NewsCategory === 'Business');
+        setBusinessData(Businessdata);
     
-  
+        setLoading(false);
+    
         // Set up real-time listener for changes
         const unsubscribe = firestore().collection('News').onSnapshot(snapshot => {
           // Trigger a notification when there's a change
           // sendNotification();
           console.log('fwf')
         });
-  
+    
         // Clean up the listener when the component unmounts
         return () => unsubscribe();
       } catch (error) {
@@ -69,7 +64,7 @@ const [WorldData,setWorldData] = useState()
         setLoading(false);
       }
     };
-  
+    
     const sendNotification = async (message) => {
 
       PushNotification.localNotification({

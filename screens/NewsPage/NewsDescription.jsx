@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View ,FlatList,Image,ActivityIndicator, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View ,FlatList,Image,ActivityIndicator, TouchableOpacity,ScrollView} from 'react-native'
 import React, { useState ,useEffect} from 'react';
 import BackButton from '../../Components/BackButton/BackButton'
 import NewsCard from '../../Components/NewsCard/NewsCard'
@@ -15,7 +15,7 @@ const NewsDescription = ({navigation,route}) => {
 const {item} = route.params
   return (
     <SafeAreaView style={{flex:1,padding:5,backgroundColor: 'white',}}>
-
+<ScrollView>
 <View style={{backgroundColor: 'white', padding:6}}>
 
 <TouchableOpacity 
@@ -46,6 +46,7 @@ style={{}}>
 <Text style={{color:"black",fontSize:15,fontWeight:"normal",width:"95%",paddingHorizontal:12}}>
     {item.Description}
 </Text>
+</ScrollView>
     </SafeAreaView>
   )
 }

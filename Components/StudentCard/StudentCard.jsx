@@ -4,7 +4,7 @@ import { Card, Title, Paragraph } from 'react-native-paper';
 import { myTheme } from '../../theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-const StudentListCard = () => {
+const StudentListCard = ({studentData}) => {
 
   // const filteredStudents = studentsData.filter(student =>
   //   student.name.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -96,9 +96,9 @@ const StudentListCard = () => {
         {/* <StudentListCard studentData={Data} /> */}
       </View>
       <FlatList
-        data={Data}
+        data={studentData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        // keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );

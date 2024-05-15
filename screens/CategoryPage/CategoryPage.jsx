@@ -21,15 +21,118 @@ const CategoryPage = ({navigation}) => {
     // Handle logic for displaying content based on the selected category
   };
 
-  const [category, setCategory] = useState();
+  const [Category, setCategory] = useState();
+  const [Image,setImage] = useState()
+  const [surname,setsurname] = useState()
+  const [name,setname]=useState()
+  console.log('my name is',name)
+  const [userID,setuserID]=useState()
+  const [fatherName,setfatherName] =useState()
+  const[Status,setStatus] = useState()
+  const[motherName,setmotherName] = useState()
+  const [HusbandName,setHusbandName] = useState()
+  const [grandFatherName,setgrandFatherName]= useState()
+  const [grandFatherNameNana,setgrandFatherNameNana]= useState()
+  const[gender,setgender] = useState()
+  const[dob,setdob] = useState()
+  const [maritalStatus,setmaritalStatus]=useState()
+  const [country,setcountry] = useState()
+  const [state,setstate] =useState()
+  const [city,setcity]= useState()
+  const[district,setdistrict] =useState()
+  const [postalCode,setpostalCode] =useState()
+  const [Address,setAddress] =useState()
+  const [Street,setStreet] =useState()
+  const [email,setemail]=useState()
+  const [password,setpassword] =useState()
+  const[nationality,setnationality] =useState()
+  const [phoneNumber,setphoneNumber] =useState()
+  const[partnerName,setpartnerName] =useState()
+  const [Token,setToken] =useState()
+
+
+  console.log('aSLI CATEGORY IS ', Category)
   useEffect(() => {
     const getCategory = async () => {
-      const category = await AsyncStorage.getItem('Category');
+      const data = await AsyncStorage.getItem('UserData');
+      console.log('user data is ',data)
+      const mydat = JSON.parse(data)
+      const category = mydat?.Category
+      const Image =mydat?.Image
+      setImage(Image)
+      const surname = mydat?.surname
+      setsurname(surname)
+
+      const name = mydat?.name
+      setname(name)
+
+      const userID = mydat?.userID
+      setuserID(userID)
+
+      const fathername = mydat?.fatherName
+      setfatherName(fathername)
+
+      const Status = mydat?.Status
+      setStatus(Status)
+
+      const motherName = mydat?.motherName
+      setmotherName(motherName)
+
+      const HusbandName = mydat?.HusbandName
+      setHusbandName(HusbandName)
+
+      const grandFatherName = mydat?.grandFatherName
+      setgrandFatherName(grandFatherName)
+
+      const grandFatherNameNana = mydat?.grandFatherNameNana
+      setgrandFatherNameNana(grandFatherNameNana)
+      
+      const gender = mydat?.gender
+      setgender(gender)
+      
+      const dob = mydat?.dob
+      setdob(dob)
+
+      const maritalStatus = mydat?.maritalStatus
+      setmaritalStatus(maritalStatus)
+
+      const country = mydat?.country
+      setcountry(country)
+
+      const city = mydat?.city
+      setcity(city)
+
+      const district = mydat?.district
+      setdistrict(district)
+
+      const postalCode = mydat?.postalCode
+      setpostalCode(postalCode)
+
+      const Address = mydat?.Address
+      setAddress(Address)
+
+      const Street = mydat?.Street
+      setStreet(Street)
+
+      const email = mydat?.email
+      setemail(email)
+
+      const nationality = mydat?.nationality
+      setnationality(nationality)
+
+      const phoneNumber = mydat?.phoneNumber
+      setphoneNumber(phoneNumber)
+
+      const partnerName = mydat?.partnerName
+      setpartnerName(partnerName)
+
+      const Token = mydat?.Token
+      setToken(Token)
       setCategory(category);
     };
     getCategory();
   
-    console.log('bhai my category is',category);
+    console.log('bhai my category is',Category);
   }, []);
 
 
@@ -37,8 +140,8 @@ const CategoryPage = ({navigation}) => {
  
     a();
 
-  }, [category]);
-  console.log(category)
+  }, [Category]);
+  console.log(Category)
   const categories = [
     'Offers',
     'Education',
@@ -53,7 +156,7 @@ const CategoryPage = ({navigation}) => {
   const a = async () => {
     // Assuming you have a category variable
 
-    if (category == 'business') {
+    if (Category == 'business') {
       setSubCategories([
         [
           {
@@ -141,10 +244,10 @@ const CategoryPage = ({navigation}) => {
             name: 'Add Proposal',
             path: 'addProposal',
           },
-          // {
-          //   name: 'Edit Proposal',
-          //   path: 'editProposal',
-          // },
+          {
+            name: 'Edit Proposal',
+            path: 'editProposal',
+          },
         ],
         [
           {
@@ -155,7 +258,7 @@ const CategoryPage = ({navigation}) => {
       ]);
     }
 
-    if (category !== 'business') {
+    if (Category !== 'business') {
       setSubCategories([
         [
           {
@@ -195,7 +298,7 @@ const CategoryPage = ({navigation}) => {
         [
           {
             name: 'View All ',
-            path: 'businessListed',
+            path: 'singleBusinessDetails',
           },
         ],
         [
@@ -232,10 +335,10 @@ const CategoryPage = ({navigation}) => {
             name: 'Add Proposal',
             path: 'addProposal',
           },
-          // {
-          //   name: 'Edit Proposal',
-          //   path: 'editProposal',
-          // },
+          {
+            name: 'Edit Proposal',
+            path: 'editProposal',
+          },
         ],
         [
           {
@@ -419,40 +522,75 @@ const CategoryPage = ({navigation}) => {
 
           {/* Right side - Display selected category content */}
           <View
-            style={{flex: 2, paddingHorizontal: 8, justifyContent: 'center'}}>
-            {selectedCategory ? (
-              <>
-                {subCategories[categories.indexOf(selectedCategory)] ? (
-                  subCategories[categories.indexOf(selectedCategory)].map(
-                    subCategory => (
-                      <TouchableOpacity
-                        key={subCategory.name}
-                        onPress={() => navigation.navigate(subCategory.path)}
-                        style={styles.subcategoryButton}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: '#333',
-                          }}>
-                          {subCategory.name}{' '}
-                        </Text>
-                      </TouchableOpacity>
-                    ),
-                  )
-                ) : (
-                  <Text
-                    style={{fontSize: 16, textAlign: 'center', color: '#333'}}>
-                    No subcategories found for the selected category
-                  </Text>
-                )}
-              </>
+  style={{ flex: 2, paddingHorizontal: 8, justifyContent: 'center' }}
+>
+  {selectedCategory ? (
+    <>
+      {subCategories[categories.indexOf(selectedCategory)] ? (
+        subCategories[categories.indexOf(selectedCategory)].map(
+          subCategory => (
+            subCategory.name === 'Add New Business' ? (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('businessData1', {
+                    surname: surname,
+                    name: name,
+                    fatherName: fatherName,
+                    motherName: motherName,
+                    grandFatherName: grandFatherName,
+                    grandFatherNameNana: grandFatherNameNana,
+                    gender: gender,
+                    dob: dob,
+                    maritalStatus: maritalStatus,
+                    country: country,
+                    state: state,
+                    city: city,
+                    district: district,
+                    postalCode: postalCode,
+                    Address: Address,
+                    Street: Street,
+                    email: email,
+                    password: password,
+                    nationality: nationality,
+                    phoneNumber: phoneNumber,
+                    Image: Image,
+                    partnerName: partnerName,
+                    Category: Category,
+                  })
+                }
+                style={styles.subcategoryButton}
+                key={subCategory.name}
+              >
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>
+                  {subCategory.name}
+                </Text>
+              </TouchableOpacity>
             ) : (
-              <Text style={{fontSize: 16, textAlign: 'center', color: '#333'}}>
-                Select a category
-              </Text>
-            )}
-          </View>
+              <TouchableOpacity
+                key={subCategory.name}
+                onPress={() => navigation.navigate(subCategory.path)}
+                style={styles.subcategoryButton}
+              >
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>
+                  {subCategory.name}
+                </Text>
+              </TouchableOpacity>
+            )
+          )
+        )
+      ) : (
+        <Text style={{ fontSize: 16, textAlign: 'center', color: '#333' }}>
+          No subcategories found for the selected category
+        </Text>
+      )}
+    </>
+  ) : (
+    <Text style={{ fontSize: 16, textAlign: 'center', color: '#333' }}>
+      Select a category
+    </Text>
+  )}
+</View>
+
         </View>
       </View>
     </ScrollView>

@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#777',
     lineHeight: 24,
+    width:'95%',
     fontStyle: 'italic',
     textAlign: 'justify',
   },

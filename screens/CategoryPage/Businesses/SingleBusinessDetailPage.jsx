@@ -8,7 +8,7 @@ import { Linking } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {Icon} from 'react-native-paper';
 
-const SingleBusinessDetailPage = () => {
+const SingleBusinessDetailPage = ({navigation}) => {
   // const businessData = [
   //   // Add your business data here
   //   // Example:
@@ -72,24 +72,31 @@ const SingleBusinessDetailPage = () => {
   };
 
 
-  const handleOpenWhatsApp = () => {
-    const phoneNumber = '+923042336109'; // Replace with the recipient's phone number
+  const handleOpenWhatsApp = (item) => {
     const message = 'Hello! I would like to chat with you.'; // Replace with your desired message
 
     // Use the `Linking` module to open WhatsApp with the predefined message
-    Linking.openURL(`whatsapp://send?phone=${phoneNumber}&text=${message}`);
+    Linking.openURL(`whatsapp://send?phone=${item.phoneNumber}&text=${message}`);
   };
 
   const phoneNumber = '+923042336109'; // Replace with the desired phone number
 
   const handleOpenDialPad = (item) => {
+    console.log('PHONE TAB IS item',item)
     // Use the `Linking` module to open the dial pad with the specified phone number
     // Linking.openURL(`tel:${item.phoneNumber}`);
-        Linking.openURL(`tel:${phoneNumber}`);
+        Linking.openURL(`tel:${item.phoneNumber}`);
   };
 
-  const handleChat = () => {
-    console.log('Chat');
+  const handleChat = (item) => {
+    console.log('Chat usr profile  is', item.Profile);
+    navigation.navigate('singleChat',{
+      id :item.User,
+      Name:item.Name,
+      Profile:item.Profile,
+
+    })
+    console.log('Chat usr profile  is', item.Profile);
   };
 
   const renderItem = ({item}) => (
@@ -126,7 +133,9 @@ const SingleBusinessDetailPage = () => {
             paddingLeft: 10,
           }}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('singleBusinessDetails')}>
+            onPress={() => navigation.navigate('businessListed',{
+              item:item
+            })}>
             <Text style={styles.card_name}>{item.BusinessName}</Text>
           </TouchableOpacity>
           <Text style={styles.card_category}>Category: {item.category}</Text>
@@ -164,6 +173,8 @@ const SingleBusinessDetailPage = () => {
               <Icon source="phone" size={14} color="#000" />
               <Text style={{color: '#000', fontSize: 11}}> Phone </Text>
             </TouchableOpacity>
+
+            {/* <Text style={{color:"red"}}>{item.Profile}</Text> */}
             <TouchableOpacity
               onPress={()=>handleChat(item)}
               style={{

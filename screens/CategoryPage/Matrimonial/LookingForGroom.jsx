@@ -6,7 +6,7 @@ import firestore from '@react-native-firebase/firestore';
 const LookingForGroom = () => {
   const [Loading, setLoading] = useState();
 
-  const [MatrimonialData, setMatrimonialData] = useState([]);
+  const [MatrimonialData, setMatrimonialData] = useState();
 
   const [GroomData, setGroomData] = useState();
   const fetchData = async () => {
@@ -27,7 +27,7 @@ const LookingForGroom = () => {
       if (data && Array.isArray(data)) {
         setLoading(false);
         setMatrimonialData(data);
-        console.log(data);
+        console.log('All',data);
 
         // You can set other states here if needed
         // setData2(data);
@@ -54,11 +54,13 @@ const LookingForGroom = () => {
 
   const [gender, setgender] = useState('male');
   const getBrideData = async () => {
-    const mydata = await MatrimonialData.find(data => data.Gender === gender);
-    setGroomData(mydata);
+    const maleData = MatrimonialData.filter(data => data.Gender === "male");
+
+    setGroomData(maleData);
+    console.log('The groom data is', maleData);
   };
 
-  console.log('The groom data is', GroomData);
+
 
   const renderItem1 = ({item}) => (
     <View
@@ -99,7 +101,10 @@ const LookingForGroom = () => {
         <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
           {item.maritalStatus}
         </Text>
-
+        <Text style={styles.overhead}>Grandfather Name:</Text>
+        <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
+          {item.grandFatherName}
+        </Text>
         <Text style={styles.overhead}>Grandfather Name(Nana):</Text>
         <Text style={{...styles.text, alignSelf: 'center', margin: 12}}>
           {item.grandFatherNanaName}
@@ -171,7 +176,7 @@ const LookingForGroom = () => {
       <BackButton label={'Grooms'} />
       {GroomData && (
         <FlatList
-          data={[GroomData]}
+          data={GroomData}
           renderItem={renderItem1}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}

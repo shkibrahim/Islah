@@ -174,9 +174,11 @@ const styles = StyleSheet.create({
     color: myTheme.colors.primary,
   },
   card_description: {
+    color:"black",
     fontSize: 13,
   },
   card_category: {
+    color:"black",
     fontSize: 13,
   },
 });

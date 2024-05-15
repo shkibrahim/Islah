@@ -62,7 +62,7 @@ const LookingForBride = () => {
 
   const [gender, setgender] = useState('female');
   const getBrideData = async () => {
-    const mydata = await MatrimonialData.find(data => data.Gender === gender);
+    const mydata = await MatrimonialData.filter(data => data.Gender === gender);
     setBrideData(mydata);
   };
 
@@ -179,7 +179,7 @@ const LookingForBride = () => {
       <BackButton label={'Brides'} />
       {BrideData && (
         <FlatList
-          data={[BrideData]}
+          data={BrideData}
           renderItem={renderItem1}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}

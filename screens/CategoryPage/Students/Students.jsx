@@ -5,12 +5,13 @@ import {
   View,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import BackButton from '../../../Components/BackButton/BackButton';
 import {Icon, Searchbar, Modal, Portal} from 'react-native-paper';
 import CustomDropDown from '../../../Components/CustomDropDown';
 import StudentListCard from '../../../Components/StudentCard/StudentCard';
 import {myTheme} from '../../../theme';
+import firestore from '@react-native-firebase/firestore';
 
 const Students = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,58 +21,66 @@ const Students = () => {
   const [schoolName, setSchoolName] = useState('');
   const [college, setCollege] = useState('');
   const [studyingIn, setStudyingIn] = useState('');
-  const studentsData = [
-    // Sample student data
-    {
-      id: 1,
-      name: 'John will',
-      degree: 'B.Sc',
-      year: '2023',
-      board: 'CBSE',
-      schoolName: 'XYZ School',
-      medium: 'English',
-      achievement: 'Topper in Math',
-      ambition: 'Software Engineer',
-    },
-    {
-      id: 12,
-      name: 'John Doj',
-      degree: 'B.Sc',
-      year: '2023',
-      board: 'CBSE',
-      schoolName: 'XYZ School',
-      medium: 'English',
-      achievement: 'Topper in Math',
-      ambition: 'Software Engineer',
-    },
-    {
-      id: 14,
-      name: 'John kikik',
-      degree: 'B.Sc',
-      year: '2023',
-      board: 'CBSE',
-      schoolName: 'XYZ School',
-      medium: 'English',
-      achievement: 'Topper in Math',
-      ambition: 'Software Engineer',
-    },
-    {
-      id: 23,
-      name: 'John Doe',
-      degree: 'B.Sc',
-      year: '2023',
-      board: 'CBSE',
-      schoolName: 'XYZ School',
-      medium: 'English',
-      achievement: 'Topper in Math',
-      ambition: 'Software Engineer',
-    },
-    // Add more students as needed
-  ];
+const [studentsData,setstudentsData] = useState()
+  const fetchData = async () => {
+    // setLoading(true)
+  
+    console.log('fsf')
+    try {
+      const querySnapshot = await firestore()
+        .collection('StudentData')
+        .get();
+  
+      const data = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+  
+      // Check if data.docs is defined before mapping
+      if (data && Array.isArray(data)) {
+        // setLoading(false);
+        setstudentsData(data)
+        console.log(data)
+     
+  
+      } else {
+        console.log('No documents found.');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-  const filteredStudents = studentsData.filter(student =>
-    student.name.toLowerCase().includes(searchQuery.toLowerCase()),
+
+  useEffect(() => {
+
+
+
+    fetchData();
+  }, []);
+  const filteredStudents = studentsData?.filter(student =>
+    student.Name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+
+  const filter =studentsData?.filter(student =>
+   ( student.Gender.toLowerCase() == (gender.toLowerCase()) || gender.toLowerCase() == 'gender' )  &&   student.PostalCode.includes(postalCode) &&   student.SchoolName.toLowerCase().includes(schoolName.toLowerCase()) &&  student.Degreeyear.includes(studyingIn)  && student.Name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const male = studentsData?.filter(student =>
+    student.Gender.toLowerCase() == ('male'.toLowerCase()),
+  );
+
+
+  
+  const female = studentsData?.filter(student =>
+    student.Gender.toLowerCase() == ('female'.toLowerCase()),
+  );
+  const postalcode = studentsData?.filter(student =>
+    student.PostalCode.includes(postalCode),
+  );
+
+  console.log('my students',filteredStudents)
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -99,7 +108,7 @@ const Students = () => {
         />
       </View>
       <View style={styles.student_list_container}>
-        <StudentListCard studentData={filteredStudents} />
+        <StudentListCard studentData={filter} />
       </View>
       <Portal>
         <Modal visible={visible} onDismiss={() => setVisible(false)}>
@@ -113,6 +122,7 @@ const Students = () => {
             <TextInput
               label="Name"
               style={styles.input}
+              
               mode="outlined"
               placeholder="Postal Code"
               value={postalCode}
@@ -151,7 +161,9 @@ const Students = () => {
 
             {/* Add Filter Button */}
 
-            <TouchableOpacity style={styles.filter_btn}>
+            <TouchableOpacity 
+            onPress={()=> setVisible(false)}
+            style={styles.filter_btn}>
               <Text
                 style={{
                   fontWeight: 'bold',
@@ -178,6 +190,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#ddd',
     marginVertical: 8,
+    color:"black",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: myTheme.colors.primary,

@@ -66,6 +66,8 @@ import Notification from './screens/Notification/Notification';
 import PersonalView from './screens/PersonalView/PersonalView';
 import { useRef } from 'react';
 import NewsDescription from './screens/NewsPage/NewsDescription';
+import ImagePickerForBusinessEdit from './screens/CategoryPage/Businesses/ImagePickerForBusinessEdit';
+import Report from './screens/Report/Report';
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
   // You can handle the background message here
@@ -236,6 +238,11 @@ const StackNavigator = ({isAuthenticated}) => (
       component={ImagePickerFortheBusiness}
       options={{headerShown: false}}
     />
+      <Stack.Screen
+      name="ImagePickerForBusinessEdit"
+      component={ImagePickerForBusinessEdit}
+      options={{headerShown: false}}
+    />
     <Stack.Screen
       name="otherData1"
       component={OtherData}
@@ -306,6 +313,7 @@ const StackNavigator = ({isAuthenticated}) => (
       component={BusinessListed}
       options={categoryPageOptions}
     />
+    
     <Stack.Screen
       name="editBusinessDetails"
       component={EditBusinessDetails}
@@ -501,7 +509,15 @@ const Main = () => {
           }}
           component={ContactUs}
         />
-        <Drawer.Screen name="Testing" component={Testing} />
+
+<Drawer.Screen
+          name="Report"
+          options={{
+            headerShown: false,
+          }}
+          component={Report}
+        />
+     
       </Drawer.Navigator>
     </NavigationContainer>
   );

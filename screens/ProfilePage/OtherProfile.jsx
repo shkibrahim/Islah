@@ -19,13 +19,14 @@ import {Icon, IconButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {myTheme} from '../../theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const UserProfile = ({navigation}) => {
   const [PostData,setPostData] = useState([])
-  // console.log('bla',PostData)
+const [Imageselectorview,setImageselectorview] = useState(false)
 
 
   
@@ -40,7 +41,7 @@ const UserProfile = ({navigation}) => {
   const [ProfessionCategory, setProfessionCategory] = useState();
   const [Address, setAddress] = useState('');
   const [Gender, setGender] = useState('');
-  const [Bio, setBio] = useState(' My Bio');
+  const [Bio, setBio] = useState('');
   const [Category, setCategory] = useState();
   const [FatherName,setFatherName] = useState()
   const [MotherName,setMotherName] = useState()
@@ -307,31 +308,31 @@ if (mypost!=undefined){
       // console.log('Sara Data', AllData);
 const data =await AsyncStorage.getItem('UserData')
 setStartLoading(false)
-console.log('user data iv',data)
+// console.log('user data iv',data)
 const newdata= JSON.parse(data)
       // const mydata = await AllData.find(data => data.id === user);
       setData(newdata);
 
 
 
-      setFatherName(newdata.FatherName)
-      setMotherName(newdata.MotherName)
-      setDada(newdata.GrandFatherName)
-      setNana(newdata.Nana)
-      setGender(newdata.Gender)
-      setDOB(newdata.Dob)
-      setMaritalStatus(newdata.MaritalStatus)
-      setAddress(newdata.Address)
-      setDistrict(newdata.District)
-      setCity(newdata.City)
-      setState(newdata.State)
-      setCountry(newdata.Country)
-      setPostalCode(newdata.PostalCode)
-      setBio(newdata?.AboutMe)
-      setFacebook(newdata?.Facebook)
-      setInstagram(newdata?.Instagram)
-      setLinkedin(newdata?.Linkedin)
-      setTwitter(newdata?.Twitter)
+      // setFatherName(newdata?.FatherName)
+      // setMotherName(newdata?.MotherName)
+      // setDada(newdata?.GrandFatherName)
+      // setNana(newdata?.Nana)
+      // setGender(newdata?.Gender)
+      // setDOB(newdata?.Dob)
+      // setMaritalStatus(newdata?.MaritalStatus)
+      // setAddress(newdata?.Address)
+      // setDistrict(newdata?.District)
+      // setCity(newdata?.City)
+      // setState(newdata?.State)
+      // setCountry(newdata?.Country)
+      // setPostalCode(newdata?.PostalCode)
+      // setBio(newdata?.AboutMe)
+      // setFacebook(newdata?.Facebook)
+      // setInstagram(newdata?.Instagram)
+      // setLinkedin(newdata?.Linkedin)
+      // setTwitter(newdata?.Twitter)
       if (newdata.Category =='student'){
 
         setSchoolName(newdata.SchoolName)
@@ -411,18 +412,35 @@ const newdata= JSON.parse(data)
   //   }
   // };
 
-  const ProfilePicker = async () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-    };
+  // const ProfilePicker = async () => {
+  //   const options = {
+  //     mediaType: 'photo',
+  //     includeBase64: false,
+  //   };
 
-    launchImageLibrary(options, response => {
-      if (response.assets) {
-        setselectedImage(response.assets[0].uri);
-        setSelectedImage1(response);
-      }
-    });
+  //   launchImageLibrary(options, response => {
+  //     if (response.assets) {
+  //       console.log('assets ka hakeeki',response)
+  //       setselectedImage(response.assets[0].uri);
+  //       setSelectedImage1(response);
+  //     }
+  //   });
+  // };
+
+  const ProfilePicker = async () => {
+     try {
+      const pickedImage = await ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true,
+      });
+      console.log('hakeeki',pickedImage)
+      setselectedImage(pickedImage.path);
+      setSelectedImage1(pickedImage);
+
+    } catch (error) {
+      console.log('Error while picking image:', error);
+    }
   };
 
   useEffect(() => {
@@ -443,7 +461,7 @@ const newdata= JSON.parse(data)
     console.log('iske andr');
 
     // setAddress(Data.Address);
-    setName(Data?.Name);
+    // setName(Data?.Name);
     setGender(Data?.Gender);
     setBio(Data?.Bio);
     // if (Data[0].Pimage.length>2){
@@ -483,18 +501,36 @@ const newdata= JSON.parse(data)
     setBtnDisabling(true);
     if (Category === 'business' && selectedImage != Data.Profile) {
 
-
+      setLoading(true);
       try {
-        const reference = storage().ref(selectedImage1.assets[0].fileName);
+        console.log('entering section')
+        // if (selectedImage1 && selectedImage1.cropRect && selectedImage1.cropRect.length > 0) {
+        // console.log('entering section2')
+
+        //   const reference = storage().ref(selectedImage1.assets[0].fileName);
+        //   const pathToFile = selectedImage;
+      
+        //   await reference.putFile(pathToFile);
+      
+        //   const url = await storage().ref(selectedImage1.assets[0].fileName).getDownloadURL();
+        //   setSelectedImageUrl(url);
+        //   console.log('my image url is ', url);
+        //   setLoading(false);
+        //   Alert.alert('Data updated');
+        // }
+
+        const reference = storage().ref(selectedImage1.path);
         const pathToFile = selectedImage;
 
         await reference.putFile(pathToFile);
 
         const url = await storage()
-          .ref(selectedImage1.assets[0].fileName)
+          .ref(selectedImage1.path)
           .getDownloadURL();
         setSelectedImageUrl(url);
-
+        console.log('my url is', url)
+        await AsyncStorage.setItem('Name', Name);
+        await AsyncStorage.setItem('Profile', url);
         await AsyncStorage.setItem('Profile', url);
         await AsyncStorage.setItem('Name', Name);
         await firestore()
@@ -512,13 +548,13 @@ const newdata= JSON.parse(data)
             Nana: Nana,
             Gender: Gender,
             Dob: DOB,
-            MaritalStatus: MaritalStatus,
-            Country: Country,
-            State: State,
-            City: City,
-            District: District,
-            PostalCode: PostalCode,
-            Address: Address,
+            // MaritalStatus: MaritalStatus,
+            // Country: Country,
+            // State: State,
+            // City: City,
+            // District: District,
+            // PostalCode: PostalCode,
+            // Address: Address,
 
             Facebook:Facebook,
             Instagram:Instagram,
@@ -528,12 +564,14 @@ const newdata= JSON.parse(data)
 
             // ... (rest of the data)
           });
+
+          console.log('bhai phas gya')
 if (Looker!== null){
   await firestore()
   .collection('Matrimonial')
   .doc(user)
 
-  .update({
+  .set({
     Name: Name,
 
     Profile: url,
@@ -575,7 +613,7 @@ if (Looker!== null){
                 .doc(user)
                 .collection('Posts')
                 .doc(doc.id)
-                .update({
+                .set({
                   Name: Name,
                   Profile: url,
                   Profession: ProfessionCategory,
@@ -600,10 +638,12 @@ if (Looker!== null){
      
      
      
-      } catch (error) {
+      } 
+      
+      catch (error) {
         setLoading(false);
 
-        console.error('Error updating data:', error);
+        console.error('Error updating my business data:', error);
       }
     }
 
@@ -1739,7 +1779,7 @@ Sign out
             <Image source={{uri: selectedImage}} style={styles.profileImage} />
             <TouchableOpacity
               disabled={!inputEditable}
-              onPress={ProfilePicker}
+              onPress={()=>setImageselectorview(!Imageselectorview)}
               activeOpacity={0.7}
               style={{
                 borderRadius: 29,
@@ -1749,10 +1789,38 @@ Sign out
                 justifyContent: 'center',
                 backgroundColor: '#1d6b34',
                 position: 'absolute',
-                right: 127,
+              top:105,
+                right: 107,
               }}>
               <Text style={{color: 'white', fontSize: 20}}>+</Text>
             </TouchableOpacity>
+
+            {Imageselectorview &&   
+            
+            <View style={{position:"absolute",right:132,top:140,paddingVertical:12,backgroundColor:"green",alignItems:"center",elevation:5,borderRadius:7,zIndex:1000}}>
+            <TouchableOpacity 
+          onPress={ProfilePicker}
+              activeOpacity={0.6}
+              style={{borderBottomColor:'white', borderWidth:1,borderColor:"transparent"}}>
+<Text style={{color:"white",fontFamily:"Montserrat-Regular",fontSize:18,paddingHorizontal:12}}>
+Select from Gallery
+  
+
+  
+  </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+          onPress={ProfilePicker}
+              activeOpacity={0.6}
+              style={{}}>
+<Text style={{color:"white",fontFamily:"Montserrat-Regular",fontSize:18}}>
+Select from Camera
+  
+
+  
+  </Text>
+              </TouchableOpacity>
+              </View>}
 
             <TextInput
               editable={inputEditable}
@@ -1778,9 +1846,9 @@ Sign out
               editable={inputEditable}
               style={styles.location}
               placeholderTextColor="lightgray"
-              value={Address}
+              value={City}
               // keyboardType="Numeric"
-              onChangeText={setAddress}
+              onChangeText={setCity}
               placeholder="City"
               // secureTextEntry={true}
             />

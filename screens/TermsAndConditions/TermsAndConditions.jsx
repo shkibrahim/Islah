@@ -47,7 +47,7 @@ const fetchdata = async () => {
         backgroundColor:"#ddd",
         borderWidth: 0.3,
         width: '90%',
-        
+      
         margin:12,
         alignSelf: 'center',
         padding: 12,
@@ -55,7 +55,7 @@ const fetchdata = async () => {
       }}>
       <Text style={styles.overhead}>Terms and Conditions:</Text>
 
-      <Text style={{...styles.text, marginHorizontal: 12}}>
+      <Text style={{...styles.text, marginHorizontal: 5}}>
         {item.Terms}
       </Text>
 
@@ -64,8 +64,8 @@ const fetchdata = async () => {
     </View>
   );
   return (
-    <SafeAreaView style={{height:"100%",flex:1}}>
- <View>
+    <SafeAreaView style={{flex:1}}>
+ <View style={{flex:1}}> 
  <BackButton label="Terms and Conditions" />
 
  {Terms && (
