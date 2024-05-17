@@ -58,6 +58,14 @@ const [Facebook,setFacebook] = useState(null)
 const [Instagram,setInstagram] = useState(null)
 const [Linkedin,setLinkedin] = useState(null)
 const [Twitter,setTwitter]= useState(null)
+const [UserId,setUserId] = useState()
+const [HusbandName,setHusbandName] = useState()
+const [surname,setsurname] = useState()
+const [Street,setStreet] = useState()
+const [email,setEmail] = useState()
+const [nationality,setnationality] = useState()
+const [phoneNumber,setphoneNumber] = useState()
+const[partnerName,setpartnerName] = useState()
 
 // Student states
 
@@ -83,9 +91,11 @@ const [Experience,setExperience] = useState()
 
   // console.log('my category is ',Category)
   const [selectedImage, setselectedImage] = useState(null);
+  // console.log('my seleected image is', selectedImage)
   const [Data, setData] = useState();
+
   const [user, setuser] = useState();
-  // console.log('my user',user)
+
   const [IsLoading, setIsLoading] = useState(true);
   const [inputEditable, setinputEditable] = useState(false);
   const [ButtonText, setButtonText] = useState('Update Profile');
@@ -97,6 +107,22 @@ const [Experience,setExperience] = useState()
   const [StartLoading, setStartLoading] = useState(true);
   const [BtnDisabling, setBtnDisabling] = useState(false);
 const [Logoutview,setLogoutview] = useState(false)
+const [Profile,setProfile] = useState()
+const [token,settoken] = useState()
+
+
+
+// console.log('profile is ',Profile)
+const profile = async()=>{
+  const img = await AsyncStorage.getItem('Profile')
+  console.log('inner',img)
+  setProfile(img)
+}
+
+useEffect(()=>{
+profile()
+
+},[selectedImageUrl,selectedImage])
 const LogoutviewShower =()=>{
   setLogoutview(!Logoutview)
 }
@@ -147,7 +173,7 @@ const Logout = ()=>{
       if (data && Array.isArray(data)) {
         setIsLoading(false);
 const mypost =  await data?.find(data => data?.Userid === user);
-console.log('my posts are',mypost)
+// console.log('my posts are',mypost)
 
 if (mypost!=undefined){
   setPostData([mypost])
@@ -283,7 +309,7 @@ if (mypost!=undefined){
         await getEmailFromStorage();
         await fetchalldata();
         // await  funcat();
-        await myDatafetch();
+    
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -293,12 +319,8 @@ if (mypost!=undefined){
   }, []);
 
   useEffect(() => {
-    // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
-
-    if (AllData) {
-      myDatafetch();
-    }
-  }, [AllData,StudentData,]);
+     myDatafetch();
+  }, [selectedImageUrl]);
 
   const myDatafetch = async () => {
     try {
@@ -309,30 +331,49 @@ if (mypost!=undefined){
 const data =await AsyncStorage.getItem('UserData')
 setStartLoading(false)
 // console.log('user data iv',data)
-const newdata= JSON.parse(data)
+const newdata= await JSON.parse(data)
       // const mydata = await AllData.find(data => data.id === user);
-      setData(newdata);
+     await setData(newdata);
+console.log('bla bla',newdata)
+setselectedImage(newdata?.Profile)
+const a = await AsyncStorage.getItem('Profile')
+setselectedImage(a)
+console.log('asli back image is',newdata?.Profile)
+console.log('dob is',newdata.Dob)
+setBio(newdata?.AboutMe)
+setName(newdata?.Name)
+setCategory(newdata?.Category)
+setProfessionCategory(newdata?.Category)
+      setFatherName(newdata?.FatherName)
+      setMotherName(newdata?.MotherName)
+      setDada(newdata?.GrandFatherName)
+      setNana(newdata?.GrandFatherNameNana)
+      setGender(newdata?.Gender)
+      setDOB(newdata?.Dob)
+      setMaritalStatus(newdata?.MaritalStatus)
+      setAddress(newdata?.Address)
+      setDistrict(newdata?.District)
+      setCity(newdata?.City)
+      setState(newdata?.State)
+      setCountry(newdata?.Country)
+      setPostalCode(newdata?.PostalCode)
+      setBio(newdata?.AboutMe)
+      setFacebook(newdata?.Facebook)
+      setInstagram(newdata?.Instagram)
+      setLinkedin(newdata?.Linkedin)
+      setTwitter(newdata?.Twitter)
+setUserId(newdata?.userID)
+setHusbandName(newdata?.HusbandName)
+setsurname(newdata?.Surname)
+setStreet(newdata?.Street)
+setEmail(newdata?.email)
+setnationality(newdata?.Nationality)
+setphoneNumber(newdata?.PhoneNumber)
+setpartnerName(newdata?.PhoneNumber)
+settoken(newdata?.Token)
 
 
 
-      // setFatherName(newdata?.FatherName)
-      // setMotherName(newdata?.MotherName)
-      // setDada(newdata?.GrandFatherName)
-      // setNana(newdata?.Nana)
-      // setGender(newdata?.Gender)
-      // setDOB(newdata?.Dob)
-      // setMaritalStatus(newdata?.MaritalStatus)
-      // setAddress(newdata?.Address)
-      // setDistrict(newdata?.District)
-      // setCity(newdata?.City)
-      // setState(newdata?.State)
-      // setCountry(newdata?.Country)
-      // setPostalCode(newdata?.PostalCode)
-      // setBio(newdata?.AboutMe)
-      // setFacebook(newdata?.Facebook)
-      // setInstagram(newdata?.Instagram)
-      // setLinkedin(newdata?.Linkedin)
-      // setTwitter(newdata?.Twitter)
       if (newdata.Category =='student'){
 
         setSchoolName(newdata.SchoolName)
@@ -379,6 +420,7 @@ const newdata= JSON.parse(data)
     }
 
     if (ButtonText == 'Save') {
+      setBtnDisabling(true);
       setLoading(true);
       setinputEditable(false);
       // await ImageUpload()
@@ -392,40 +434,6 @@ const newdata= JSON.parse(data)
     }
   };
 
-  const ImageUpload = async () => {
-    const reference = storage().ref(selectedImage1.assets[0].fileName);
-    const pathToFile = selectedImage;
-
-    await reference.putFile(pathToFile);
-
-    const url = await storage()
-      .ref(selectedImage1.assets[0].fileName)
-      .getDownloadURL();
-    setSelectedImageUrl(url);
-  };
-
-  // const getCategory = async () => {
-  //   try {
-  //     await AsyncStorage.setItem('category', Category);
-  //   } catch (error) {
-  //     console.error('Error getting category from AsyncStorage:', error);
-  //   }
-  // };
-
-  // const ProfilePicker = async () => {
-  //   const options = {
-  //     mediaType: 'photo',
-  //     includeBase64: false,
-  //   };
-
-  //   launchImageLibrary(options, response => {
-  //     if (response.assets) {
-  //       console.log('assets ka hakeeki',response)
-  //       setselectedImage(response.assets[0].uri);
-  //       setSelectedImage1(response);
-  //     }
-  //   });
-  // };
 
   const ProfilePicker = async () => {
      try {
@@ -438,47 +446,48 @@ const newdata= JSON.parse(data)
       setselectedImage(pickedImage.path);
       setSelectedImage1(pickedImage);
 
+   setImageselectorview(false)
+   
     } catch (error) {
       console.log('Error while picking image:', error);
     }
   };
 
-  useEffect(() => {
-    DataMerging();
-    // getCategory();
-    // }
-  }, [Data]);
+  const ProfilePickercamera = async () => {
+    try {
+      const pickedImage = await ImagePicker.openCamera({
+        width: 300,
+        height: 400,
+        cropping: true,
+      });
+      console.log('Picked Image:', pickedImage);
+      setselectedImage(pickedImage.path);
+      setSelectedImage1(pickedImage);
 
-  const DataMerging = async () => {
-    console.log('Data Merging');
-    setProfessionCategory(Data?.Profession);
-    setAddress(Data?.City);
-    setName(Data?.Name);
-    setCategory(Data?.Category);
-    setGender(Data?.Gender);
-    // if (Data[0].Pimage.length>2){
-    setselectedImage(Data?.Profile);
-    console.log('iske andr');
-
-    // setAddress(Data.Address);
-    // setName(Data?.Name);
-    setGender(Data?.Gender);
-    setBio(Data?.Bio);
-    // if (Data[0].Pimage.length>2){
-    // setselectedImage(Data?.Profile);
-
-    // setStartLoading(false);
+      setImageselectorview(false);
+    } catch (error) {
+      console.log('Error while picking image:', error);
+    }
   };
 
-
   const[UpdatedData,setUpdatedData] = useState({
+    userID: UserId,
+    HusbandName: HusbandName,
+    Surname: surname,
+    Status: 'Active',
+    Street: Street,
+    Email: email,
+    Nationality: nationality,
+    PhoneNumber: phoneNumber,
+    PartnerName: partnerName,
+    Token: token,
     Name: Name,
     FatherName: FatherName,
     GrandFatherName: Dada,
     MotherName: MotherName,
-    Nana: Nana,
+    GrandFatherNameNana: Nana,
     Gender: Gender,
-    DOB: DOB,
+    Dob: DOB,
     MaritalStatus: MaritalStatus,
     Country: Country,
     State: State,
@@ -492,18 +501,57 @@ const newdata= JSON.parse(data)
     Instagram:Instagram,
     Linkedin:Linkedin,
     Twitter:Twitter,
-
+    Profile: selectedImageUrl,
   })
 
+  const updaterfun = async()=>{
+   await setUpdatedData({
+      userID: UserId,
+      HusbandName: HusbandName,
+      Surname: surname,
+      Status: 'Active',
+      Street: Street,
+      Email: email,
+      Nationality: nationality,
+      PhoneNumber: phoneNumber,
+      PartnerName: partnerName,
+      Token: token,
+      Name: Name,
+      FatherName: FatherName,
+      GrandFatherName: Dada,
+      MotherName: MotherName,
+      GrandFatherNameNana: Nana,
+      Gender: Gender,
+      Dob: DOB,
+      MaritalStatus: MaritalStatus,
+      Country: Country,
+      State: State,
+      City: City,
+      District: District,
+      PostalCode: PostalCode,
+      Address: Address,
+      Category: Category,
+      AboutMe: Bio,
+      Facebook:Facebook,
+      Instagram:Instagram,
+      Linkedin:Linkedin,
+      Twitter:Twitter,
+      Profile: selectedImageUrl,
+    });
+  }
+  useEffect(() => {
+    updaterfun()
+  }, [selectedImage,Bio, ProfessionCategory,partnerName, BtnDisabling,phoneNumber,nationality,email,Street,selectedImageUrl,Instagram ,Facebook,Linkedin,Twitter, Name, FatherName, Nana, MotherName, Dada, Gender, DOB, MaritalStatus, Country, State, City, District, PostalCode, Address, Category]);
   const DataUpdate = async () => {
     console.log('data fetching starts ');
 
     setBtnDisabling(true);
-    if (Category === 'business' && selectedImage != Data.Profile) {
+    if (Category === 'business' && selectedImage != Profile) {
+      console.log('selected',selectedImage , 'data', Data.Profile)
 
       setLoading(true);
       try {
-        console.log('entering section')
+        console.log('entering section business for image')
         // if (selectedImage1 && selectedImage1.cropRect && selectedImage1.cropRect.length > 0) {
         // console.log('entering section2')
 
@@ -530,9 +578,9 @@ const newdata= JSON.parse(data)
         setSelectedImageUrl(url);
         console.log('my url is', url)
         await AsyncStorage.setItem('Name', Name);
+        setSelectedImageUrl(url);
+        
         await AsyncStorage.setItem('Profile', url);
-        await AsyncStorage.setItem('Profile', url);
-        await AsyncStorage.setItem('Name', Name);
         await firestore()
           .collection('BusinessPerson')
           .doc(user)
@@ -548,13 +596,13 @@ const newdata= JSON.parse(data)
             Nana: Nana,
             Gender: Gender,
             Dob: DOB,
-            // MaritalStatus: MaritalStatus,
-            // Country: Country,
-            // State: State,
-            // City: City,
-            // District: District,
-            // PostalCode: PostalCode,
-            // Address: Address,
+            MaritalStatus: MaritalStatus,
+            Country: Country,
+            State: State,
+            City: City,
+            District: District,
+            PostalCode: PostalCode,
+            Address: Address,
 
             Facebook:Facebook,
             Instagram:Instagram,
@@ -581,7 +629,7 @@ if (Looker!== null){
     FatherName: FatherName,
     GrandFatherName: Dada,
     MotherName: MotherName,
-    Nana: Nana,
+    GrandFatherNameNana: Nana,
     Gender: Gender,
     Dob: DOB,
     MaritalStatus: MaritalStatus,
@@ -631,9 +679,12 @@ if (Looker!== null){
 
 
 
-        // async function
+    
         const jsonData = JSON.stringify(UpdatedData);
         await AsyncStorage.setItem('UserData', jsonData);
+        const img = await AsyncStorage.getItem('Profile')
+        setProfile(img)
+       await updaterfun()
         Alert.alert('Data updated');
      
      
@@ -647,7 +698,7 @@ if (Looker!== null){
       }
     }
 
-    if (Category === 'business' && selectedImage === Data.Profile) {
+    if (Category === 'business' && selectedImage ===Profile) {
       setLoading(true);
       try {
      
@@ -660,7 +711,7 @@ if (Looker!== null){
           .update({
             Name: Name,
 
-            // Profession: ProfessionCategory,
+            Profession: ProfessionCategory,
             Address: Address,
             AboutMe: Bio,
             FatherName: FatherName,
@@ -682,6 +733,9 @@ if (Looker!== null){
             Twitter:Twitter,
             // ... (rest of the data)
           });
+
+
+          console.log('first')
           if (Looker!== null){
             await firestore()
             .collection('Matrimonial')
@@ -742,6 +796,9 @@ if (Looker!== null){
           });
           const jsonData = JSON.stringify(UpdatedData);
           await AsyncStorage.setItem('UserData', jsonData);
+
+          const img = await AsyncStorage.getItem('Profile')
+          setProfile(img)
         Alert.alert('Data updated');
         setLoading(false);
       } catch (error) {
@@ -753,13 +810,14 @@ if (Looker!== null){
 
     if (Category == 'jobseeker' && selectedImage != Data.Profile) {
       try {
-        const reference = storage().ref(selectedImage1.assets[0].fileName);
+       
+        const reference = storage().ref(selectedImage1.path);
         const pathToFile = selectedImage;
 
         await reference.putFile(pathToFile);
 
         const url = await storage()
-          .ref(selectedImage1.assets[0].fileName)
+          .ref(selectedImage1.path)
           .getDownloadURL();
         setSelectedImageUrl(url);
         await AsyncStorage.setItem('Name', Name);
@@ -1014,13 +1072,14 @@ if (Looker!== null){
 
     if (Category == 'student' && selectedImage != Data.Profile) {
       try {
-        const reference = storage().ref(selectedImage1.assets[0].fileName);
+       
+        const reference = storage().ref(selectedImage1.path);
         const pathToFile = selectedImage;
 
         await reference.putFile(pathToFile);
 
         const url = await storage()
-          .ref(selectedImage1.assets[0].fileName)
+          .ref(selectedImage1.path)
           .getDownloadURL();
         setSelectedImageUrl(url);
         await AsyncStorage.setItem('Profile', url);
@@ -1295,13 +1354,14 @@ Achievement:Achievements,
 
     if (Category == 'other' && selectedImage != Data.Profile) {
       try {
-        const reference = storage().ref(selectedImage.assets[0].fileName);
+       
+        const reference = storage().ref(selectedImage1.path);
         const pathToFile = selectedImage;
 
         await reference.putFile(pathToFile);
 
         const url = await storage()
-          .ref(selectedImage1.assets[0].fileName)
+          .ref(selectedImage1.path)
           .getDownloadURL();
         setSelectedImageUrl(url);
         await AsyncStorage.setItem('Name', Name);
@@ -1529,9 +1589,6 @@ Achievement:Achievements,
     }
     
   };
-
-
-
   const ShareBtn = async () => {
     Share.share({
       message: `Hey I am using Islah  \n  Profile Name: ${Name}\n Category: ${ProfessionCategory} \n Location: ${Address} \n About me: ${Bio} `,
@@ -1552,14 +1609,10 @@ Achievement:Achievements,
       });
   };
   const [selectedItem, setSelectedItem] = useState(null);
-
   const [RideTypeModal, setRideTypeModal] = useState(false);
   const RideTypeSelector = () => {
 setRideTypeModal(!RideTypeModal)
-    // setContent(item.Content);
-  
   };
-
   const [Content,setContent] = useState(null)
   const UpdatePost = (item)=>{
     setSelectedItem(item)
@@ -1570,13 +1623,8 @@ setRideTypeModal(!RideTypeModal);
 // Alert.alert('Now you can edit your posts')
 
   }
-
   const PostUpdater = async(item)=>{
-
-
     if (Category == 'student'){
-
-
       try {
         // Reference the specific document in the Posts collection group
         const documentRef = firestore().collection('StudentData') // Main collection name that contains 'Posts'
@@ -1593,18 +1641,13 @@ setRideTypeModal(!RideTypeModal);
         console.error('Error updating post data:', error);
       }
     }
- 
-
     if (Category == 'jobseeker'){
-
-
       try {
         // Reference the specific document in the Posts collection group
         const documentRef = firestore().collection('JobSeekerData') // Main collection name that contains 'Posts'
           .doc(user) // The document ID of the user you want to update
           .collection('Posts') // The 'Posts' subcollection
           .doc(item.id); // The document ID of the specific post you want to update
-    
         // Use the update() method to modify the data
         await documentRef.update({
           Content:Content, // Assuming item has a Content property
@@ -1614,12 +1657,7 @@ setRideTypeModal(!RideTypeModal);
         console.error('Error updating post data:', error);
       }
     }
-
-
-
     if (Category == 'business'){
-
-
       try {
         // Reference the specific document in the Posts collection group
         const documentRef = firestore().collection('BusinessData') // Main collection name that contains 'Posts'
@@ -1636,11 +1674,7 @@ setRideTypeModal(!RideTypeModal);
         console.error('Error updating post data:', error);
       }
     }
-
-
     if (Category == 'other'){
-
-
       try {
         // Reference the specific document in the Posts collection group
         const documentRef = firestore().collection('OtherData') // Main collection name that contains 'Posts'
@@ -1657,9 +1691,6 @@ setRideTypeModal(!RideTypeModal);
         console.error('Error updating post data:', error);
       }
     }
-
-
-
   }
   const renderItem = ({item,index}) => (
     <View style={{ backgroundColor: '#eee',
@@ -1810,7 +1841,7 @@ Select from Gallery
   </Text>
               </TouchableOpacity>
               <TouchableOpacity 
-          onPress={ProfilePicker}
+          onPress={ProfilePickercamera}
               activeOpacity={0.6}
               style={{}}>
 <Text style={{color:"white",fontFamily:"Montserrat-Regular",fontSize:18}}>
@@ -1973,7 +2004,7 @@ Select from Camera
        Date of Birth
   </Text>
   <TextInput
-            editable={inputEditable}
+            editable={false}
             style={styles.bio2}
             placeholderTextColor="grey"
             value={DOB}
@@ -2473,6 +2504,8 @@ Select from Camera
 
             <TouchableOpacity
               activeOpacity={0.6}
+              disabled={BtnDisabling}
+
               style={{
                 borderRadius: 8,
                 padding: 16,
@@ -2482,7 +2515,6 @@ Select from Camera
                 justifyContent: 'center',
                 backgroundColor: '#1d6b34',
               }}
-              disabled={BtnDisabling}
               onPress={Update}
               // Disable the button while loading
             >

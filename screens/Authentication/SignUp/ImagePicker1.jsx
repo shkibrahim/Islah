@@ -99,7 +99,11 @@ Bio:''
       PartnerName: partnerName,
       Category: category,
       Profession: '',
-      Bio: ''
+      Bio: '',
+      Facebook:'',
+      Instagram:'',
+      Linkedin:'',
+      Twitter:''
     });
   }, [userID, selectedImageUrl, name, fatherName, grandFatherName, motherName, grandFatherNameNana, HusbandName, surname, gender, dob, token, maritalStatus, country, state, city, district, postalCode, Address, Street, email, nationality, phoneNumber, partnerName, category]);
   useEffect(() => {

@@ -6,8 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-const MemberShipCard = () => {
+import BackButton from '../../Components/BackButton/BackButton';
+const MemberShipCard = ({navigation}) => {
   const [user,setuser] = useState()
 const [Front,setFront]= useState(true)
 const [Back,setBack] = useState(false)
@@ -312,7 +315,14 @@ setBack(false)
       }
   return (
     <SafeAreaView style={{flex:1,height:"100%",}}>
-      
+      <BackButton label="Membership Card" />
+
+         {/* <TouchableOpacity 
+          onPress={()=>navigation.goBack()}
+          style={{borderRadius:25,width:25,height:25,alignItems:"center",justifyContent:"center",alignSelf:"flex-start",margin:10}}>
+          <MaterialIcons name="arrow-left" size={25} color={'black'} />
+
+          </TouchableOpacity> */}
       <ScrollView>
     <View
         style={{
@@ -351,7 +361,7 @@ setBack(false)
           </View>
           <View style={{flexDirection:"row",alignItems:'center',paddingHorizontal:9,paddingVertical:5,justifyContent:"space-between"}}>
               <Image
-          source={require("../../assets/images/Islah_logo.png")}
+          source={require("../../assets/images/logo.png")}
           style={{ height:80,width:80}}
         />
 
@@ -377,18 +387,21 @@ setBack(false)
 
 <View style={{marginLeft:9}}> 
 
-<View style={{flexDirection:"row", alignItems:"center",}}>
-<Text style={{...styles.main,}}>{Data?.Name}</Text>
-<Text style={{...styles.main,}}> </Text>
+<View style={{flexDirection:"row", alignItems:"center",width:"95%"}}>
+<Text style={{...styles.main,}}>{Data?.Name} {Data?.FatherName} {Data?.Surname}</Text>
 
-<Text style={{...styles.main}}>{Data?.Surname}</Text>
 
 </View>
   <Text style={styles.main}>ID NO : {Data?.userID}</Text>
-  <Text style={styles.sub}>{Data?.FatherName}</Text>
+
+  <View style={{flexDirection:"row", alignItems:"center",width:'95%'}}>
+  <Text style={styles.sub}>{Data?.FatherName} {Data?.GrandFatherName} {Data?.Surname}</Text>
+
+
+</View>
   <Text style={styles.sub}>{Data?.City}</Text>
   <View style={{flexDirection:"row",alignItems:"center"}}>
-  <Text style={styles.sub}>{Data?.State}</Text>
+  <Text style={styles.sub}>{Data?.District}</Text>
   <Text style={styles.sub}> - </Text>
   <Text style={styles.sub}>{Data?.PostalCode}</Text>
   </View>
@@ -433,7 +446,7 @@ setBack(false)
           </View>
           <View style={{flexDirection:"row",alignItems:'center',paddingHorizontal:9,paddingVertical:5,justifyContent:"space-between"}}>
               <Image
-          source={require("../../assets/images/Islah_logo.png")}
+          source={require("../../assets/images/logo.png")}
           style={{ height:80,width:80}}
         />
 
