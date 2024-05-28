@@ -143,7 +143,61 @@ const[Data,setData] = useState({
   Join: join,
   Experience: experience,
   LastCompanyName: lastCompanyName,
+  Facebook:'',
+  Instagram:'',
+  Linkedin:'',
+  Twitter:'',
+
 })
+
+
+const updater = ()=>{
+setData({
+  Profile: Image,
+  Name: name,
+  FatherName: fatherName,
+  GrandFatherName: grandFatherName,
+  MotherName: motherName,
+  Nana: grandFatherNameNana,
+  Gender: gender,
+  Dob: dob,
+  MaritalStatus: maritalStatus,
+  HusbandName:HusbandName,
+  Country: country,
+  State: state,
+  surname: surname,
+  Token: token,
+  City: city,
+  District: district,
+  Status: Status,
+  PostalCode: postalCode,
+  Address: Address,
+  Street: Street,
+  Email: email,
+  Nationality: nationality,
+  PhoneNumber: phoneNumber,
+  PartnerName: partnerName,
+  Category: category,
+  userID: userID,
+  Bio: '',
+  AboutMe: aboutMe,
+  Education: education,
+  Profession: profession,
+  Skills: skills,
+  Salary: salary,
+  Join: join,
+  Experience: experience,
+  LastCompanyName: lastCompanyName,
+  Facebook:'',
+  Instagram:'',
+  Linkedin:'',
+  Twitter:'',
+})
+}
+
+useEffect(()=>{
+  updater()
+},[Image,name,fatherName,grandFatherName,motherName,grandFatherNameNana,gender,dob,maritalStatus,HusbandName,country,state,surname,token,city,district,Status,postalCode,Address,Street,email,nationality,lastCompanyName,experience,join,salary,skills,profession,education,aboutMe,userID,category,partnerName,phoneNumber])
   const tokenlist = async () => {
     try {
       // await uploadimage1();
@@ -159,7 +213,6 @@ const[Data,setData] = useState({
           Token: token,
         });
 
-      navigation.replace('businessData1');
     } catch (error) {
       // setIsLoading(false);
       console.log('Error addinfsf product:', error);
@@ -272,6 +325,10 @@ const[Data,setData] = useState({
             Join: join,
             Experience: experience,
             LastCompanyName: lastCompanyName,
+            Facebook:'',
+            Instagram:'',
+            Linkedin:'',
+            Twitter:'',
 
             // ... (rest of the data)
           });

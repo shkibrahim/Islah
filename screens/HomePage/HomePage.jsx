@@ -55,7 +55,6 @@ const HomePage = ({route, navigation}) => {
   
   const [Data1, setData1] = useState([]);
   const [Data2, setData2] = useState([]);
-  console.log('why are you',Data2)
   const [Data3, setData3] = useState([]);
   const [Data4, setData4] = useState([]);
   const [Banner, setBanner] = useState(['fsf']);
@@ -476,7 +475,8 @@ const fetchalldata = async () => {
     }
   };
 
-const [RideTypeModal, setRideTypeModal] = useState(false);
+const [RideTypeModal, setRideTypeModal] = useState();
+console.log('bla',RideTypeModal)
 const RideTypeSelector = () => {
  
 
@@ -484,18 +484,29 @@ const RideTypeSelector = () => {
     console.log('Modal state is',RideTypeModal)
   }
 const [emailVerified,setEmailVerified] = useState()
-
 const [checker,setchecker] =useState(false)
 
-
-
+const runner = async()=>{
+  user.reload().then(() => {
+    console.log({'emailVerified is done': user.emailVerified});
+  });
+}
 useEffect(() => {
   const intervalId = setInterval(() => {
     const user = auth().currentUser;
     if (user && user.emailVerified == false) {
-      user.reload().then(() => {
-        console.log({'emailVerified is done': user.emailVerified});
-      });
+      runner()
+      // user.reload().then(() => {
+      //   console.log({'emailVerified is done': user.emailVerified});
+      // });
+      setRideTypeModal(true)
+    }
+
+    if (user && user.emailVerified == true) {
+      // user.reload().then(() => {
+      //   console.log({'emailVerified is done': user.emailVerified});
+      // });
+      setRideTypeModal(false)
     }
   }, 5000); // Run every 5 seconds (5000 milliseconds)
 
@@ -602,8 +613,6 @@ useEffect (()=>{
     // Handle microphone icon press (e.g., initiate voice search)
     console.log('Microphone pressed');
   };
-
-
   const renderItem = ({item}) => (
     <View style={styles.bg}>
       <Carousel
@@ -729,7 +738,7 @@ useEffect (()=>{
 <HomeModal  RideTypeModal ={RideTypeModal}/>
 }
 
-{RideTypeModal == false &&  checker == true &&   <View style={styles.container}>
+{RideTypeModal == false &&   <View style={styles.container}>
       
       {isLoading ? (
         <ActivityIndicator

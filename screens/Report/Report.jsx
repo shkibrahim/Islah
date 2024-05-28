@@ -21,6 +21,20 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import storage from '@react-native-firebase/storage';
   const Report = () => {
+    const [user, setuser] = useState();
+    const [message, setMessage] = useState('');
+    const [Reason,setreason]= useState('')
+const [ReportCategory,setReportCategory] = useState('')
+const [selectedImage, setSelectedImage] = useState(null);
+    const [subject, setSubject] = useState('');
+    const [Loading, setLoading] = useState();
+    const [isLoading, setIsLoading] = useState();
+    const [ismessageEmpty, setIsmessageEmpty] = useState(false);
+    const [Contact, setContact] = useState([]);
+    const [Disabler, setDisabler] = useState(false);
+    const main = '#197739'
+const [selectedImage1, setSelectedImage1] = useState(null);
+const [ActiveReports,setActiveReports]=useState()
     const navigation = useNavigation();
     useEffect(() => {
       getEmailFromStorage();
@@ -38,41 +52,32 @@ import storage from '@react-native-firebase/storage';
       }
     };
   
-    const [user, setuser] = useState();
-    const [message, setMessage] = useState('');
-    const [Reason,setreason]= useState('')
-const [ReportCategory,setReportCategory] = useState('')
-const [selectedImage, setSelectedImage] = useState(null);
-    const [subject, setSubject] = useState('');
-    const [Loading, setLoading] = useState();
-    const [isLoading, setIsLoading] = useState();
-    const [ismessageEmpty, setIsmessageEmpty] = useState(false);
-    const [Contact, setContact] = useState([]);
-    const [Disabler, setDisabler] = useState(false);
-    const main = '#197739'
-const [selectedImage1, setSelectedImage1] = useState(null);
+
   
     const fetchdata = async () => {
-      const querySnapshot = await firestore()
-        .collection('Contact')
-        .doc('Admin') // Fixed the indentation and moved .doc(user) to the correct position
-        .get();
-  
-      const data = querySnapshot.data(); // Use querySnapshot.data() to get the document data directly
       try {
-        // Check if data is defined
-        if (data) {
+        const querySnapshot = await firestore()
+          .collection('Report')
+          .get();
+        
+        const data = querySnapshot.docs.map(doc => doc.data()); // Extract data from each document
+    
+        // Check if data is defined and not empty
+        if (data.length > 0) {
           console.log('asli data', data);
-          setIsLoading(false);
-          setContact(data);
-          console.log(' getch data is', data);
+          const myat = (data.filter(item => item?.User === user) && data.filter(item => item?.Status === 'Active')); // Filter data based on the user
+          console.log('why by ', myat);
+          setActiveReports(myat);
         } else {
-          console.log('No document found yar.');
+          console.log('No documents found.');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated regardless of success or error
       }
     };
+    
     const Submit = async () => {
         
       if (Reason == '' || ReportCategory == '' || selectedImage == null  ) {
@@ -95,14 +100,16 @@ const [selectedImage1, setSelectedImage1] = useState(null);
             Reason: Reason,
             ReportCategory: ReportCategory,
             User :user,
-            Screenshot: url
+            Screenshot: url,
+            Status:"Active"
             // ... (rest of the data)
           });
 
         setLoading(false);
         Alert.alert('Report Submitted')
         setDisabler(false);
-        navigation.navigate('home')
+         await fetchdata()
+        // navigation.navigate('home')
       }
     };
     const subjects = ['Subject', 'Enquiry', 'Feedback', 'Suggestion'];
@@ -123,7 +130,7 @@ const [selectedImage1, setSelectedImage1] = useState(null);
         setSelectedImage(null),
         setSelectedImage1(null)
       }
-    const renderItem = ({item}) => (
+    const renderItem = ({item,index}) => (
       <View
         style={{
           borderColor: 'gray',
@@ -131,34 +138,34 @@ const [selectedImage1, setSelectedImage1] = useState(null);
           borderWidth: 0.3,
           width: '90%',
           margin:12,
+         
+          alignItems:"center",
           alignSelf: 'center',
           padding: 12,
-          borderRadius: 12,
+          borderRadius: 7,elevation:4
         }}>
-        <Text style={styles.overhead}>Email:</Text>
+        <Text style={styles.overhead}>{index+1}</Text>
   
-        <Text style={{...styles.text, marginHorizontal: 12}}>
-          {item.AdminEmail}
+  <View style={{flexDirection:"row",alignItems:"center",width:"100%",alignSelf:"center",justifyContent:"space-between"}}>
+<View style ={{alignItems:"center"}}>
+
+<Text style={{...styles.overhead,fontWeight:"bold"}}>Category</Text>
+<Text style={{...styles.text, marginHorizontal: 12}}>
+          {item.ReportCategory}
         </Text>
+</View>
+
+<View style ={{alignItems:"center"}}>
+
+<Text style={{...styles.overhead,fontWeight:"bold"}}>Reason</Text>
+<Text style={styles.overhead}>{item.Reason}</Text>
+</View>
+     
   
-        <Text style={styles.overhead}>Mobile Contact:</Text>
-  
-  <Text style={{...styles.text, marginHorizontal: 12}}>
-    {item.AdminPhone1}
-  </Text>
-  <Text style={{...styles.text, marginHorizontal: 12}}>
-    {item.AdminPhone2}
-  </Text>
-  <Text style={{...styles.text, marginHorizontal: 12}}>
-    {item.AdminPhone3}
-  </Text>
-  
-  <Text style={styles.overhead}>Address:</Text>
-  
-  <Text style={{...styles.text, marginHorizontal: 12}}>
-    1-B,Muhammadi House,St. Martin's Road,Bandra West,Mumbai -400 050.
-  </Text>
-  
+
+  </View>
+     
+
       </View>
     );
     return (
@@ -228,6 +235,15 @@ style={{padding:12,borderWidth:1,width:"90%",borderColor:'gray',marginTop:20,mar
             <Text style={{color: 'white', fontSize: 18}}>Submit</Text>
           )}
         </TouchableOpacity>
+
+        <Text style={{...styles.heading,margin:12,color:"green",fontWeight:"bold"}}>Active Reports:</Text>
+
+        <FlatList
+          data={ActiveReports}
+          renderItem={renderItem}
+          // keyExtractor={(item) => item.id.toString()}
+        /> 
+        
 {/*   
   <Text style={{color:"black", fontSize:17,fontWeight:'bold',marginHorizontal:12}}> You can also Contact us at:</Text>
         <FlatList
@@ -277,8 +293,8 @@ style={{padding:12,borderWidth:1,width:"90%",borderColor:'gray',marginTop:20,mar
     },
     overhead: {
       color: 'black',
-      fontSize: 17,
-      fontWeight: 'bold',
+      fontSize: 14,
+
     },
     map_container: {
       height: 200,

@@ -32,7 +32,7 @@ const [WorldData,setWorldData] = useState()
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await firestore().collection('News').orderBy('createdAt', 'desc').get();
+        const querySnapshot = await firestore().collection('News').orderBy('CreatedAt', 'desc').get();
         const data = querySnapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,

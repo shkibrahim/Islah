@@ -87,14 +87,60 @@ SchoolName:schoolName,
 Ambition:ambition,
 Achievement:achievement,
 Profession:'',
-Bio:''
+Bio:'',
+Facebook:'',
+Instagram:'',
+Linkedin:'',
+Twitter:'',
   })
-  // const signupHandler = () => {
-  
-  //   setError(false);
-  //     navigation.navigate('home');
+
+
+  const updater = ()=>{
+    setData({
+      Profile: Image,
+      Name: name,
+      FatherName: fatherName,
+      GrandFatherName: grandFatherName,
+      MotherName: motherName,
+      Nana: grandFatherNameNana,
+      Gender: gender,
+      Dob: dob,
+      MaritalStatus: maritalStatus,
+      HusbandName:HusbandName,
+      Country: country,
+      State: state,
+      surname: surname,
+      Token: token,
+      City: city,
+      District: district,
+      Status: Status,
+      PostalCode: postalCode,
+      Address: Address,
+      Street: Street,
+      Email: email,
+      Nationality: nationality,
+      PhoneNumber: phoneNumber,
+      PartnerName: partnerName,
+      Category: category,
+      userID: userID,
+      Bio: '',
+Degree:degree,
+Degreeyear:year,
+Board:board,
+Medium:medium,
+SchoolName:schoolName,
+Ambition:ambition,
+Achievement:achievement,
+      Facebook:'',
+      Instagram:'',
+      Linkedin:'',
+      Twitter:'',
+    })
+    }
     
-  // };
+    useEffect(()=>{
+      updater()
+    },[achievement,ambition,degree,year,board,Image,medium,schoolName,name,fatherName,grandFatherName,motherName,grandFatherNameNana,gender,dob,maritalStatus,HusbandName,country,state,surname,token,city,district,Status,postalCode,Address,Street,email,nationality,userID,category,partnerName,phoneNumber])
   const [category, setCategory] = useState();
   useEffect(() => {
     const getCategory = async () => {
@@ -228,7 +274,10 @@ if (ambition == '') {
         PhoneNumber: phoneNumber,
         PartnerName: partnerName,
 Category:category,
-
+Facebook:'',
+Instagram:'',
+Linkedin:'',
+Twitter:'',
 
 Degree:degree,
 Degreeyear:year,

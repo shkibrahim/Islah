@@ -75,8 +75,58 @@ SchoolName:schoolName,
 CollegeName:collegeName,Bio:'',
 Profession:profession,
 Category:category,
+Facebook:'',
+Instagram:'',
+Linkedin:'',
+Twitter:'',
 
   })
+
+  const update = ()=>{
+    setData({
+      userID:userID,
+    Profile: Image,
+    Name: name,
+    FatherName: fatherName,HusbandName:HusbandName,
+    GrandFatherName: grandFatherName,
+    MotherName: motherName,
+    Nana:grandFatherNameNana,
+    Surname:surname,
+    Gender :gender,
+    Dob: dob,
+    MaritalStatus: maritalStatus,
+    Country: country,
+    State: state,
+    City: city,
+    Token:token,
+    Status:Status,
+    District: district,
+    PostalCode: postalCode,
+    Address: Address,
+    Street: Street,
+    Email: email,
+    Nationality: nationality,
+    PhoneNumber: phoneNumber,
+    PartnerName: partnerName,
+AboutMe:aboutMe,
+Education:education,
+SchoolName:schoolName,
+CollegeName:collegeName,Bio:'',
+Profession:profession,
+Category:category,
+Facebook:'',
+Instagram:'',
+Linkedin:'',
+Twitter:'',
+    })
+  }
+
+
+
+  useEffect(()=>{
+    update()
+  },
+  [schoolName,name,fatherName,HusbandName,grandFatherName,motherName,grandFatherNameNana,surname,gender,dob,maritalStatus,country,userID,Image,category,profession,collegeName,education,aboutMe,partnerName,phoneNumber,nationality,email,Street,Address,postalCode,district,Status,token,city,state])
   const tokenlist = async()=>{
     try {
       // await uploadimage1();
@@ -184,6 +234,10 @@ Category:category,
   CollegeName:collegeName,Bio:'',
   Profession:profession,
   Category:category,
+  Facebook:'',
+Instagram:'',
+Linkedin:'',
+Twitter:'',
   
   
   // Degree:degree,

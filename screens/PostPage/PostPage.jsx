@@ -80,13 +80,11 @@ setRideTypeModal(!RideTypeModal)
         // console.log('concatenated data',concatenatedData  )
       }
 
-      // setAllData(concatenatedData.flat()); // flat() to flatten the array of arrays
       setIsLoading(false);
     } catch (error) {
       console.error('Error concatenating data:', error);
     }
   };
-
   const fetchalldata = async () => {
     console.log('student');
     try {
@@ -172,12 +170,6 @@ setRideTypeModal(!RideTypeModal)
     // Wait for all asynchronous operations to complete
     // await funcat()
   };
-
-
-
-
-
-
   useEffect(() => {
     funcat();
   }, [StudentData, BusinessData, IndividualData, JobSeekerData]);
@@ -187,8 +179,6 @@ setRideTypeModal(!RideTypeModal)
       try {
         await getEmailFromStorage();
         await fetchalldata();
-        // await  funcat();
-        // await myDatafetch();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -198,8 +188,6 @@ setRideTypeModal(!RideTypeModal)
   }, []);
 
   useEffect(() => {
-    // This effect will run whenever StudentData, BusinessData, IndividualData, or JobSeekerData changes
-
     if (AllData) {
       myDatafetch1();
     }
@@ -207,18 +195,12 @@ setRideTypeModal(!RideTypeModal)
 
   const handlePresentModal = async (item) => {
      await myDatafetch(item)
-    // bottomSheetModalRef.current?.present();
-    // setIsOpen(true);
     setRideTypeModal(!RideTypeModal)
     setSelectedItem(item);
     console.log('my item is', item.Comments);
   };
-
   const [content, setContent] = useState('');
-
   const windowWidth = Dimensions.get('window').width;
-  const [isTitleEmpty, setIsTitleEmpty] = useState(false);
-  const [isContentEmpty, setIsContentEmpty] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [user, setuser] = useState();
   const [Data, setData] = useState();
@@ -243,7 +225,6 @@ setRideTypeModal(!RideTypeModal)
   useEffect(() => {
     fetchuserdata();
   }, [content]);
-
   const getCategory = async () => {
     try {
       const category = await AsyncStorage.getItem('category');
@@ -253,12 +234,9 @@ setRideTypeModal(!RideTypeModal)
       console.error('Error getting category from AsyncStorage:', error);
     }
   };
-
   const [Name, setName] = useState();
   const [Profile, setProfile] = useState();
-
   const [isLoading, setIsLoading] = useState(true);
-
   const fetchuserdata = async () => {
     console.log('user data fetching starts now');
     if (Category === 'business') {
@@ -347,7 +325,6 @@ setRideTypeModal(!RideTypeModal)
       }
     }
   };
-
   const fetchData = async () => {
     console.log('posts data coming');
     try {
@@ -370,14 +347,6 @@ setRideTypeModal(!RideTypeModal)
       console.error('Error fetching data:', error);
     }
   };
-
-  
-  // useEffect(() => {
-  //   fetchData();
-  // }, [Comment]);
-
-
-
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -397,7 +366,6 @@ setRideTypeModal(!RideTypeModal)
           .doc(user)
           .collection('Posts')
           .doc()
-
           .set({
             Content: content,
             Profile: Profile,
@@ -405,11 +373,10 @@ setRideTypeModal(!RideTypeModal)
             Time:formattedTime,
             Name: Name,
             Comments: CommentList,
-            // ... (rest of the data)
+            Category:Category1
           });
         setIsLoading(false);
       }
-
       if (Category1 == 'jobseeker') {
         setLoading(true);
         await firestore()
@@ -638,7 +605,6 @@ setRideTypeModal(!RideTypeModal)
       setData(meradata);
       setProfile(meradata.Profile);
       setName(meradata.Name);
-      
       setCategory1(meradata.Category);
 console.log('yehi to ha',meradata.Category)
       // console.log('profile data is ', mydata);

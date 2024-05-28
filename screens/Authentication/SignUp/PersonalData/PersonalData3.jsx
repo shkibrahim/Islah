@@ -7,7 +7,11 @@ import {
   Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
 
+  TextInput,
+
+} from 'react-native-paper';
 import {Button, Paragraph, RadioButton, Text, Title} from 'react-native-paper';
 import CustomTextInput from '../../../../Components/CustomTextInput';
 import auth from '@react-native-firebase/auth';
@@ -16,6 +20,9 @@ import Modal from 'react-native-modal';
 const PersonalData3 = React.memo(({ route ,props,navigation}) => {
 const [Loading,setLoading] = useState(false)
 const [RideTypeModal, setRideTypeModal] = useState(false);
+const [hidePassword, setHidePassword] = useState(true);
+const [confirmhidePassword, setconfirmHidePassword] = useState(true);
+
 const RideTypeSelector = (item) => {
   setselectedItem(item)
   setRideTypeModal(!RideTypeModal);
@@ -56,56 +63,56 @@ const[wrongpassword,setwrongpassword] = useState(false);
 
   const [VerifiedLoader,setVerifiedLoader] = useState(false)
 
-useEffect(()=>{
-  const unsubscribe = auth().onAuthStateChanged(user => {
-    if (user) {
-      // User is signed in
-      if (user.emailVerified) {
-        setVerifiedLoader(true)
-        // Email is verified
-       navigation.navigate('imagepickerpage', {
-    surname:surname,
+// useEffect(()=>{
+//   const unsubscribe = auth().onAuthStateChanged(user => {
+//     if (user) {
+//       // User is signed in
+//       if (user.emailVerified) {
+//         setVerifiedLoader(true)
+//         // Email is verified
+//        navigation.navigate('imagepickerpage', {
+//     surname:surname,
     
-    name:name,
-    fatherName:fatherName,
-    motherName:motherName,
-    grandFatherName:grandFatherName,
-    grandFatherNameNana:grandFatherNameNana,
-    gender:gender,
-    dob:dob,
-    partnerName:partnerName,
-    maritalStatus:maritalStatus,
-    country:country,
-    state:state,
-    city:city,
-  district:district,
-  postalCode:postalCode,
-  Address:Address,
-  Street:Street,
-userID:generatedID,
-HusbandName:HusbandName,
-  email:email,
-  password:password,
-  nationality:indian,
-  partnerName:partnerName,
-  phoneNumber:phoneNumber
+//     name:name,
+//     fatherName:fatherName,
+//     motherName:motherName,
+//     grandFatherName:grandFatherName,
+//     grandFatherNameNana:grandFatherNameNana,
+//     gender:gender,
+//     dob:dob,
+//     partnerName:partnerName,
+//     maritalStatus:maritalStatus,
+//     country:country,
+//     state:state,
+//     city:city,
+//   district:district,
+//   postalCode:postalCode,
+//   Address:Address,
+//   Street:Street,
+// userID:generatedID,
+// HusbandName:HusbandName,
+//   email:email,
+//   password:password,
+//   nationality:indian,
+//   partnerName:partnerName,
+//   phoneNumber:phoneNumber
 
   
-  })
+//   })
 
-      } else {
-        // Email is not verified
-        console.log('Email is not verified');
-      }
-    } else {
-      // No user is signed in
-      console.log('No user signed in');
-    }
-  });
+//       } else {
+//         // Email is not verified
+//         console.log('Email is not verified');
+//       }
+//     } else {
+//       // No user is signed in
+//       console.log('No user signed in');
+//     }
+//   });
   
-  // Clean up the listener when the component unmounts
-  unsubscribe();
-},[])
+//   // Clean up the listener when the component unmounts
+//   unsubscribe();
+// },[])
   // useEffect(() => {
   //   console.log('svsv');
   // console.log('2',maritalStatus)
@@ -273,16 +280,59 @@ HusbandName:HusbandName,
           onChange={setUsername}
           label="User Name (must be an email address)"
         />
-        <CustomTextInput
-          setError={setIsPasswordEmpty}
-          required={true}
-          error={isPasswordEmpty}
-          value={password}
-          onChange={setPassword}
-          label="Password"
-          secureText={true}
+       <TextInput
+      underlineColor="#000"
+      activeOutlineColor="#197739"
+      placeholderTextColor="#666"
+      textColor="#000"
+      selectionColor="green"
+      outlineColor="#197739"
+      style={styles.input}
+      outlineStyle={{borderRadius: 8}}
+      cursorColor="green"
+      label="Password"
+      value={password}
+      onChangeText={setPassword}
+      secureTextEntry={hidePassword}
+      mode="outlined"
+      right={
+        <TextInput.Icon
+          size={20}
+          color="#666"
+          icon={hidePassword ? 'eye-off' : 'eye'}
+          onPress={() => setHidePassword(!hidePassword)}
         />
-        <CustomTextInput
+      }
+      error={isPasswordEmpty}
+    />
+
+
+<TextInput
+      underlineColor="#000"
+      activeOutlineColor="#197739"
+      placeholderTextColor="#666"
+      textColor="#000"
+      selectionColor="green"
+      outlineColor="#197739"
+      style={styles.input}
+      outlineStyle={{borderRadius: 8}}
+      cursorColor="green"
+      label="Confirm Password"
+      value={confirmPassword}
+      onChangeText={setConfirmPassword}
+      secureTextEntry={hidePassword}
+      mode="outlined"
+      right={
+        <TextInput.Icon
+          size={20}
+          color="#666"
+          icon={confirmhidePassword ? 'eye-off' : 'eye'}
+          onPress={() => setconfirmHidePassword(!confirmhidePassword)}
+        />
+      }
+      error={isConfirmPasswordEmpty}
+    />
+        {/* <CustomTextInput
           setError={setIsConfirmPasswordEmpty}
           required={true}
           error={isConfirmPasswordEmpty}
@@ -290,7 +340,7 @@ HusbandName:HusbandName,
           onChange={setConfirmPassword}
           label="Confirm Password"
           secureText={true}
-        />
+        /> */}
 
         {/* Radio buttons for currently living in */}
 
