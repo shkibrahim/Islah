@@ -57,7 +57,7 @@ const HomePage = ({route, navigation}) => {
   const [Data2, setData2] = useState([]);
   const [Data3, setData3] = useState([]);
   const [Data4, setData4] = useState([]);
-  const [Banner, setBanner] = useState(['fsf']);
+  const [Banner, setBanner] = useState([]);
   const [isLoading, setIsLoading] = useState();
   const [StudentData, setStudentData] = useState([]);
   const [BusinessData, setBusinessData] = useState([]);
@@ -486,7 +486,7 @@ const RideTypeSelector = () => {
 const [emailVerified,setEmailVerified] = useState()
 const [checker,setchecker] =useState(false)
 
-const runner = async()=>{
+const runner = async(user)=>{
   user.reload().then(() => {
     console.log({'emailVerified is done': user.emailVerified});
   });
@@ -495,7 +495,7 @@ useEffect(() => {
   const intervalId = setInterval(() => {
     const user = auth().currentUser;
     if (user && user.emailVerified == false) {
-      runner()
+      runner(user)
       // user.reload().then(() => {
       //   console.log({'emailVerified is done': user.emailVerified});
       // });
@@ -853,7 +853,7 @@ useEffect (()=>{
                 overflow: 'hidden',
               }}>
              
-                {Banner[0].ImageUrl ? (
+                {Banner[0]?.ImageUrl ? (
                   <Image
                     source={{uri: Banner[0].ImageUrl}}
                     style={{width:'100%',height:60}}

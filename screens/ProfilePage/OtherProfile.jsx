@@ -51,7 +51,7 @@ const UserProfile = ({navigation}) => {
   const [MotherName, setMotherName] = useState();
   const [Nana, setNana] = useState();
   const [DOB, setDOB] = useState('');
-  console.log('DOB IS',DOB)
+  // console.log('DOB IS', DOB);
   const [Dada, setDada] = useState();
   const [MaritalStatus, setMaritalStatus] = useState();
   const [Country, setCountry] = useState();
@@ -114,14 +114,14 @@ const UserProfile = ({navigation}) => {
   const [token, settoken] = useState();
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date(new Date().getFullYear(), 0, 1));
-  console.log('flana',date)
-  const formatDate = (date) => {
+  // console.log('flana', date);
+  const formatDate = date => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-console.log('FORMAT IS',formatDate)
+  // console.log('FORMAT IS', formatDate);
   // console.log('profile is ',Profile)
   const profile = async () => {
     const img = await AsyncStorage.getItem('Profile');
@@ -139,6 +139,7 @@ console.log('FORMAT IS',formatDate)
   const Logout = () => {
     AsyncStorage.removeItem('username');
     AsyncStorage.removeItem('UserData');
+    // AsyncStorage.removeItem('Looker');
 
     navigation.navigate('signin');
   };
@@ -334,7 +335,7 @@ console.log('FORMAT IS',formatDate)
       console.log(storedEmail);
       // console.log('Sara Data', AllData);
       const data = await AsyncStorage.getItem('UserData');
-      setStartLoading(false);
+      
       // console.log('user data iv',data)
       const newdata = await JSON.parse(data);
       // const mydata = await AllData.find(data => data.id === user);
@@ -387,6 +388,8 @@ console.log('FORMAT IS',formatDate)
       settoken(newdata?.Token);
 
       if (newdata.Category == 'student') {
+        console.log(newdata)
+        console.log('category checking,',newdata.Category)
         setSchoolName(newdata.SchoolName);
         setDegree(newdata.Degree);
         setDegreeyear(newdata.Degreeyear);
@@ -411,6 +414,7 @@ console.log('FORMAT IS',formatDate)
         setExperience(newdata.Experience);
         setLastCompanyInfo(newdata.LastCompanyName);
       }
+      setStartLoading(false);
       // console.log('profile data is ', mydata);
     } catch (error) {
       console.error('Error getting email from AsyncStorage:', error);
@@ -587,6 +591,7 @@ console.log('FORMAT IS',formatDate)
     userID: UserId,
     HusbandName: HusbandName,
     Surname: surname,
+    AboutMe:Bio,
     Status: 'Active',
     Street: Street,
     Email: email,
@@ -705,6 +710,7 @@ console.log('FORMAT IS',formatDate)
       HusbandName: HusbandName,
       Surname: surname,
       Status: 'Active',
+      AboutMe:Bio,
       Street: Street,
       Email: email,
       Nationality: nationality,
@@ -1237,7 +1243,7 @@ console.log('FORMAT IS',formatDate)
             Education: EducationalQualification,
             Profession: Profession,
             Skills: Skills,
-            Salary: Salary,
+            Salary: SalaryExpectations,
             Join: JoiningDetails,
             Experience: Experience,
             LastCompanyName: LastCompanyInfo,
@@ -1277,7 +1283,7 @@ console.log('FORMAT IS',formatDate)
               Education: EducationalQualification,
               Profession: Profession,
               Skills: Skills,
-              Salary: Salary,
+              Salary: SalaryExpectations,
               Join: JoiningDetails,
               Experience: Experience,
               LastCompanyName: LastCompanyInfo,
@@ -1366,7 +1372,7 @@ console.log('FORMAT IS',formatDate)
             Education: EducationalQualification,
             Profession: Profession,
             Skills: Skills,
-            Salary: Salary,
+            Salary: SalaryExpectations,
             Join: JoiningDetails,
             Experience: Experience,
             LastCompanyName: LastCompanyInfo,
@@ -1405,7 +1411,7 @@ console.log('FORMAT IS',formatDate)
               Education: EducationalQualification,
               Profession: Profession,
               Skills: Skills,
-              Salary: Salary,
+              Salary: SalaryExpectations,
               Join: JoiningDetails,
               Experience: Experience,
               LastCompanyName: LastCompanyInfo,
@@ -2500,25 +2506,25 @@ console.log('FORMAT IS',formatDate)
                 onPress={() => {
                   setOpen(true);
                 }}>
-               <Text style={{ color: 'black', fontSize: 14 }}>
-          {DOB || 'Select Date of Birth'}
-        </Text>
+                <Text style={{color: 'black', fontSize: 14}}>
+                  {DOB || 'Select Date of Birth'}
+                </Text>
 
-        <DatePicker
-        modal
-        mode="date"
-        open={open}
-        date={date}
-        maximumDate={new Date()}
-        onConfirm={(selectedDate) => {
-          setOpen(false);
-          setDate(selectedDate);
-          setDOB(formatDate(selectedDate));
-        }}
-        onCancel={() => {
-          setOpen(false);
-        }}
-      />
+                <DatePicker
+                  modal
+                  mode="date"
+                  open={open}
+                  date={date}
+                  maximumDate={new Date()}
+                  onConfirm={selectedDate => {
+                    setOpen(false);
+                    setDate(selectedDate);
+                    setDOB(formatDate(selectedDate));
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
               </TouchableOpacity>
               <Text style={{color: 'black', marginBottom: 5}}>
                 Marital Status

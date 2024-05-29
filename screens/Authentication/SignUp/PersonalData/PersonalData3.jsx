@@ -320,7 +320,7 @@ const[wrongpassword,setwrongpassword] = useState(false);
       label="Confirm Password"
       value={confirmPassword}
       onChangeText={setConfirmPassword}
-      secureTextEntry={hidePassword}
+      secureTextEntry={confirmhidePassword}
       mode="outlined"
       right={
         <TextInput.Icon

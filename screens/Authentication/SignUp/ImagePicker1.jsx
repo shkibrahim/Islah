@@ -150,18 +150,31 @@ Bio:''
       } else if (selectedSourceType === 'gallery') {
 
         // ImageSelector()
-        const options = {
-          mediaType: 'photo',
-          cropping:true,
-          includeBase64: false,
-        };
-        response = await launchImageLibrary(options);
+        // const options = {
+        //   mediaType: 'photo',
+        //   cropping:true,
+        //   includeBase64: false,
+        // };
+        // response = await launchImageLibrary(options);
       }
 
-      if (response.assets) {
-        setAvatarUri(response.assets[0].uri);
-        setSelectedImage1(response)
-      }
+      // if (response.assets) {
+      //   setAvatarUri(response.assets[0].uri);
+      //   setSelectedImage1(response)
+      // }
+
+
+
+      const pickedImage = await ImagePicker.openPicker({
+        width: 300,
+        height: 400,
+        cropping: true,
+      });
+      console.log('hakeeki', pickedImage);
+      // setselectedImage(pickedImage.path);
+      setAvatarUri(pickedImage.path)
+      setSelectedImage1(pickedImage);
+
     } catch (err) {
       console.warn(err);
     }
@@ -286,8 +299,8 @@ Bio:'',
 
   const uploadtofbStorage = async () => {
     setLoading2(true)
-    const reference = storage().ref(selectedImage1.assets[0].fileName);
-    const pathToFile = avatarUri;
+    const reference = storage().ref(selectedImage1.path);
+    const pathToFile = selectedImage1.path
     
     await reference.putFile(pathToFile);
     
