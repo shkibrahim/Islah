@@ -7,13 +7,13 @@ const NewsCard = () => {
         Title of the news Lorem ipsum dolor sit amet consectetur adipisicing
         elit. Voluptatum 
       </Text>
-
+{/* 
       <Image
         width={100}
         height={100}
         style={styles.img_container}
         source={require('../../assets/images/slider_1.jpg')}
-      />
+      /> */}
     </View>
   );
 };

@@ -54,7 +54,7 @@ const BusinessCard = ({
         marginHorizontal: 16,
         marginVertical: 4,
       }}>
-      <View style={styles.card_container}>
+      {/* <View style={styles.card_container}>
         <View
           style={{
             flexBasis: '35%',
@@ -152,7 +152,7 @@ const BusinessCard = ({
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View> */}
 
       {isEdit && <IsEditContainer path="editBusinessDetailsForm" id={id} />}
     </View>
